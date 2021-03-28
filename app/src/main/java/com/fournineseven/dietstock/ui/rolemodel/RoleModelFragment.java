@@ -19,7 +19,7 @@ public class RoleModelFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         roleModelViewModel = new ViewModelProvider(this).get(RoleModelViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_ranking, container, false);
+        View root = inflater.inflate(R.layout.fragment_rolemodel, container, false);
         roleModelViewModel.getValue1().observe(getViewLifecycleOwner(), value1 ->{
             //update UI
         });

@@ -19,7 +19,7 @@ public class FoodFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         foodViewModel = new ViewModelProvider(this).get(FoodViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_ranking, container, false);
+        View root = inflater.inflate(R.layout.fragment_food, container, false);
         foodViewModel.getValue1().observe(getViewLifecycleOwner(), value1 ->{
             //update UI
         });

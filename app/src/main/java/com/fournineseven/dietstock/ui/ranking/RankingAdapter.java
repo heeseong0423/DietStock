@@ -1,6 +1,7 @@
 package com.fournineseven.dietstock.ui.ranking;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,21 +20,29 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
     Context context;
     ArrayList<RankingItem> items = new ArrayList<RankingItem>();
 
+    public RankingAdapter(Context context){this.context = context;}
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View itemView = inflater.inflate(R.layout.ranking_item, parent, false);
+        return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
+        RankingItem item = items.get(position);
+        holder.setItem(item);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return items.size();
     }
+
+    public void addItem(RankingItem item){items.add(item);}
+
+    public void setEmpty(){items.clear();}
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {

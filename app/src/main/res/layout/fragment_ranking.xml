@@ -69,8 +69,8 @@
             android:fontFamily="@font/font_num1"/>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/listview_ranking"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_ranking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"

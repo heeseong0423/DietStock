@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.fournineseven.dietstock.R
+import com.fournineseven.dietstock.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 

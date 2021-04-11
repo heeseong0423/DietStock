@@ -13,6 +13,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.fournineseven.dietstock.databinding.ActivityMainBinding
 import com.fournineseven.dietstock.ui.food.FoodFragment
 import com.fournineseven.dietstock.ui.home.HomeFragment
 import com.fournineseven.dietstock.ui.notifications.NotificationsFragment
@@ -22,18 +23,21 @@ import com.fournineseven.dietstock.ui.rolemodel.RoleModelFragment
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
-    private lateinit var nav_view: BottomNavigationView
-
+    private lateinit var navView: BottomNavigationView
+    private val binding by lazy{
+        ActivityMainBinding.inflate(layoutInflater)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
 
-        viewPager = findViewById(R.id.view_pager)
+        viewPager = binding.viewPager
         viewPager.adapter = PagerAdapter(supportFragmentManager, lifecycle)
         viewPager.registerOnPageChangeCallback(PageChangeCallback())
 
-        nav_view = findViewById(R.id.nav_view)
-        nav_view.setOnNavigationItemSelectedListener { navigationSelected(it) }
+        navView = binding.navView
+
+        navView.setOnNavigationItemSelectedListener { navigationSelected(it) }
     }
 
     private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle): FragmentStateAdapter(fm, lc){
@@ -83,7 +87,7 @@ class MainActivity : AppCompatActivity() {
     private inner class PageChangeCallback: ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            nav_view.selectedItemId = when (position) {
+            navView.selectedItemId = when (position) {
                 0 -> R.id.navigation_home
                 1 -> R.id.navigation_ranking
                 2 -> R.id.navigation_notifications

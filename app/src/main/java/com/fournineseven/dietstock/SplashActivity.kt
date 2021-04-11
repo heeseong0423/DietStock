@@ -49,6 +49,11 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         checkPermission()
+
+        binding.button.setOnClickListener {
+            var intent = Intent(this,MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 
 
@@ -123,6 +128,26 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            PERMISSION_REQUEST_ACTIVITY -> {
+                if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG,"구글 활동 허락했음.")
+                    googleSignInCheckPermission()
+                }else{
+                    Log.d(TAG, "거절했네")
+                    finish()
+                }
+            }
+        }
+        Log.d(TAG,"REQUEST 권한 설정 결과")
     }
 
     //구독

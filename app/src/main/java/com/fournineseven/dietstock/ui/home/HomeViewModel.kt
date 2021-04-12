@@ -10,5 +10,9 @@ class HomeViewModel : ViewModel() {
     private val _text = MutableLiveData<String>().apply {
         value = User.step.toString()
     }
+    private val _textKcal = MutableLiveData<String>().apply {
+        value = User.kcal.toString() + "Kcal"
+    }
     val text: LiveData<String> = _text
+    val textKcal: LiveData<String> = _textKcal
 }

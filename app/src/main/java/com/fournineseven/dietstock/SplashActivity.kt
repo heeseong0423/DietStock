@@ -16,8 +16,10 @@ import com.fournineseven.dietstock.databinding.ActivitySplashBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.data.DataType
-import com.google.android.gms.fitness.data.Field
+import com.google.android.gms.fitness.data.*
+import com.google.android.gms.fitness.request.DataReadRequest
+import java.time.*
+import java.util.concurrent.TimeUnit
 
 private const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 1
 private const val PERMISSION_REQUEST_ACTIVITY = 2
@@ -88,7 +90,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
 
-    //구글핏 API 권한 체크
+    //구글핏 API 권한 체크 , 이미 되어있다면 걸음수,칼로리 읽어옴.readStepCounter()
     private fun googleSignInCheckPermission(){
         if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) { //권한 없을 경우 권한요청
             GoogleSignIn.requestPermissions( //호출 후 결과 요청을 onActivityResult에서 알려줌.
@@ -100,11 +102,12 @@ class SplashActivity : AppCompatActivity() {
 
         } else {//이미 권한들 체크했을 경우 코드 실행
             readStepCount() //걸음수 읽어옴.
+            readCalorie() // 칼로리 읽어옴
         }
     }
 
 
-    //구글핏 권한체크 후 호출 결과
+    //구글핏 권한체크 후 호출 결과, 승인하면 걸음수 읽어오고 거절하면 종료
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
@@ -222,6 +225,54 @@ class SplashActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Log.d(TAG, "There was a problem getting steps.", e)
             }
+    }
+
+    private fun readCalorie(){
+        val end = LocalDateTime.now().atZone(ZoneId.systemDefault())
+        val start = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toEpochSecond()
+
+        //칼로리 총량 읽기
+        val readRequest = DataReadRequest.Builder()
+                .aggregate(DataType.AGGREGATE_CALORIES_EXPENDED)
+                .bucketByActivityType(1, TimeUnit.SECONDS)
+                .setTimeRange(start, end.toEpochSecond(), TimeUnit.SECONDS)
+                .build()
+
+        Fitness.getHistoryClient(this, GoogleSignIn.getAccountForExtension(this, fitnessOptions))
+                .readData(readRequest)
+                .addOnSuccessListener { response ->
+                    // The aggregate query puts datasets into buckets, so flatten into a single list of datasets
+                    for (dataSet in response.buckets.flatMap { it.dataSets }) {
+                        dumpDataSet(dataSet)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG,"There was an error reading data from Google Fit", e)
+                }
 
     }
+
+    fun dumpDataSet(dataSet: DataSet) {
+        Log.i(TAG, "Data returned for Data type: ${dataSet.dataType.name}")
+        for (dp in dataSet.dataPoints) {
+            Log.i(TAG,"Data point: ${dp.toString()}")
+            Log.i(TAG,"\tType: ${dp.dataType.name}")
+            Log.i(TAG,"\tStart: ${dp.getStartTimeString()}")
+            Log.i(TAG,"\tEnd: ${dp.getEndTimeString()}")
+            for (field in dp.dataType.fields) {
+                Log.i(TAG,"\tField: ${field.name.toString()} Value: ${dp.getValue(field)}")
+                var a = (dp.getValue(field).toString().toFloat()).toInt()
+                User.kcal += a
+            }
+        }
+    }
+
+    fun DataPoint.getStartTimeString() = Instant.ofEpochSecond(this.getStartTime(TimeUnit.SECONDS))
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime().toString()
+
+    fun DataPoint.getEndTimeString() = Instant.ofEpochSecond(this.getEndTime(TimeUnit.SECONDS))
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime().toString()
+
 }

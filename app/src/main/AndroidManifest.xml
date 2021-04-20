@@ -27,6 +27,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name">
         </activity>
+        <activity android:name=".ui.rolemodel.RoleModelDetailActivity"/>
     </application>
 
 </manifest>

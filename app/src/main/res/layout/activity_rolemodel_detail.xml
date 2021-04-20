@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/textview_rolemodel_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="성공한 사람들"
+        android:textSize="50sp"
+        android:fontFamily="@font/font_num1"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/textview_rolemodel_detail_name"
+        />
+    <TextView
+        android:id="@+id/textview_rolemodel_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="흰*이"
+        android:textSize="30sp"
+        android:fontFamily="@font/font_num1"
+        android:background="@drawable/circleradius"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_rolemodel_detail"
+        />
+
+    <ImageView
+        android:id="@+id/imageview_rolemodel_detail_image"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_margin="30dp"
+        android:src="@drawable/hindoongi"
+        app:layout_constraintTop_toBottomOf="@+id/textview_rolemodel_detail_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+    <LinearLayout
+        android:id="@+id/linearlayout_rolemodel_detail_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/imageview_rolemodel_detail_image"
+        app:layout_constraintLeft_toLeftOf="parent"
+        >
+        <Button
+            android:id="@+id/buttn_rolemodel_detail1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="차트1"
+            android:textSize="10sp"/>
+        <Button
+            android:id="@+id/buttn_rolemodel_detail2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="차트2"
+            android:textSize="10sp"
+            />
+    </LinearLayout>
+
+    <!--FRAGMENT_SCREEN_SLIDE_PAGE.xml -->
+    <com.github.mikephil.charting.charts.CandleStickChart
+        android:id="@+id/candlestickchart_rolemodel_detail"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_margin="30dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout_rolemodel_detail_btn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/piechart_rolemodel_detail"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_margin="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout_rolemodel_detail_btn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+    </com.github.mikephil.charting.charts.PieChart>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

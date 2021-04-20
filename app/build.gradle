@@ -36,6 +36,10 @@ android {
     }
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -61,5 +65,19 @@ dependencies {
     implementation 'com.google.android.gms:play-services-fitness:20.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.android.gms:play-services-location:12.0.0'
+
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    //꺾은선 그래프
+
+    // Retrofit 라이브러리
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
+    // Gson 변환기 라이브러리
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // Scalars 변환기 라이브러리
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
 
 }

@@ -21,16 +21,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <LinearLayout
-        android:id="@+id/linearlayout_ranking_category"
+    <RadioGroup
+        android:id="@+id/radiogroup_ranking_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="30dp"
         android:gravity="center"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textview_ranking">
+        app:layout_constraintTop_toBottomOf="@id/textview_ranking"
+        >
         <RadioButton
             android:id="@+id/radiobutton_ranking_day"
             android:layout_width="wrap_content"
@@ -67,15 +65,16 @@
             android:text="월간"
             android:textSize="25sp"
             android:fontFamily="@font/font_num1"/>
-    </LinearLayout>
+    </RadioGroup>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_ranking"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
+        android:layout_height="0dp"
+        android:layout_margin="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearlayout_ranking_category"/>
+        app:layout_constraintTop_toBottomOf="@id/radiogroup_ranking_category"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

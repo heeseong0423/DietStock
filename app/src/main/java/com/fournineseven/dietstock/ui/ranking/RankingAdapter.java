@@ -1,6 +1,7 @@
 package com.fournineseven.dietstock.ui.ranking;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,8 +65,15 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
         public void setItem(RankingItem item){
             textview_ranking_no.setText(String.valueOf(item.getNo()));
             textview_ranking_name.setText(item.getName());
-            textview_ranking_kcal.setText(item.getKcal());
-            imageview_ranking_image.setImageResource(R.drawable.ranking_up);
+            textview_ranking_kcal.setText(String.valueOf(item.getKcal()));
+            if(item.getKcal() > 0) {
+                imageview_ranking_image.setImageResource(R.drawable.ranking_up);
+                imageview_ranking_image.setColorFilter(Color.RED);
+            }
+            else if(item.getKcal() <= 0) {
+                imageview_ranking_image.setImageResource(R.drawable.ranking_down);
+                imageview_ranking_image.setColorFilter(Color.BLUE);
+            }
         }
     }
 }

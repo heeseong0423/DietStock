@@ -13,11 +13,14 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.fournineseven.dietstock.config.TaskServer
 import com.fournineseven.dietstock.ui.food.FoodFragment
 import com.fournineseven.dietstock.ui.home.HomeFragment
 import com.fournineseven.dietstock.ui.notifications.NotificationsFragment
 import com.fournineseven.dietstock.ui.ranking.RankingFragment
 import com.fournineseven.dietstock.ui.rolemodel.RoleModelFragment
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,6 +37,11 @@ class MainActivity : AppCompatActivity() {
 
         nav_view = findViewById(R.id.nav_view)
         nav_view.setOnNavigationItemSelectedListener { navigationSelected(it) }
+
+        App.retrofit = Retrofit.Builder()
+            .baseUrl(TaskServer.base_url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
     }
 
     private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle): FragmentStateAdapter(fm, lc){

@@ -3,14 +3,12 @@ package com.fournineseven.dietstock.ui.ranking;
 public class RankingItem {
     int no;
     String name;
-    String kcal;
-    Boolean isUp;
+    int kcal;
 
-    public RankingItem(int no, String name, String kcal, Boolean isUp){
+    public RankingItem(int no, String name, int kcal){
         this.no = no;
         this.name = name;
         this.kcal = kcal;
-        this.isUp = isUp;
     }
 
     public int getNo() {
@@ -21,19 +19,11 @@ public class RankingItem {
         this.no = no;
     }
 
-    public Boolean getUp() {
-        return isUp;
-    }
-
-    public void setUp(Boolean up) {
-        isUp = up;
-    }
-
-    public String getKcal() {
+    public int getKcal() {
         return kcal;
     }
 
-    public void setKcal(String kcal) {
+    public void setKcal(int kcal) {
         this.kcal = kcal;
     }
 

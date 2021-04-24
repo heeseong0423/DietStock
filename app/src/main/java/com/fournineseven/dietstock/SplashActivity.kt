@@ -320,9 +320,7 @@ class SplashActivity : AppCompatActivity() {
             for (field in dataPoint.dataType.fields) {
                 val value = dataPoint.getValue(field)
                 Log.i(TAG, "Detected DataPoint field: ${field.name}")
-                binding.test1.text = field.name.toString()
                 Log.i(TAG, "Detected DataPoint value: $value")
-                binding.test2.text=  value.toString()
                 if ("${field.name}" == "steps") {
                     Log.d(TAG,"Filed name is stpes")
                     User.sensorStep += value.toString().toInt()

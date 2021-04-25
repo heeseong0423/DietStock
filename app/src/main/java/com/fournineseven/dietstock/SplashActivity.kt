@@ -12,12 +12,15 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.fournineseven.dietstock.config.TaskServer
 import com.fournineseven.dietstock.databinding.ActivitySplashBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 private const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 1
 private const val PERMISSION_REQUEST_ACTIVITY = 2
@@ -51,7 +54,7 @@ class SplashActivity : AppCompatActivity() {
         checkPermission()
 
         binding.button.setOnClickListener {
-            var intent = Intent(this,MainActivity::class.java)
+            var intent = Intent(this,SignActivity::class.java)
             startActivity(intent)
         }
     }
@@ -72,9 +75,11 @@ class SplashActivity : AppCompatActivity() {
                 builder.setPositiveButton(R.string.ok, null)
                 builder.setOnDismissListener(DialogInterface.OnDismissListener {
                     requestPermissions(
-                        arrayOf(
-                            Manifest.permission.ACTIVITY_RECOGNITION
-                        ), PERMISSION_REQUEST_ACTIVITY
+                            arrayOf(
+                                    Manifest.permission.ACTIVITY_RECOGNITION,
+                                    Manifest.permission.CAMERA,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE
+                            ), PERMISSION_REQUEST_ACTIVITY,
                     )
                 })
                 builder.show()

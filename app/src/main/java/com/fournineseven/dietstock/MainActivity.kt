@@ -41,11 +41,6 @@ class MainActivity : AppCompatActivity() {
         navView = binding.navView
 
         navView.setOnNavigationItemSelectedListener { navigationSelected(it) }
-
-        App.retrofit = Retrofit.Builder()
-            .baseUrl(TaskServer.base_url)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
     }
 
     private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle): FragmentStateAdapter(fm, lc){

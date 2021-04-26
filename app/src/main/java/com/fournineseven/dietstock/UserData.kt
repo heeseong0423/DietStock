@@ -5,4 +5,5 @@ object User{
     var sensorStep = 0
     var sensorKcal = 0.0f
     var kcal = 0.0f
+    var PKcal = 0.0f
 }

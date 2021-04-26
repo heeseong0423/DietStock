@@ -8,7 +8,7 @@ import com.fournineseven.dietstock.User
 class HomeViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = User.step.toString()
+        value = "${User.sensorKcal + User.step}"
     }
     val text: LiveData<String> = _text
 }

@@ -65,7 +65,7 @@ class Foreground : Service() {
                     .setContentTitle("Foreground Service")
                     .setSmallIcon(R.mipmap.ic_launcher_round)
                     .setContentText("오늘 걸음 수 :  ${User.sensorStep + User.step}\n" +
-                            "오늘 칼로리 소모 수 :${User.kcal}")
+                            "dk :${User.kcal}, pk : ${User.PKcal}")
                     .build()
                 startForeground(1,notification)
             }
@@ -87,9 +87,25 @@ class Foreground : Service() {
         Fitness.getHistoryClient(this, GoogleSignIn.getAccountForExtension(this, fitnessOptions))
                 .readData(readRequest)
                 .addOnSuccessListener { response ->
-                    // The aggregate query puts datasets into buckets, so flatten into a single list of datasets
+                    /*// The aggregate query puts datasets into buckets, so flatten into a single list of datasets
                     for (dataSet in response.buckets.flatMap { it.dataSets }) {
+                        Log.d(TAG,"${response.buckets}")
                         dumpDataSet(dataSet)
+                    }*/
+                    for ((i,dataSet) in response.buckets.withIndex()) {
+                        if(i==0){
+                            Log.d(TAG,"This is 기초 ㅇㅇ")
+                            for(i in dataSet.dataSets[0].dataPoints[0].dataType.fields){
+                                User.kcal = dataSet.dataSets[0].dataPoints[0].getValue(i).toString().toFloat()
+                            }
+                            //dumpDataSet(dataSet.dataSets[0])
+                        }else{
+                            Log.d(TAG,"This is 기초 ㄴㄴ")
+                            for(i in dataSet.dataSets[0].dataPoints[0].dataType.fields){
+                                User.PKcal = dataSet.dataSets[0].dataPoints[0].getValue(i).toString().toFloat()
+                            }
+                           // dumpDataSet(dataSet.dataSets[0])
+                        }
                     }
                 }
                 .addOnFailureListener { e ->
@@ -100,14 +116,13 @@ class Foreground : Service() {
     fun dumpDataSet(dataSet: DataSet) {
         Log.i(TAG, "Data returned for Data type: ${dataSet.dataType.name}")
         for (dp in dataSet.dataPoints) {
-            Log.i(TAG, "Data point: ${dp.toString()}")
+            Log.i(TAG, "Data point: $dp")
             Log.i(TAG, "\tType: ${dp.dataType.name}")
             Log.i(TAG, "\tStart: ${dp.getStartTimeString()}")
             Log.i(TAG, "\tEnd: ${dp.getEndTimeString()}")
             for (field in dp.dataType.fields) {
-                Log.i(TAG, "\tField: ${field.name.toString()} Value: ${dp.getValue(field)}")
-                var a = (dp.getValue(field).toString().toFloat())
-                User.kcal = a
+                Log.i(TAG, "\tField: ${field.name} Value: ${dp.getValue(field)}")
+                var kcal = (dp.getValue(field).toString().toFloat())
             }
         }
     }

@@ -115,7 +115,7 @@ class Foreground : Service() {
                     Log.d(TAG,"${response.buckets}")
                     dumpDataSet(dataSet)
                 }*/
-                for ((i, dataSet) in response.buckets.withIndex()) {
+                /*for ((i, dataSet) in response.buckets.withIndex()) {
                     if (i == 0) {
                         Log.d(TAG, "This is 기초 ㅇㅇ")
                         for (i in dataSet.dataSets[0].dataPoints[0].dataType.fields) {
@@ -131,7 +131,7 @@ class Foreground : Service() {
                         }
                         // dumpDataSet(dataSet.dataSets[0])
                     }
-                }
+                }*/
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "There was an error reading data from Google Fit", e)

@@ -104,8 +104,7 @@ class SplashActivity : AppCompatActivity() {
                                     Manifest.permission.ACTIVITY_RECOGNITION,
                                     Manifest.permission.CAMERA,
                                     Manifest.permission.READ_EXTERNAL_STORAGE
-                            ), PERMISSION_REQUEST_ACTIVITY,
-
+                            ), PERMISSION_REQUEST_ACTIVITY
                     )
                 })
                 builder.show()

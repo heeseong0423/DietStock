@@ -8,6 +8,7 @@ import com.fournineseven.dietstock.model.getKcalByMonth.GetKcalByMonthResponse;
 import com.fournineseven.dietstock.model.getRanking.GetRankingResponse;
 import com.fournineseven.dietstock.model.getRolemodel.GetRolemodelResponse;
 import com.fournineseven.dietstock.model.login.LoginModel;
+import com.fournineseven.dietstock.model.login.LoginResponse;
 
 import java.util.HashMap;
 
@@ -39,7 +40,7 @@ public interface RetrofitService {
                                    @Part MultipartBody.Part beforeImage
     );
     @POST("api/member/login")
-    Call<DefaultResponse> login(@Body LoginModel param);
+    Call<LoginResponse> login(@Body LoginModel param);
 
     @POST("api/member/getFoodLogs")
     Call<GetFoodLogsResponse> getFoodLogs(@Body GetFoodLogsRequest param);

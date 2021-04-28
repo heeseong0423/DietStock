@@ -1,6 +1,8 @@
 package com.fournineseven.dietstock;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +27,8 @@ import com.fournineseven.dietstock.config.TaskServer;
 import com.fournineseven.dietstock.model.DefaultResponse;
 import com.fournineseven.dietstock.model.getRanking.GetRankingResponse;
 import com.fournineseven.dietstock.model.login.LoginModel;
+import com.fournineseven.dietstock.model.login.LoginResponse;
+import com.fournineseven.dietstock.model.login.LoginResult;
 
 import java.io.File;
 import java.util.HashMap;
@@ -48,7 +52,7 @@ public class SignActivity extends AppCompatActivity {
     Handler mHandler = null;
 
 
-    File beforeImageFile;
+    File beforeImageFile=null;
     private static final int PICK_FROM_ALBUM = 1;
 
     @Override
@@ -98,16 +102,27 @@ public class SignActivity extends AppCompatActivity {
                 startActivityForResult(intent, PICK_FROM_ALBUM);
                 break;
             case R.id.btn_submit_signin:
-                RetrofitService loginService = App.retrofit.create(RetrofitService.class);
                 String userIdLogin = et_id.getText().toString();
                 String passwordLogin = et_password.getText().toString();
-                Call<DefaultResponse> callLogin = loginService.login(new LoginModel(userIdLogin, passwordLogin));
-                callLogin.enqueue(new Callback<DefaultResponse>() {
+                if(userIdLogin.equals("")||passwordLogin.equals("")) {
+                    Toast.makeText(SignActivity.this, "빈칸을 모두 채워주세요", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                RetrofitService loginService = App.retrofit.create(RetrofitService.class);
+
+                Call<LoginResponse> callLogin = loginService.login(new LoginModel(userIdLogin, passwordLogin));
+                callLogin.enqueue(new Callback<LoginResponse>() {
                     @Override
-                    public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         Log.d("debug", response.body().toString());
-                        DefaultResponse getRankingResponse = (DefaultResponse)response.body();
-                        if(getRankingResponse.isSuccess()) {
+                        LoginResponse getLoginResponse = (LoginResponse)response.body();
+                        if(getLoginResponse.isSuccess()) {
+                            Context context = SignActivity.this;
+                            SharedPreferences sharedPref = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            int user_no= getLoginResponse.getResult().getUser_no();
+                            editor.putString("userNo", String.valueOf(user_no));
+                            editor.commit();
                             Intent intent = new Intent(SignActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
@@ -115,22 +130,28 @@ public class SignActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
                         Log.d("debug", "onFailure: "+t.getMessage());
                     }
                 });
                 break;
             case R.id.btn_submit_signup:
-                RetrofitService saveUserService = App.retrofit.create(RetrofitService.class);
                 String typedUserId = et_id_register.getText().toString();
-                RequestBody user_id = RequestBody.create( okhttp3.MultipartBody.FORM,typedUserId);
                 String typedPassword = et_password1_register.getText().toString();
-                RequestBody password = RequestBody.create(okhttp3.MultipartBody.FORM,typedPassword);
                 String typedName = et_name_register.getText().toString();
-                RequestBody name = RequestBody.create(okhttp3.MultipartBody.FORM,typedName);
                 String typedHeight = et_height_register.getText().toString();
-                RequestBody height = RequestBody.create(okhttp3.MultipartBody.FORM,typedHeight);
                 String typedGoal = et_goal_register.getText().toString();
+                if(typedUserId.equals("")||typedPassword.equals("")||typedName.equals("")||typedHeight.equals("")||typedGoal.equals("")) {
+                    Toast.makeText(SignActivity.this, "빈칸을 모두 채워주세요", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                if(beforeImageFile==null)
+                    break;
+                RetrofitService saveUserService = App.retrofit.create(RetrofitService.class);
+                RequestBody user_id = RequestBody.create( okhttp3.MultipartBody.FORM,typedUserId);
+                RequestBody password = RequestBody.create(okhttp3.MultipartBody.FORM,typedPassword);
+                RequestBody name = RequestBody.create(okhttp3.MultipartBody.FORM,typedName);
+                RequestBody height = RequestBody.create(okhttp3.MultipartBody.FORM,typedHeight);
                 RequestBody goal = RequestBody.create(okhttp3.MultipartBody.FORM,typedGoal);
                 RequestBody beforeimage = RequestBody.create(MediaType.parse("multipart/form-data"),beforeImageFile);
                 MultipartBody.Part body = MultipartBody.Part.createFormData("file", beforeImageFile.getName(), beforeimage);

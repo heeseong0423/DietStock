@@ -151,13 +151,22 @@ public class RoleModelDetailActivity extends AppCompatActivity{
                 Log.d("debug", response.body().toString());
                 GetKcalByMonthResponse getKcalByMonthResponse = (GetKcalByMonthResponse)response.body();
                 if(getKcalByMonthResponse.isSuccess()) {
-                    kcalByMonthResult = getKcalByMonthResponse.getResult();
+                    kcalByMonthResult = getKcalByMonthResponse.getResults();
                     ArrayList<CandleEntry> yValsCandleStick= new ArrayList<CandleEntry>();
                     // NOTE: The order of the entries when being added to the entries array determines their position around the center of
                     // the chart.
-                    for (int i = 0; i < kcalByMonthResult.size(); i++) {
-                        yValsCandleStick.add(new CandleEntry((float)kcalByMonthResult.get(i).getMonth(), (float)225.0, (float)219.84, (float)224.94, (float)221.07));
+                    for (int i = 1; i <= 12; i++) {
+                        yValsCandleStick.add(new CandleEntry(i, 0, 0, 0, 0));
                     }
+                    Log.d("debug+++++++++++++++++++++", kcalByMonthResult.toString());
+                    for(int i=0; i<kcalByMonthResult.size(); i++) {
+                        yValsCandleStick.add(new CandleEntry(kcalByMonthResult.get(i).getMonth(),
+                                (float) kcalByMonthResult.get(i).getHigh(),
+                                (float) kcalByMonthResult.get(i).getLow(),
+                                (float) kcalByMonthResult.get(i).getStart_kcal(),
+                                (float) kcalByMonthResult.get(i).getEnd_kcal()));
+                    }
+
                     CandleDataSet set1 = new CandleDataSet(yValsCandleStick, "DataSet 1");
                     set1.setColor(Color.rgb(80, 80, 80));
                     set1.setShadowColor(Color.GRAY);
@@ -167,7 +176,7 @@ public class RoleModelDetailActivity extends AppCompatActivity{
                     set1.setIncreasingColor(Color.RED);
                     set1.setIncreasingPaintStyle(Paint.Style.FILL);
                     set1.setNeutralColor(Color.LTGRAY);
-                    set1.setDrawValues(false);
+                    set1.setDrawValues(true);
 
                     CandleData data = new CandleData(set1);
 

@@ -11,9 +11,9 @@ public class GetKcalByMonthResponse {
     @Expose
     private boolean success;
 
-    @SerializedName("result")
+    @SerializedName("results")
     @Expose
-    private ArrayList<KcalByMonthResult> result;
+    private ArrayList<KcalByMonthResult> results;
 
     public GetKcalByMonthResponse(){}
 
@@ -21,7 +21,7 @@ public class GetKcalByMonthResponse {
         return success;
     }
 
-    public ArrayList<KcalByMonthResult> getResult() {
-        return result;
+    public ArrayList<KcalByMonthResult> getResults() {
+        return results;
     }
 }

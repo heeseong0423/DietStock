@@ -114,8 +114,8 @@ class Foreground : Service() {
                 for (dataSet in response.buckets.flatMap { it.dataSets }) {
                     Log.d(TAG,"${response.buckets}")
                     dumpDataSet(dataSet)
-                }*/
-                /*for ((i, dataSet) in response.buckets.withIndex()) {
+                }
+                for ((i, dataSet) in response.buckets.withIndex()) {
                     if (i == 0) {
                         Log.d(TAG, "This is 기초 ㅇㅇ")
                         for (i in dataSet.dataSets[0].dataPoints[0].dataType.fields) {

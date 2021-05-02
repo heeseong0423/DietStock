@@ -13,9 +13,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 
-import com.fournineseven.dietstock.config.TaskServer
-
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import com.fournineseven.dietstock.databinding.ActivitySplashBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -23,8 +20,6 @@ import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import com.google.android.gms.fitness.data.*
 import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.gms.fitness.request.DataSourcesRequest
@@ -66,6 +61,10 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        //오늘 날짜 얻기
+        TimeCheck.appStartTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
+                .toEpochSecond()
+
         checkPermission()
         Log.d(TAG, "포어그라운드 현재 상태 : $isActivityForeground")
         if (!isActivityForeground) {
@@ -77,7 +76,7 @@ class SplashActivity : AppCompatActivity() {
         }
 
         binding.button.setOnClickListener {
-            var intent = Intent(this,SignActivity::class.java)
+            var intent = Intent(this,MainActivity::class.java)
             val intent1 = Intent(this, Foreground::class.java)
             stopService(intent1)
             startActivity(intent)

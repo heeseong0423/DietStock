@@ -17,4 +17,10 @@ interface KcalDao {
 
     @Delete
     fun delete(user: UserKcalData)
+
+    @Query("DELETE FROM userkcaldata")
+    fun deleteAllUsers()
+
+    @Query("SELECT * FROM userkcaldata ORDER BY ROWID DESC LIMIT 1")
+    fun getLastData(): UserKcalData
 }

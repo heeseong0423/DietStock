@@ -24,7 +24,8 @@
             android:fontFamily="@font/font_num1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="visible"/>
         <TextView
             android:id="@+id/tv_main_2"
             android:layout_width="wrap_content"
@@ -34,7 +35,7 @@
             android:textColor="#FFFFFF"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_main_1"/>
+            app:layout_constraintTop_toBottomOf="@+id/tv_main_1" />
         <LinearLayout
             android:id="@+id/ll_sign_main"
             android:layout_width="0dp"
@@ -198,6 +199,7 @@
                 android:textSize="20sp"
                 android:password="true"
                 android:maxLines="1"
+                android:inputType="number"
                 android:background="@drawable/circleradius"
                 />
             <EditText
@@ -210,8 +212,71 @@
                 android:textSize="20sp"
                 android:password="true"
                 android:maxLines="1"
+                android:inputType="number"
                 android:background="@drawable/circleradius"
                 />
+            <EditText
+                android:id="@+id/et_weight_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="7dp"
+                android:hint="weight"
+                android:textSize="20sp"
+                android:password="true"
+                android:maxLines="1"
+                android:inputType="number"
+                android:background="@drawable/circleradius"
+                />
+            <EditText
+                android:id="@+id/et_age_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="7dp"
+                android:hint="age"
+                android:textSize="20sp"
+                android:password="true"
+                android:maxLines="1"
+                android:inputType="number"
+                android:background="@drawable/circleradius"
+                />
+            <RadioGroup
+                android:id="@+id/radiogroup_sex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/textview_ranking"
+                >
+                <RadioButton
+                    android:id="@+id/radiobutton_male_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="남"
+                    android:textSize="25sp"
+                    android:textColor="#FFF"
+                    android:fontFamily="@font/font_num1"/>
+                <RadioButton
+                    android:id="@+id/radiobutton_female_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="여"
+                    android:textSize="25sp"
+                    android:textColor="#FFF"
+                    android:fontFamily="@font/font_num1"/>
+            </RadioGroup>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

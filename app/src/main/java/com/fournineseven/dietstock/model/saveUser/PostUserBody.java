@@ -17,6 +17,12 @@ public class PostUserBody {
 
     @SerializedName("goal")
     private Float goal;
+    @SerializedName("weight")
+    private Float weight;
+    @SerializedName("age")
+    private Float age;
+    @SerializedName("sex")
+    private Float sex;
 
     public PostUserBody(String user_id, String password, String name, Float height, Float goal){
         this.goal = goal;

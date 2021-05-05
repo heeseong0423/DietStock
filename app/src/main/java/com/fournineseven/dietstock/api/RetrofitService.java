@@ -37,6 +37,9 @@ public interface RetrofitService {
                                    @Part("name") RequestBody name,
                                    @Part("height") RequestBody height,
                                    @Part("goal") RequestBody goal,
+                                   @Part("weight") RequestBody weight,
+                                   @Part("age") RequestBody age,
+                                   @Part("sex") RequestBody sex,
                                    @Part MultipartBody.Part beforeImage
     );
     @POST("api/member/login")

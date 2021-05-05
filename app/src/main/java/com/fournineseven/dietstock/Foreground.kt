@@ -61,7 +61,9 @@ class Foreground : Service() {
                     .setContentTitle("칼로리체크")
                     .setSmallIcon(R.mipmap.ic_launcher_round)
                     .setContentText(
-                        "오늘 걸음 수 : bk :${User.kcal}, pk : ${User.PKcal}"
+                        "bk :${User.kcal}, pk : ${User.PKcal}" +
+                                "H: ${User.highKcal} , " +
+                                "L: ${User.lowKcal}"
                     )
                     .build()
                 startForeground(1, notification)

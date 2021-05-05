@@ -78,7 +78,6 @@ class SplashActivity : AppCompatActivity() {
         binding.button.setOnClickListener {
             var intent = Intent(this,MainActivity::class.java)
             val intent1 = Intent(this, Foreground::class.java)
-            stopService(intent1)
             startActivity(intent)
         }
     }

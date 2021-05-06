@@ -123,7 +123,6 @@ public class SignActivity extends AppCompatActivity {
             case R.id.btn_submit_signin:
                 String userIdLogin = et_id.getText().toString();
                 String passwordLogin = et_password.getText().toString();
-
                 if(userIdLogin.equals("")||passwordLogin.equals("")) {
                     Toast.makeText(SignActivity.this, "빈칸을 모두 채워주세요", Toast.LENGTH_SHORT).show();
                     break;
@@ -132,7 +131,6 @@ public class SignActivity extends AppCompatActivity {
 
                 Call<LoginResponse> callLogin = loginService.login(new LoginModel(userIdLogin, passwordLogin));
                 callLogin.enqueue(new Callback<LoginResponse>() {
-
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         Log.d("debug", response.body().toString());

@@ -64,7 +64,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val db = Room.databaseBuilder(
+        /*val db = Room.databaseBuilder(
                 this,
                 KcalDatabase::class.java, "database-name"
         ).allowMainThreadQueries()
@@ -73,7 +73,7 @@ class SplashActivity : AppCompatActivity() {
 
         var userKcalData = UserKcalData(0, User.kcal,User.PKcal,User.startKcal,User.endKcal,User.highKcal,User.lowKcal)
         userDao.insert(userKcalData)
-
+*/
         //오늘 날짜 얻기
         TimeCheck.appStartTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
                 .toEpochSecond()

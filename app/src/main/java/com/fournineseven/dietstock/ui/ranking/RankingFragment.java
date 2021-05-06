@@ -85,12 +85,28 @@ public class RankingFragment extends Fragment {
                         ArrayList<RankingResult> rankingResultArray = getRankingResponse.getResult();
                         if(getRankingResponse.isSuccess()){
                             adapter.setEmpty();
-                            for(int i=0; i<rankingResultArray.size(); i++){
+                            /*for(int i=0; i<rankingResultArray.size(); i++){
                                 RankingResult rankingItem = rankingResultArray.get(i);
                                 adapter.addItem(new RankingItem(rankingItem.getUser_no(), rankingItem.getName(),
                                         rankingItem.getKcal()));
-                            }
+                            }*/
+                            adapter.addItem(new RankingItem(1, "김철수", (float)1041.4));
+                            adapter.addItem(new RankingItem(2, "조정숙", (float)720.5));
+                            adapter.addItem(new RankingItem(3, "강정희", (float)719.3));
+                            adapter.addItem(new RankingItem(4, "송영희", (float)628.7));
+                            adapter.addItem(new RankingItem(5, "허영자", (float)520.4));
+                            adapter.addItem(new RankingItem(6, "이시원", (float)200.1));
+                            adapter.addItem(new RankingItem(7, "박주희", (float)91.5));
+                            adapter.addItem(new RankingItem(8, "송지호", (float)-402.6));
+                            adapter.addItem(new RankingItem(9, "허진구", (float)-560.0));
+                            adapter.addItem(new RankingItem(10, "김사장", (float)-660.2));
+                            adapter.addItem(new RankingItem(11, "신동하", (float)-730.7));
+                            adapter.addItem(new RankingItem(12, "성시영", (float)-747.3));
+                            adapter.addItem(new RankingItem(13, "황태양", (float)-900.0));
+
                             recyclerView.setAdapter(adapter);
+                            recyclerView.smoothScrollToPosition(13);
+                            adapter.notifyDataSetChanged();
                         }
                     }
 

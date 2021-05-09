@@ -197,9 +197,13 @@ public class SignActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
                         Log.d("debug", "onSuccess");
-                        tv_main_1.setVisibility(View.VISIBLE);
-                        ll_signup.setVisibility(View.GONE);
-                        ll_sign_main.setVisibility(View.VISIBLE);
+                        if(response.body().isSuccess()) {
+                            tv_main_1.setVisibility(View.VISIBLE);
+                            ll_signup2.setVisibility(View.GONE);
+                            ll_sign_main.setVisibility(View.VISIBLE);
+                        }else{
+                            Log.d("debug", response.body().toString());
+                        }
                     }
 
                     @Override

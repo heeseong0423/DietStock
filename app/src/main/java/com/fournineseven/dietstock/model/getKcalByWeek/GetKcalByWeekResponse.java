@@ -1,27 +1,26 @@
-package com.fournineseven.dietstock.model.getKcalByMonth;
+package com.fournineseven.dietstock.model.getKcalByWeek;
 
-import com.fournineseven.dietstock.model.getFoodLogs.FoodLogResult;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class GetKcalByMonthResponse {
+public class GetKcalByWeekResponse {
     @SerializedName("success")
     @Expose
     private boolean success;
 
     @SerializedName("results")
     @Expose
-    private ArrayList<KcalByMonthResult> results;
+    private ArrayList<KcalByWeekResult> results;
 
-    public GetKcalByMonthResponse(){}
+    public GetKcalByWeekResponse(){}
 
     public boolean isSuccess() {
         return success;
     }
 
-    public ArrayList<KcalByMonthResult> getResults() {
+    public ArrayList<KcalByWeekResult> getResults() {
         return results;
     }
 }

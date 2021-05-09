@@ -8,6 +8,7 @@ import android.content.Context.CAMERA_SERVICE
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.hardware.camera2.*
+import android.hardware.camera2.params.SessionConfiguration
 import android.media.Image
 import android.media.ImageReader
 import android.net.Uri
@@ -47,7 +48,7 @@ class FoodFragmentCamera : Fragment() {
     private lateinit var windowManager: WindowManager
     private var uriList = ArrayList<Uri>()
     private lateinit var imageDimension: Size
-    private val thisContext = this
+    lateinit var texture: SurfaceTexture
     var fileCount = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,6 +66,7 @@ class FoodFragmentCamera : Fragment() {
         override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
 
         override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+            closeCamera()
             return false
         }
 
@@ -92,12 +94,13 @@ class FoodFragmentCamera : Fragment() {
             imageDimension = map!!.getOutputSizes<SurfaceTexture>(SurfaceTexture::class.java)[0]
 
             if(ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(this.requireActivity(), arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), requestCameraPermissionCode)
+                && ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(this.requireActivity(), arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), requestCameraPermissionCode)
 
             }
             manager.openCamera(cameraId!!, stateCallback, null)
         }catch(e: CameraAccessException){
+            Log.d("AcessException", "Here Problem")
             e.printStackTrace()
         }
     }
@@ -120,8 +123,12 @@ class FoodFragmentCamera : Fragment() {
 
     private fun createCameraPreviewSession(){
         try{
-            val texture = binding.textureView.surfaceTexture
-            texture!!.setDefaultBufferSize(imageDimension!!.width, imageDimension!!.height)
+            texture = binding.textureView.surfaceTexture!!
+            if(texture == null){
+                closeCamera()
+                return
+            }
+            texture.setDefaultBufferSize(imageDimension!!.width, imageDimension!!.height)
             val surface = Surface(texture)
 
             captureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
@@ -148,7 +155,9 @@ class FoodFragmentCamera : Fragment() {
             }, null)
 
         }catch (e: CameraAccessException){
-            e.printStackTrace()
+            closeCamera()
+            Log.d("Error", e.message.toString())
+            Log.d("Error", e.stackTraceToString())
         }
     }
 
@@ -204,7 +213,7 @@ class FoodFragmentCamera : Fragment() {
                             output.write(bytes)
                             output.flush()
                         }catch (e: FileNotFoundException){
-                          Log.d("File Error", e.stackTraceToString())
+                            Log.d("File Error", e.stackTraceToString())
                         } finally {
                             output?.close()
                             val bitmap: Bitmap = BitmapFactory.decodeFile(file.path)
@@ -228,7 +237,7 @@ class FoodFragmentCamera : Fragment() {
                                 val byteImgae = stream.toByteArray()
                                 contentResolver.openFileDescriptor(item, "w", null).use{
                                     FileOutputStream(it!!.fileDescriptor).use{
-                                        outputStream -> outputStream.write(byteImgae)
+                                            outputStream -> outputStream.write(byteImgae)
                                         outputStream.close()
                                     }
                                 }
@@ -284,9 +293,8 @@ class FoodFragmentCamera : Fragment() {
                     natrium.text = "${natrium.text}${ 42}g"
                     btn.isClickable = false
                     btn.visibility = View.INVISIBLE
+                    closeCamera()
 
-
-//                    createCameraPreviewSession()
                 }
             }
 

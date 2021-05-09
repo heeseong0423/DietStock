@@ -1,12 +1,12 @@
-package com.fournineseven.dietstock.model.getKcalByMonth;
+package com.fournineseven.dietstock.model.getKcalByWeek;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class KcalByMonthResult {
-    @SerializedName("month")
+public class KcalByWeekResult {
+    @SerializedName("week")
     @Expose
-    private int month;
+    private int week;
 
     @SerializedName("low")
     @Expose
@@ -26,10 +26,10 @@ public class KcalByMonthResult {
 
 
 
-    public KcalByMonthResult(){}
+    public KcalByWeekResult(){}
 
-    public int getMonth() {
-        return month;
+    public int getWeek() {
+        return week;
     }
 
     public float getHigh() {
@@ -50,8 +50,8 @@ public class KcalByMonthResult {
 
     @Override
     public String toString() {
-        return "KcalByMonthResult{" +
-                "month=" + month +
+        return "KcalByWeekResult{" +
+                "week=" + week +
                 ", low=" + low +
                 ", high=" + high +
                 ", start_kcal=" + start_kcal +

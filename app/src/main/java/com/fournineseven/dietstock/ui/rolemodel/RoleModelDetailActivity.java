@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -17,18 +16,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.fournineseven.dietstock.App;
-import com.fournineseven.dietstock.MainActivity;
 import com.fournineseven.dietstock.R;
-import com.fournineseven.dietstock.SignActivity;
 import com.fournineseven.dietstock.api.RetrofitService;
 import com.fournineseven.dietstock.config.TaskServer;
-import com.fournineseven.dietstock.model.DefaultResponse;
 import com.fournineseven.dietstock.model.getFoodLogs.FoodLogResult;
 import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsRequest;
 import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsResponse;
-import com.fournineseven.dietstock.model.getKcalByMonth.GetKcalByMonthRequest;
-import com.fournineseven.dietstock.model.getKcalByMonth.GetKcalByMonthResponse;
-import com.fournineseven.dietstock.model.getKcalByMonth.KcalByMonthResult;
+import com.fournineseven.dietstock.model.getKcalByWeek.GetKcalByWeekRequest;
+import com.fournineseven.dietstock.model.getKcalByWeek.GetKcalByWeekResponse;
+import com.fournineseven.dietstock.model.getKcalByWeek.KcalByWeekResult;
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -37,13 +33,10 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 
@@ -62,7 +55,7 @@ public class RoleModelDetailActivity extends AppCompatActivity{
 
     int user_no;
     ArrayList<FoodLogResult> foodLogResult;
-    ArrayList<KcalByMonthResult> kcalByMonthResult;
+    ArrayList<KcalByWeekResult> kcalByWeekResult;
 
     /*int[] colorArray = new int[]{Color.LTGRAY, Color.BLUE, Color.RED, Color.green}*/
     @Override
@@ -104,7 +97,7 @@ public class RoleModelDetailActivity extends AppCompatActivity{
     }
 
     private void candlestickchartInit(){
-        RetrofitService getKcalByMonthService = App.retrofit.create(RetrofitService.class);
+        RetrofitService getKcalByWeekService = App.retrofit.create(RetrofitService.class);
         candlestickchart_rolemodel_detail = (CandleStickChart)findViewById(R.id.candlestickchart_rolemodel_detail);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -133,8 +126,8 @@ public class RoleModelDetailActivity extends AppCompatActivity{
         Legend l = candlestickchart_rolemodel_detail.getLegend();
         l.setEnabled(false);
 
-        Call<GetKcalByMonthResponse> callGetKcalByMonth =
-                getKcalByMonthService.getKcalByMonth(new GetKcalByMonthRequest(user_no));
+        Call<GetKcalByWeekResponse> callGetKcalByMonth =
+                getKcalByWeekService.getKcalByWeek(new GetKcalByWeekRequest(user_no));
         /**
          * Constructor.
          *
@@ -145,26 +138,26 @@ public class RoleModelDetailActivity extends AppCompatActivity{
          * @param close The close value
          */
 
-        callGetKcalByMonth.enqueue(new Callback<GetKcalByMonthResponse>() {
+        callGetKcalByMonth.enqueue(new Callback<GetKcalByWeekResponse>() {
             @Override
-            public void onResponse(Call<GetKcalByMonthResponse> call, Response<GetKcalByMonthResponse> response) {
+            public void onResponse(Call<GetKcalByWeekResponse> call, Response<GetKcalByWeekResponse> response) {
                 Log.d("debug", response.body().toString());
-                GetKcalByMonthResponse getKcalByMonthResponse = (GetKcalByMonthResponse)response.body();
-                if(getKcalByMonthResponse.isSuccess()) {
-                    kcalByMonthResult = getKcalByMonthResponse.getResults();
+                GetKcalByWeekResponse getKcalByWeekResponse = (GetKcalByWeekResponse)response.body();
+                if(getKcalByWeekResponse.isSuccess()) {
+                    kcalByWeekResult = getKcalByWeekResponse.getResults();
                     ArrayList<CandleEntry> yValsCandleStick= new ArrayList<CandleEntry>();
                     // NOTE: The order of the entries when being added to the entries array determines their position around the center of
                     // the chart.
-                    for (int i = 1; i <= 12; i++) {
+                    /*for (int i = 1; i <= 12; i++) {
                         yValsCandleStick.add(new CandleEntry(i, 0, 0, 0, 0));
-                    }
-                    Log.d("debug+++++++++++++++++++++", kcalByMonthResult.toString());
-                    for(int i=0; i<kcalByMonthResult.size(); i++) {
-                        yValsCandleStick.add(new CandleEntry(kcalByMonthResult.get(i).getMonth(),
-                                (float) kcalByMonthResult.get(i).getHigh(),
-                                (float) kcalByMonthResult.get(i).getLow(),
-                                (float) kcalByMonthResult.get(i).getStart_kcal(),
-                                (float) kcalByMonthResult.get(i).getEnd_kcal()));
+                    }*/
+                    Log.d("debug+++++++++++++++++++++", kcalByWeekResult.toString());
+                    for(int i=0; i<kcalByWeekResult.size(); i++) {
+                        yValsCandleStick.add(new CandleEntry(i+1,
+                                (float) kcalByWeekResult.get(i).getHigh(),
+                                (float) kcalByWeekResult.get(i).getLow(),
+                                (float) kcalByWeekResult.get(i).getStart_kcal(),
+                                (float) kcalByWeekResult.get(i).getEnd_kcal()));
                     }
 
                     CandleDataSet set1 = new CandleDataSet(yValsCandleStick, "DataSet 1");
@@ -186,7 +179,7 @@ public class RoleModelDetailActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onFailure(Call<GetKcalByMonthResponse> call, Throwable t) {
+            public void onFailure(Call<GetKcalByWeekResponse> call, Throwable t) {
                 Log.d("debug", "onFailure"+t.toString());
             }
         });
@@ -194,6 +187,7 @@ public class RoleModelDetailActivity extends AppCompatActivity{
     private void piechartInit(){
         piechart_rolemodel_detail = (PieChart)findViewById(R.id.piechart_rolemodel_detail);
         piechart_rolemodel_detail.setDescription(null);
+        piechart_rolemodel_detail.setEntryLabelColor(Color.BLACK);
         RetrofitService getFoodLogsService = App.retrofit.create(RetrofitService.class);
         Call<GetFoodLogsResponse> callGetFoodLogs = getFoodLogsService.getFoodLogs(new GetFoodLogsRequest(user_no));
         callGetFoodLogs.enqueue(new Callback<GetFoodLogsResponse>() {
@@ -215,7 +209,7 @@ public class RoleModelDetailActivity extends AppCompatActivity{
                     PieDataSet dataSet = new PieDataSet(entries, "영양 성분");
 
                     dataSet.setDrawIcons(false);
-
+                    dataSet.setDrawValues(false);
                     dataSet.setSliceSpace(3f);
                     dataSet.setIconsOffset(new MPPointF(0, 40));
                     dataSet.setSelectionShift(5f);

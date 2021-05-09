@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
+import com.fournineseven.dietstock.DataUtil
 import com.fournineseven.dietstock.R
 import com.fournineseven.dietstock.User
 import com.fournineseven.dietstock.room.KcalDatabase
@@ -62,14 +63,20 @@ class HomeFragment : Fragment() {
         }
         val entries = ArrayList<CandleEntry>()
 
-        for (csStock in userDao.getAll()) {
+        var num = 0
+        for (csStock in DataUtil.getCSStockData()) {
             entries.add(
                     CandleEntry(
-                            csStock.no.toFloat(),
+                            /*csStock.no.toFloat(),
                             csStock.highKcal,
                             csStock.lowKcal,
                             csStock.startTime,
-                            csStock.endTime
+                            csStock.endTime*/
+                            csStock.createdAt.toFloat() ,
+                            csStock.shadowHigh,
+                            csStock.shadowLow,
+                            csStock.open,
+                            csStock.close
                     )
             )
         }
@@ -82,25 +89,29 @@ class HomeFragment : Fragment() {
 
             //음봉
             decreasingColor = Color.BLUE
-            decreasingPaintStyle = Paint.Style.FILL
+            decreasingPaintStyle = Paint.Style.FILL_AND_STROKE
 
             //양봉
             increasingColor = Color.RED
-            increasingPaintStyle = Paint.Style.FILL
+            increasingPaintStyle = Paint.Style.FILL_AND_STROKE
 
             neutralColor = Color.DKGRAY
             setDrawValues(true)
             //터치시 노란선 제거
             highLightColor = Color.TRANSPARENT
+
+            valueTextColor = Color.BLACK
+            valueTextSize = 12.0f
         }
 
         dietChart.axisLeft.run{
-            setDrawAxisLine(false)
+            setDrawAxisLine(true)
             setDrawGridLines(false)
             textColor = Color.TRANSPARENT
         }
         dietChart.axisRight.run {
-            isEnabled = false
+            setDrawAxisLine(true)
+            setDrawGridLines(false)
         }
 
         dietChart.xAxis.run{
@@ -110,8 +121,11 @@ class HomeFragment : Fragment() {
             setAvoidFirstLastClipping(true)
         }
         dietChart.legend.run {
+            //isEnabled = false
             isEnabled = false
+
         }
+
 
         dietChart.apply {
             this.data = CandleData(dataSet)
@@ -121,6 +135,7 @@ class HomeFragment : Fragment() {
             setVisibleXRangeMaximum(7f)
             setVisibleXRangeMinimum(0f)
             moveViewToX(dietChart.xAxis.axisMaximum)
+            //setBackgroundColor(Color.WHITE)
             invalidate()
         }
         return root

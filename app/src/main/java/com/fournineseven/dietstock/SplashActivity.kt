@@ -64,7 +64,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val db = Room.databaseBuilder(
+        /*val db = Room.databaseBuilder(
                 this,
                 KcalDatabase::class.java, "database-name"
         ).allowMainThreadQueries()
@@ -73,7 +73,7 @@ class SplashActivity : AppCompatActivity() {
 
         var userKcalData = UserKcalData(0, User.kcal,User.PKcal,User.startKcal,User.endKcal,User.highKcal,User.lowKcal)
         userDao.insert(userKcalData)
-
+*/
         //오늘 날짜 얻기
         TimeCheck.appStartTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
                 .toEpochSecond()
@@ -184,7 +184,7 @@ class SplashActivity : AppCompatActivity() {
             PERMISSION_REQUEST_ACTIVITY -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "구글 활동 허락했음.")
-                    googleSignInCheckPermission()
+                    //googleSignInCheckPermission()
                 } else {
                     Log.d(TAG, "거절했네")
                     finish()

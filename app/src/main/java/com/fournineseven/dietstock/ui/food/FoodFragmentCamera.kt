@@ -99,6 +99,7 @@ class FoodFragmentCamera : Fragment() {
         override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
 
         override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+            closeCamera()
             return false
         }
 
@@ -254,7 +255,7 @@ class FoodFragmentCamera : Fragment() {
                             output.write(bytes)
                             output.flush()
                         }catch (e: FileNotFoundException){
-                          Log.d("File Error", e.stackTraceToString())
+                            Log.d("File Error", e.stackTraceToString())
                         } finally {
                             output?.close()
                             val bitmap: Bitmap = BitmapFactory.decodeFile(file.path)
@@ -278,7 +279,7 @@ class FoodFragmentCamera : Fragment() {
                                 val byteImgae = stream.toByteArray()
                                 contentResolver.openFileDescriptor(item, "w", null).use{
                                     FileOutputStream(it!!.fileDescriptor).use{
-                                        outputStream -> outputStream.write(byteImgae)
+                                            outputStream -> outputStream.write(byteImgae)
                                         outputStream.close()
                                     }
                                 }

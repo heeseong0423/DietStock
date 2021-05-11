@@ -1,22 +1,33 @@
 package com.fournineseven.dietstock
 
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.fournineseven.dietstock.databinding.ActivityMainBinding
-import com.fournineseven.dietstock.ui.feedback.FeedBackFragment
-import com.fournineseven.dietstock.ui.food.FoodFragment
+
+import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
+import com.fournineseven.dietstock.ui.notifications.NotificationsFragment
 import com.fournineseven.dietstock.ui.ranking.RankingFragment
 import com.fournineseven.dietstock.ui.rolemodel.RoleModelFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity() {
+
+private const val TAG = "MyTag"
+private const val PERMISSION_REQUEST_CODE = 2
+
+class MainActivity : BaseActivity() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var navView: BottomNavigationView
@@ -24,17 +35,39 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        setTheme(R.style.Theme_DietStock)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+
+        //로그인 상태 확인
+        var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+        var email: String ?= sharedpreferences.getString(LoginState.EMAIL_KEY, null)
+        var password:String?= sharedpreferences.getString(LoginState.PASSWORD_KEY,null)
+        if(email == null || password == null){
+            var intent = Intent(this, SignActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         viewPager = binding.viewPager
         viewPager.adapter = PagerAdapter(supportFragmentManager, lifecycle)
         viewPager.registerOnPageChangeCallback(PageChangeCallback())
-
         navView = binding.navView
-
         navView.setOnNavigationItemSelectedListener { navigationSelected(it) }
+
+        requirePermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACTIVITY_RECOGNITION), PERMISSION_REQUEST_CODE)
     }
+    override fun permissionGranted(requestCode: Int) {
+        Log.d(TAG, "PERMISSION GRANTED")
+    }
+
+    override fun permissionDenied(requestCode: Int) {
+        Toast.makeText(baseContext, "권한 거부됨", Toast.LENGTH_LONG).show()
+        finish()
+    }
+
 
     private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle): FragmentStateAdapter(fm, lc){
         override fun getItemCount(): Int {
@@ -43,11 +76,17 @@ class MainActivity : AppCompatActivity() {
 
         override fun createFragment(position: Int): Fragment {
             return when(position){
-                0-> HomeFragment()
-                1-> RankingFragment()
-                2-> FeedBackFragment()
-                3-> FoodFragment()
-                4-> RoleModelFragment()
+
+                0 -> {
+                    HomeFragment()
+                }
+                1 -> RankingFragment()
+                2 -> NotificationsFragment()
+                3 -> {
+                    requirePermissions(arrayOf(Manifest.permission.CAMERA), PERMISSION_REQUEST_CODE)
+                    FoodFragmentCamera()
+                }
+                4 -> RoleModelFragment()
                 else -> error("no such Position $position")
             }
         }
@@ -64,7 +103,8 @@ class MainActivity : AppCompatActivity() {
                 viewPager.currentItem = 1
                 return true
             }
-            R.id.navigation_feedback -> {
+
+            R.id.navigation_notifications -> {
                 viewPager.currentItem = 2
                 return true
             }
@@ -86,7 +126,9 @@ class MainActivity : AppCompatActivity() {
             navView.selectedItemId = when (position) {
                 0 -> R.id.navigation_home
                 1 -> R.id.navigation_ranking
-                2 -> R.id.navigation_feedback
+
+                2 -> R.id.navigation_notifications
+
                 3 -> R.id.navigation_food
                 4 -> R.id.navigation_rolemodel
                 else -> error("no such position: $position")

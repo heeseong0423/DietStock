@@ -82,7 +82,10 @@ public class RoleModelFragment extends Fragment {
                     textView_rolemodel_result1.setText(String.valueOf(rankingResultArray.get(0).getWeight_gap()));
                     Glide.with(root).load(TaskServer.base_url+rankingResultArray.get(0).getAfterimage()).error(R.drawable.hindoongi)
                     .placeholder(R.drawable.hindoongi).override(90, 120).into(imageview_rolemodel_image_after1);
-                    imageview_rolemodel_image_before1.setImageResource(R.drawable.hindoongi);
+
+                    Glide.with(root).load(TaskServer.base_url+rankingResultArray.get(0).getBeforeimage()).error(R.drawable.hindoongi)
+                            .placeholder(R.drawable.hindoongi).override(90, 120).into(imageview_rolemodel_image_before1);
+
                     linearlayout_rolemodel1 = (LinearLayout)root.findViewById(R.id.linearlayout_rolemodel1);
                     linearlayout_rolemodel1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -98,7 +101,10 @@ public class RoleModelFragment extends Fragment {
 
                     textView_rolemodel_name2.setText(rankingResultArray.get(1).getName());
                     textView_rolemodel_result2.setText(String.valueOf(rankingResultArray.get(1).getWeight_gap()));
-                    imageview_rolemodel_image_before2.setImageResource(R.drawable.hindoongi);
+
+                    Glide.with(root).load(TaskServer.base_url+rankingResultArray.get(1).getBeforeimage()).error(R.drawable.hindoongi)
+                            .placeholder(R.drawable.hindoongi).override(90, 120).into(imageview_rolemodel_image_before2);
+
                     Glide.with(root).load(TaskServer.base_url+rankingResultArray.get(1).getAfterimage()).error(R.drawable.hindoongi)
                             .placeholder(R.drawable.hindoongi).override(90, 120).into(imageview_rolemodel_image_after2);
                     linearlayout_rolemodel2 = (LinearLayout)root.findViewById(R.id.linearlayout_rolemodel2);
@@ -116,7 +122,10 @@ public class RoleModelFragment extends Fragment {
 
                     textView_rolemodel_name3.setText(rankingResultArray.get(2).getName());
                     textView_rolemodel_result3.setText(String.valueOf(rankingResultArray.get(2).getWeight_gap()));
-                    imageview_rolemodel_image_before3.setImageResource(R.drawable.hindoongi);
+
+                    Glide.with(root).load(TaskServer.base_url+rankingResultArray.get(2).getBeforeimage()).error(R.drawable.hindoongi)
+                            .placeholder(R.drawable.hindoongi).override(90, 120).into(imageview_rolemodel_image_before3);
+
                     Glide.with(root).load(TaskServer.base_url+rankingResultArray.get(2).getAfterimage()).error(R.drawable.hindoongi)
                             .placeholder(R.drawable.hindoongi).override(90, 120).into(imageview_rolemodel_image_after3);
                     linearlayout_rolemodel3 = (LinearLayout)root.findViewById(R.id.linearlayout_rolemodel3);

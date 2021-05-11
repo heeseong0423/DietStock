@@ -13,18 +13,19 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 
-import com.fournineseven.dietstock.config.TaskServer
 
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.room.Room
 import com.fournineseven.dietstock.databinding.ActivitySplashBinding
+import com.fournineseven.dietstock.room.KcalDatabase
+import com.fournineseven.dietstock.room.UserKcalData
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+
 import com.google.android.gms.fitness.data.*
 import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.gms.fitness.request.DataSourcesRequest
@@ -66,6 +67,20 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        /*val db = Room.databaseBuilder(
+                this,
+                KcalDatabase::class.java, "database-name"
+        ).allowMainThreadQueries()
+                .build()
+        val userDao = db.kcalDao()
+
+        var userKcalData = UserKcalData(0, User.kcal,User.PKcal,User.startKcal,User.endKcal,User.highKcal,User.lowKcal)
+        userDao.insert(userKcalData)
+*/
+        //오늘 날짜 얻기
+        TimeCheck.appStartTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
+                .toEpochSecond()
+
         checkPermission()
         Log.d(TAG, "포어그라운드 현재 상태 : $isActivityForeground")
         if (!isActivityForeground) {
@@ -79,18 +94,18 @@ class SplashActivity : AppCompatActivity() {
         binding.button.setOnClickListener {
             var intent = Intent(this,SignActivity::class.java)
             val intent1 = Intent(this, Foreground::class.java)
-            stopService(intent1)
             startActivity(intent)
         }
+
+
     }
-
-
     //권한 체크
     private fun checkPermission() {
 
         //안드로이드 Q이상일 경우.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Log.d(TAG, "안드로이드 버전이 Q이상이다.")
+
+            Log.d(TAG, "안드로이드 버전이 이상이다.")
 
             //권한이 허가되어있지 않을 경우
             if (checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
@@ -103,7 +118,10 @@ class SplashActivity : AppCompatActivity() {
                             arrayOf(
                                     Manifest.permission.ACTIVITY_RECOGNITION,
                                     Manifest.permission.CAMERA,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE
+
+                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+
                             ), PERMISSION_REQUEST_ACTIVITY
                     )
                 })
@@ -157,7 +175,8 @@ class SplashActivity : AppCompatActivity() {
                 // Permission not granted
                 Log.d(TAG, "Permission not granted")
                 Toast.makeText(this, "권한 허가 안함?", Toast.LENGTH_LONG).show()
-                finish()
+
+                //finish()
             }
         }
     }
@@ -172,7 +191,9 @@ class SplashActivity : AppCompatActivity() {
             PERMISSION_REQUEST_ACTIVITY -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "구글 활동 허락했음.")
-                    googleSignInCheckPermission()
+
+                    //googleSignInCheckPermission()
+
                 } else {
                     Log.d(TAG, "거절했네")
                     finish()
@@ -253,9 +274,10 @@ class SplashActivity : AppCompatActivity() {
                 .readData(readRequest)
                 .addOnSuccessListener { response ->
                     // The aggregate query puts datasets into buckets, so flatten into a single list of datasets
-                    for (dataSet in response.buckets.flatMap { it.dataSets }) {
-                        dumpDataSet(dataSet)
-                    }
+
+//                    for (dataSet in response.buckets.flatMap { it.dataSets }) {
+//                        dumpDataSet(dataSet)
+//                    }
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "There was an error reading data from Google Fit", e)

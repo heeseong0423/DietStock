@@ -67,11 +67,14 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
             textview_ranking_name.setText(item.getName());
             textview_ranking_kcal.setText(String.valueOf(item.getKcal()));
             if(item.getKcal() > 0) {
-                imageview_ranking_image.setImageResource(R.drawable.ranking_up);
+
+                textview_ranking_kcal.setTextColor(Color.RED);
+                imageview_ranking_image.setImageResource(R.drawable.ic_baseline_arrow_drop_up_24);
                 imageview_ranking_image.setColorFilter(Color.RED);
             }
             else if(item.getKcal() <= 0) {
-                imageview_ranking_image.setImageResource(R.drawable.ranking_down);
+                textview_ranking_kcal.setTextColor(Color.BLUE);
+                imageview_ranking_image.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
                 imageview_ranking_image.setColorFilter(Color.BLUE);
             }
         }

@@ -4,37 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
-    tools:context=".MainActivity">
+    android:background="#FFF"
+    tools:context=".SignActivity">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="visible">
+
         <TextView
             android:id="@+id/tv_main_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="다 주 까"
             android:textSize="40sp"
-            android:textColor="#FFFFFF"
+
+            android:textColor="#6200EE"
             android:textStyle="bold"
             android:fontFamily="@font/font_num1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="visible"/>
         <TextView
             android:id="@+id/tv_main_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="497조 다이어트 앱"
             android:textSize="30sp"
-            android:textColor="#FFFFFF"
+
+            android:textColor="#6200EE"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_main_1"/>
+            app:layout_constraintTop_toBottomOf="@+id/tv_main_1" />
+
         <LinearLayout
             android:id="@+id/ll_sign_main"
             android:layout_width="0dp"
@@ -93,9 +101,9 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:textSize="20sp"
-                android:hint="e-mail"
+
+                android:hint="id"
                 android:maxLines="1"
-                android:background="@drawable/circleradius"
                 />
             <EditText
                 android:id="@+id/et_password"
@@ -107,7 +115,7 @@
                 android:textSize="20sp"
                 android:password="true"
                 android:maxLines="1"
-                android:background="@drawable/circleradius"
+
                 />
             <Button
                 android:id="@+id/btn_submit_signin"
@@ -130,7 +138,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_signin"
-            android:visibility="visible"
+
+            android:visibility="gone"
             >
             <TextView
                 android:id="@+id/tv_register"
@@ -139,7 +148,8 @@
                 android:layout_marginTop="10dp"
                 android:text="회 원 가 입"
                 android:textSize="20sp"
-                android:textColor="#FFFFFF"
+
+                android:textColor="#6200EE"
                 android:fontFamily="@font/font_num1"
                 android:gravity="center" />
             <EditText
@@ -149,9 +159,10 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:textSize="20sp"
-                android:hint="e-mail"
+
+                android:hint="id"
+                android:textColorHint="#d3d3d3"
                 android:maxLines="1"
-                android:background="@drawable/circleradius"
                 />
             <EditText
                 android:id="@+id/et_name_register"
@@ -160,9 +171,10 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:textSize="20sp"
+
+                android:textColorHint="#d3d3d3"
                 android:hint="name"
                 android:maxLines="1"
-                android:background="@drawable/circleradius"
                 />
             <EditText
                 android:id="@+id/et_password1_register"
@@ -171,10 +183,11 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:hint="password"
+
+                android:textColorHint="#d3d3d3"
                 android:textSize="20sp"
                 android:password="true"
                 android:maxLines="1"
-                android:background="@drawable/circleradius"
                 />
             <EditText
                 android:id="@+id/et_password2_register"
@@ -183,35 +196,14 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:hint="password check"
+
+                android:textColorHint="#d3d3d3"
                 android:textSize="20sp"
                 android:password="true"
                 android:maxLines="1"
-                android:background="@drawable/circleradius"
                 />
-            <EditText
-                android:id="@+id/et_height_register"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:padding="7dp"
-                android:hint="height"
-                android:textSize="20sp"
-                android:password="true"
-                android:maxLines="1"
-                android:background="@drawable/circleradius"
-                />
-            <EditText
-                android:id="@+id/et_goal_register"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:padding="7dp"
-                android:hint="goal"
-                android:textSize="20sp"
-                android:password="true"
-                android:maxLines="1"
-                android:background="@drawable/circleradius"
-                />
+
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -231,6 +223,163 @@
                     android:onClick="onClick"
                     />
             </LinearLayout>
+            <Button
+                android:id="@+id/btn_next_signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="다음"
+                android:textSize="15sp"
+                android:fontFamily="@font/font_num1"
+                android:onClick="onClick"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_signup2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:paddingBottom="10dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_signin"
+            android:visibility="gone"
+            >
+            <EditText
+                android:id="@+id/et_height_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="7dp"
+                android:hint="height"
+
+                android:textColorHint="#d3d3d3"
+                android:textSize="20sp"
+                android:password="true"
+                android:maxLines="1"
+                android:inputType="number"
+                />
+            <EditText
+                android:id="@+id/et_goal_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="7dp"
+                android:hint="goal"
+
+                android:textColorHint="#d3d3d3"
+                android:textSize="20sp"
+                android:password="true"
+                android:maxLines="1"
+                android:inputType="number"
+                />
+            <EditText
+                android:id="@+id/et_weight_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="7dp"
+                android:hint="weight"
+                android:textColorHint="#d3d3d3"
+                android:textSize="20sp"
+                android:password="true"
+                android:maxLines="1"
+                android:inputType="number"
+                />
+            <EditText
+                android:id="@+id/et_age_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="7dp"
+                android:hint="age"
+                android:textColorHint="#d3d3d3"
+                android:textSize="20sp"
+                android:password="true"
+                android:maxLines="1"
+                android:inputType="number"
+                />
+            <RadioGroup
+                android:id="@+id/radiogroup_sex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/textview_ranking"
+                >
+                <RadioButton
+                    android:id="@+id/radiobutton_male_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="남"
+                    android:textSize="25sp"
+                    android:textColor="#000"
+                    android:fontFamily="@font/font_num1"/>
+                <RadioButton
+                    android:id="@+id/radiobutton_female_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="여"
+                    android:textSize="25sp"
+                    android:textColor="#000"
+                    android:fontFamily="@font/font_num1"/>
+            </RadioGroup>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="활동량"
+
+                android:textSize="30sp"
+                android:textColor="#000"
+                android:fontFamily="@font/font_num1"/>
+            <RadioGroup
+                android:id="@+id/radiogroup_acvitity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/textview_ranking"
+                >
+                    <RadioButton
+                        android:id="@+id/radiobutton_activity1_register"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="매우 활발"
+                        android:textSize="25sp"
+                        android:textColor="#000"
+                        android:fontFamily="@font/font_num1"
+                        />
+                    <RadioButton
+                        android:id="@+id/radiobutton_activity2_register"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="적당히 활발"
+                        android:textSize="25sp"
+                        android:textColor="#000"
+                        android:fontFamily="@font/font_num1"
+                        />
+                    <RadioButton
+                        android:id="@+id/radiobutton_activity3_register"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="거의 없음"
+                        android:textSize="25sp"
+                        android:textColor="#000"
+                        android:fontFamily="@font/font_num1"
+                        />
+            </RadioGroup>
             <Button
                 android:id="@+id/btn_submit_signup"
                 android:layout_width="wrap_content"

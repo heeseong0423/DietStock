@@ -3,9 +3,11 @@ package com.fournineseven.dietstock.ui.ranking;
 public class RankingItem {
     int no;
     String name;
-    int kcal;
 
-    public RankingItem(int no, String name, int kcal){
+    Float kcal;
+
+    public RankingItem(int no, String name, Float kcal){
+
         this.no = no;
         this.name = name;
         this.kcal = kcal;
@@ -19,11 +21,11 @@ public class RankingItem {
         this.no = no;
     }
 
-    public int getKcal() {
+    public Float getKcal() {
         return kcal;
     }
 
-    public void setKcal(int kcal) {
+    public void setKcal(Float kcal) {
         this.kcal = kcal;
     }
 

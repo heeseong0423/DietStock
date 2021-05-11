@@ -41,6 +41,8 @@
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:scaleType="fitXY"
-        android:src="@drawable/ranking_up"
+
+        android:src="@drawable/ic_baseline_arrow_drop_up_24"
+
         android:tint="#FF0000"/>
 </LinearLayout>

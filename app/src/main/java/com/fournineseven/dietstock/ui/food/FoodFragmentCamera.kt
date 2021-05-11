@@ -127,7 +127,7 @@ class FoodFragmentCamera : Fragment() {
             imageDimension = map!!.getOutputSizes<SurfaceTexture>(SurfaceTexture::class.java)[0]
 
             if(ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    && ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(this.requireActivity(), arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), requestCameraPermissionCode)
 
             }
@@ -373,9 +373,11 @@ class FoodFragmentCamera : Fragment() {
         inputStream.copyTo(outputStream)
         val bitmap: Bitmap = BitmapFactory.decodeFile(file.path)
         val imageProcessor: ImageProcessor = ImageProcessor.Builder()
-            .add(ResizeOp(224, 224, ResizeOp.ResizeMethod.BILINEAR))
-            .add(NormalizeOp(0f, 255f))
-            .build()
+
+                .add(ResizeOp(224, 224, ResizeOp.ResizeMethod.BILINEAR))
+                .add(NormalizeOp(0f, 255f))
+                .build()
+
         val tensorProcessor: TensorProcessor = TensorProcessor.Builder().add(NormalizeOp(0.0f, 255.0f)).build()
         var tfImage: TensorImage = TensorImage(DataType.FLOAT32)
         var probabilityBuffer: TensorBuffer = TensorBuffer.createFixedSize(intArrayOf(1, 100), DataType.FLOAT32)
@@ -447,9 +449,11 @@ class FoodFragmentCamera : Fragment() {
             val body: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
             val gson: Gson = GsonBuilder().setLenient().create()
             val retrofit = Retrofit.Builder()
-                .baseUrl("http://497.iptime.org")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
+
+                    .baseUrl("http://497.iptime.org")
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build()
+
             val connection = retrofit.create(FoodCameraInterface::class.java)
             connection.saveFoodLog(userNo,foodNo,serving,body).enqueue(object: Callback<DefaultResponseKo> {
                 override fun onFailure(call: Call<DefaultResponseKo>, t: Throwable){
@@ -476,9 +480,11 @@ class FoodFragmentCamera : Fragment() {
 
     fun getFoodInfo(foodName: String){
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://497.iptime.org")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+
+                .baseUrl("http://497.iptime.org")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
         val connection = retrofit.create(FoodCameraInterface::class.java)
         connection.getFoodInfo(foodName).enqueue(object: Callback<GetFoodResponse> {
             override fun onFailure(call: Call<GetFoodResponse>, t: Throwable) {
@@ -523,16 +529,19 @@ interface FoodCameraInterface{
     @Multipart
     @POST("api/food/saveFoodLog")
     fun saveFoodLog(
-        @Part("user_no") userNo: Int,
-        @Part("food_no") foodNo : Int,
-        @Part("serving") serving : Int,
-        @Part food_image: MultipartBody.Part
+
+            @Part("user_no") userNo: Int,
+            @Part("food_no") foodNo : Int,
+            @Part("serving") serving : Int,
+            @Part food_image: MultipartBody.Part
+
     ): Call<DefaultResponseKo>
 
 
     @FormUrlEncoded
     @POST("api/food/getFoodInfo")
     fun getFoodInfo(
-        @Field("food_name") foodName: String
+
+            @Field("food_name") foodName: String
     ): Call<GetFoodResponse>
 }

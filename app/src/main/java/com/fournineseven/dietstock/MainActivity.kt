@@ -36,6 +36,19 @@ class MainActivity : AppCompatActivity() {
         navView.setOnNavigationItemSelectedListener { navigationSelected(it) }
     }
 
+    override fun onBackPressed() {
+        if(navView.selectedItemId == 3){
+            if(FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요"){
+                super.onBackPressed()
+            }
+            else{
+                FoodFragmentCamera().reOpenCamera()
+            }
+        }else{
+            super.onBackPressed()
+        }
+    }
+
     private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle): FragmentStateAdapter(fm, lc){
         override fun getItemCount(): Int {
             return 5

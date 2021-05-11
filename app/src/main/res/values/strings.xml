@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">DietStock</string>
+    <string name="title_home">Home</string>
+    <string name="title_ranking">Ranking</string>
+    <string name="title_food">Food</string>
+    <string name="title_rolemodel">RoleModel</string>
+    <string name="title_notifications">Notifications</string>
+</resources>

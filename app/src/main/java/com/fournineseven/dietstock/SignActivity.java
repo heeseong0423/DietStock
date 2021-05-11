@@ -1,0 +1,181 @@
+package com.fournineseven.dietstock;
+
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.fournineseven.dietstock.api.RetrofitService;
+import com.fournineseven.dietstock.config.TaskServer;
+import com.fournineseven.dietstock.model.DefaultResponse;
+import com.fournineseven.dietstock.model.getRanking.GetRankingResponse;
+import com.fournineseven.dietstock.model.login.LoginModel;
+
+import java.io.File;
+import java.util.HashMap;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class SignActivity extends AppCompatActivity {
+
+    Button btn_signin, btn_signup, btn_before_image_register;
+    LinearLayout ll_sign_main, ll_signin, ll_signup;
+    EditText et_id, et_password, et_id_register, et_name_register, et_password1_register, et_password2_register,
+            et_height_register, et_goal_register;
+    ImageView iv_before_image_register;
+    Handler mHandler = null;
+
+
+    File beforeImageFile;
+    private static final int PICK_FROM_ALBUM = 1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sign);
+        init();
+
+        App.retrofit = new Retrofit.Builder()
+                .baseUrl(TaskServer.base_url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    void init(){
+        btn_signin = (Button)findViewById(R.id.btn_signin);
+        btn_signup = (Button)findViewById(R.id.btn_signup);
+        mHandler = new Handler(Looper.getMainLooper());
+        ll_sign_main = (LinearLayout)findViewById(R.id.ll_sign_main);
+        ll_signin = (LinearLayout)findViewById(R.id.ll_signin);
+        ll_signup = (LinearLayout)findViewById(R.id.ll_signup);
+        et_id = (EditText)findViewById(R.id.et_id);
+        et_password = (EditText)findViewById(R.id.et_password);
+        et_id_register = (EditText)findViewById(R.id.et_id_register);
+        et_name_register = (EditText)findViewById(R.id.et_name_register);
+        et_password1_register = (EditText)findViewById(R.id.et_password1_register);
+        et_password2_register = (EditText)findViewById(R.id.et_password2_register);
+        et_height_register = (EditText)findViewById(R.id.et_height_register);
+        et_goal_register = (EditText)findViewById(R.id.et_goal_register);
+        btn_before_image_register = (Button)findViewById(R.id.btn_before_image_register);
+        iv_before_image_register = (ImageView)findViewById(R.id.iv_before_image_register);
+    }
+
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.btn_signin:
+                ll_sign_main.setVisibility(View.GONE);
+                ll_signin.setVisibility(View.VISIBLE);
+                break;
+            case R.id.btn_signup:
+                ll_sign_main.setVisibility(View.GONE);
+                ll_signup.setVisibility(View.VISIBLE);
+                break;
+            case R.id.btn_before_image_register:
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                startActivityForResult(intent, PICK_FROM_ALBUM);
+                break;
+            case R.id.btn_submit_signin:
+                RetrofitService loginService = App.retrofit.create(RetrofitService.class);
+                String userIdLogin = et_id.getText().toString();
+                String passwordLogin = et_password.getText().toString();
+                Call<DefaultResponse> callLogin = loginService.login(new LoginModel(userIdLogin, passwordLogin));
+                callLogin.enqueue(new Callback<DefaultResponse>() {
+                    @Override
+                    public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                        Log.d("debug", response.body().toString());
+                        DefaultResponse getRankingResponse = (DefaultResponse)response.body();
+                        if(getRankingResponse.isSuccess()) {
+                            Intent intent = new Intent(SignActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                        Log.d("debug", "onFailure: "+t.getMessage());
+                    }
+                });
+                break;
+            case R.id.btn_submit_signup:
+                RetrofitService saveUserService = App.retrofit.create(RetrofitService.class);
+                String typedUserId = et_id_register.getText().toString();
+                RequestBody user_id = RequestBody.create( okhttp3.MultipartBody.FORM,typedUserId);
+                String typedPassword = et_password1_register.getText().toString();
+                RequestBody password = RequestBody.create(okhttp3.MultipartBody.FORM,typedPassword);
+                String typedName = et_name_register.getText().toString();
+                RequestBody name = RequestBody.create(okhttp3.MultipartBody.FORM,typedName);
+                String typedHeight = et_height_register.getText().toString();
+                RequestBody height = RequestBody.create(okhttp3.MultipartBody.FORM,typedHeight);
+                String typedGoal = et_goal_register.getText().toString();
+                RequestBody goal = RequestBody.create(okhttp3.MultipartBody.FORM,typedGoal);
+                RequestBody beforeimage = RequestBody.create(MediaType.parse("multipart/form-data"),beforeImageFile);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("file", beforeImageFile.getName(), beforeimage);
+                Call<DefaultResponse> callRegister = saveUserService.saveUser(user_id, password, name, height, goal, body);
+                callRegister.enqueue(new Callback<DefaultResponse>() {
+                    @Override
+                    public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                        Log.d("debug", "onSuccess");
+                    }
+
+                    @Override
+                    public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                        Log.d("debug", "onFailure: "+t.getMessage());
+                    }
+                });
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_FROM_ALBUM){
+            Uri photoUri = data.getData();
+            Cursor cursor = null;
+
+            try{
+                String[] proj = {MediaStore.Images.Media.DATA};
+                assert photoUri != null;
+                cursor = getContentResolver().query(photoUri, proj, null, null, null);
+                assert cursor != null;
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                cursor.moveToFirst();
+
+                beforeImageFile = new File(cursor.getString(column_index));
+
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            Bitmap originalBm = BitmapFactory.decodeFile(beforeImageFile.getAbsolutePath(), options);
+            iv_before_image_register.setImageBitmap(originalBm);
+        }
+    }
+}

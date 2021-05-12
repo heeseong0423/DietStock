@@ -3,6 +3,7 @@ package com.fournineseven.dietstock.api;
 import com.fournineseven.dietstock.model.DefaultResponse;
 import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsRequest;
 import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsResponse;
+
 import com.fournineseven.dietstock.model.getKcalByWeek.GetKcalByWeekRequest;
 import com.fournineseven.dietstock.model.getKcalByWeek.GetKcalByWeekResponse;
 import com.fournineseven.dietstock.model.getRanking.GetRankingResponse;
@@ -10,14 +11,17 @@ import com.fournineseven.dietstock.model.getRolemodel.GetRolemodelResponse;
 import com.fournineseven.dietstock.model.login.LoginModel;
 import com.fournineseven.dietstock.model.login.LoginResponse;
 
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+
 import retrofit2.http.Path;
 
 public interface RetrofitService {
@@ -34,6 +38,7 @@ public interface RetrofitService {
                                    @Part("name") RequestBody name,
                                    @Part("height") RequestBody height,
                                    @Part("goal") RequestBody goal,
+
                                    @Part("weight") RequestBody weight,
                                    @Part("age") RequestBody age,
                                    @Part("sex") RequestBody sex,
@@ -43,9 +48,11 @@ public interface RetrofitService {
     @POST("api/member/login")
     Call<LoginResponse> login(@Body LoginModel param);
 
+
     @POST("api/member/getFoodLogs")
     Call<GetFoodLogsResponse> getFoodLogs(@Body GetFoodLogsRequest param);
 
     @POST("api/member/getKcalByWeek")
     Call<GetKcalByWeekResponse> getKcalByWeek(@Body GetKcalByWeekRequest param);
+
 }

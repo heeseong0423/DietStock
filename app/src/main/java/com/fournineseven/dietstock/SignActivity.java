@@ -47,19 +47,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SignActivity extends AppCompatActivity {
 
-   /* // creating constant keys for shared preferences.
-    public static final String SHARED_PREFS = "shared_prefs";
-
-    // key for storing email.
-    public static final String EMAIL_KEY = "email_key";
-
-    // key for storing password.
-    public static final String PASSWORD_KEY = "password_key";
-
-    // variable for shared preferences.
-    String email, password;*/
-    SharedPreferences sharedpreferences;
-
     Button btn_signin, btn_signup, btn_before_image_register, btn_next_signup;
     LinearLayout ll_sign_main, ll_signin, ll_signup, ll_signup2;
     TextView tv_main_1;
@@ -81,16 +68,6 @@ public class SignActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign);
         init();
 
-        // getting the data which is stored in shared preferences.
-        //sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
-
-        // in shared prefs inside het string method
-        // we are passing key value as EMAIL_KEY and
-        // default value is
-        // set to null if not present.
-        LoginState.INSTANCE.setEmail(sharedpreferences.getString(LoginState.EMAIL_KEY, null));
-        LoginState.INSTANCE.setPassword(sharedpreferences.getString(LoginState.PASSWORD_KEY, null));
         App.retrofit = new Retrofit.Builder()
                 .baseUrl(TaskServer.base_url)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -150,12 +127,6 @@ public class SignActivity extends AppCompatActivity {
                     Toast.makeText(SignActivity.this, "빈칸을 모두 채워주세요", Toast.LENGTH_SHORT).show();
                     break;
                 }
-                /*else{
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putString(EMAIL_KEY, et_id.getText().toString());
-                    editor.putString(PASSWORD_KEY, et_password.getText().toString());
-                    editor.apply();
-                }*/
                 RetrofitService loginService = App.retrofit.create(RetrofitService.class);
 
                 Call<LoginResponse> callLogin = loginService.login(new LoginModel(userIdLogin, passwordLogin));
@@ -165,17 +136,12 @@ public class SignActivity extends AppCompatActivity {
                         Log.d("debug", response.body().toString());
                         LoginResponse getLoginResponse = (LoginResponse)response.body();
                         if(getLoginResponse.isSuccess()) {
-                            //Context context = SignActivity.this;
-                            //SharedPreferences sharedPref = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                            //SharedPreferences.Editor editor = sharedPref.edit();
-                            SharedPreferences.Editor editor = sharedpreferences.edit();
-                            editor.putString(LoginState.EMAIL_KEY, et_id.getText().toString());
-                            editor.putString(LoginState.PASSWORD_KEY, et_password.getText().toString());
-
+                            Context context = SignActivity.this;
+                            SharedPreferences sharedPref = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
                             int user_no= getLoginResponse.getResult().getUser_no();
                             editor.putString("userNo", String.valueOf(user_no));
-                            //editor.commit();
-                            editor.apply();
+                            editor.commit();
                             Intent intent = new Intent(SignActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
@@ -208,7 +174,7 @@ public class SignActivity extends AppCompatActivity {
                 else if(radiobutton_activity2_register.isChecked()) typedActivity=2;
                 else typedActivity=3;
                 if(typedUserId.equals("")||typedPassword.equals("")||typedName.equals("")||typedHeight.equals("")||typedGoal.equals("")||typedSex==0||typedActivity==0||
-                typedWeight.equals("")||typedAge.equals("")) {
+                        typedWeight.equals("")||typedAge.equals("")) {
                     Toast.makeText(SignActivity.this, "빈칸을 모두 채워주세요", Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -231,13 +197,9 @@ public class SignActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
                         Log.d("debug", "onSuccess");
-                        if(response.body().isSuccess()) {
-                            tv_main_1.setVisibility(View.VISIBLE);
-                            ll_signup2.setVisibility(View.GONE);
-                            ll_sign_main.setVisibility(View.VISIBLE);
-                        }else{
-                            Log.d("debug", response.body().toString());
-                        }
+                        tv_main_1.setVisibility(View.VISIBLE);
+                        ll_signup.setVisibility(View.GONE);
+                        ll_sign_main.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -248,15 +210,6 @@ public class SignActivity extends AppCompatActivity {
                 break;
         }
     }
-
-   /* @Override
-    protected void onStart() {
-        super.onStart();
-        if (email != null && password != null) {
-            Intent i = new Intent(this, MainActivity.class);
-            startActivity(i);
-        }
-    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

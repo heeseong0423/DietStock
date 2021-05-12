@@ -1,5 +1,6 @@
 package com.fournineseven.dietstock
 
+
 import android.app.*
 import android.content.Intent
 import android.os.Binder
@@ -13,6 +14,7 @@ import com.fournineseven.dietstock.room.UserKcalData
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
+
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.request.DataReadRequest
 import kotlinx.coroutines.GlobalScope
@@ -25,6 +27,7 @@ val CHANNEL_ID = "ForegroundChannel"
 private const val TAG = "CheckKcal"
 
 class Foreground : Service() {
+
     var threadState = true
 
     //필요한 권한들 정의
@@ -49,6 +52,7 @@ class Foreground : Service() {
         }
     }
 
+
     fun myBackgroundTask(notification: Notification) {
 
         GlobalScope.launch {
@@ -71,11 +75,14 @@ class Foreground : Service() {
         }
     }
 
+
     fun updateCalories() {
         val end = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()
+
         val start =
             LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
                 .toEpochSecond()
+
 
         //하루가 바뀌었을 경우 오늘날짜 변경과 룸 데이터베이스에 데이터 인서트
         if(TimeCheck.appStartTime != start){
@@ -161,6 +168,7 @@ class Foreground : Service() {
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentText("Hello World")
             .build()
+
 
         myBackgroundTask(notification)
         //alarmRegister()

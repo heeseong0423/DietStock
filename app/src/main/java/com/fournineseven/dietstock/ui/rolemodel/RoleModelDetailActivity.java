@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.fournineseven.dietstock.App;
+
 import com.fournineseven.dietstock.R;
 import com.fournineseven.dietstock.api.RetrofitService;
 import com.fournineseven.dietstock.config.TaskServer;
@@ -33,10 +35,12 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
+
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 
@@ -55,7 +59,9 @@ public class RoleModelDetailActivity extends AppCompatActivity{
 
     int user_no;
     ArrayList<FoodLogResult> foodLogResult;
+
     ArrayList<KcalByWeekResult> kcalByWeekResult;
+
 
     /*int[] colorArray = new int[]{Color.LTGRAY, Color.BLUE, Color.RED, Color.green}*/
     @Override
@@ -97,7 +103,9 @@ public class RoleModelDetailActivity extends AppCompatActivity{
     }
 
     private void candlestickchartInit(){
+
         RetrofitService getKcalByWeekService = App.retrofit.create(RetrofitService.class);
+
         candlestickchart_rolemodel_detail = (CandleStickChart)findViewById(R.id.candlestickchart_rolemodel_detail);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -126,8 +134,10 @@ public class RoleModelDetailActivity extends AppCompatActivity{
         Legend l = candlestickchart_rolemodel_detail.getLegend();
         l.setEnabled(false);
 
+
         Call<GetKcalByWeekResponse> callGetKcalByMonth =
                 getKcalByWeekService.getKcalByWeek(new GetKcalByWeekRequest(user_no));
+
         /**
          * Constructor.
          *
@@ -137,6 +147,7 @@ public class RoleModelDetailActivity extends AppCompatActivity{
          * @param open The open value
          * @param close The close value
          */
+
 
         callGetKcalByMonth.enqueue(new Callback<GetKcalByWeekResponse>() {
             @Override
@@ -169,7 +180,9 @@ public class RoleModelDetailActivity extends AppCompatActivity{
                     set1.setIncreasingColor(Color.RED);
                     set1.setIncreasingPaintStyle(Paint.Style.FILL);
                     set1.setNeutralColor(Color.LTGRAY);
+
                     set1.setDrawValues(true);
+
 
                     CandleData data = new CandleData(set1);
 
@@ -179,7 +192,9 @@ public class RoleModelDetailActivity extends AppCompatActivity{
             }
 
             @Override
+
             public void onFailure(Call<GetKcalByWeekResponse> call, Throwable t) {
+
                 Log.d("debug", "onFailure"+t.toString());
             }
         });
@@ -187,7 +202,9 @@ public class RoleModelDetailActivity extends AppCompatActivity{
     private void piechartInit(){
         piechart_rolemodel_detail = (PieChart)findViewById(R.id.piechart_rolemodel_detail);
         piechart_rolemodel_detail.setDescription(null);
+
         piechart_rolemodel_detail.setEntryLabelColor(Color.BLACK);
+
         RetrofitService getFoodLogsService = App.retrofit.create(RetrofitService.class);
         Call<GetFoodLogsResponse> callGetFoodLogs = getFoodLogsService.getFoodLogs(new GetFoodLogsRequest(user_no));
         callGetFoodLogs.enqueue(new Callback<GetFoodLogsResponse>() {
@@ -209,7 +226,9 @@ public class RoleModelDetailActivity extends AppCompatActivity{
                     PieDataSet dataSet = new PieDataSet(entries, "영양 성분");
 
                     dataSet.setDrawIcons(false);
+
                     dataSet.setDrawValues(false);
+
                     dataSet.setSliceSpace(3f);
                     dataSet.setIconsOffset(new MPPointF(0, 40));
                     dataSet.setSelectionShift(5f);

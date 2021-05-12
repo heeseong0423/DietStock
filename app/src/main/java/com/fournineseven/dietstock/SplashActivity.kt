@@ -13,16 +13,19 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 
+
 import androidx.core.content.ContextCompat
 import androidx.room.Room
 import com.fournineseven.dietstock.databinding.ActivitySplashBinding
 import com.fournineseven.dietstock.room.KcalDatabase
 import com.fournineseven.dietstock.room.UserKcalData
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
+
 import com.google.android.gms.fitness.data.*
 import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.gms.fitness.request.DataSourcesRequest
@@ -101,6 +104,7 @@ class SplashActivity : AppCompatActivity() {
 
         //안드로이드 Q이상일 경우.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
             Log.d(TAG, "안드로이드 버전이 이상이다.")
 
             //권한이 허가되어있지 않을 경우
@@ -114,8 +118,10 @@ class SplashActivity : AppCompatActivity() {
                             arrayOf(
                                     Manifest.permission.ACTIVITY_RECOGNITION,
                                     Manifest.permission.CAMERA,
+
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
+
                             ), PERMISSION_REQUEST_ACTIVITY
                     )
                 })
@@ -169,6 +175,7 @@ class SplashActivity : AppCompatActivity() {
                 // Permission not granted
                 Log.d(TAG, "Permission not granted")
                 Toast.makeText(this, "권한 허가 안함?", Toast.LENGTH_LONG).show()
+
                 //finish()
             }
         }
@@ -184,7 +191,9 @@ class SplashActivity : AppCompatActivity() {
             PERMISSION_REQUEST_ACTIVITY -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "구글 활동 허락했음.")
+
                     //googleSignInCheckPermission()
+
                 } else {
                     Log.d(TAG, "거절했네")
                     finish()
@@ -265,6 +274,7 @@ class SplashActivity : AppCompatActivity() {
                 .readData(readRequest)
                 .addOnSuccessListener { response ->
                     // The aggregate query puts datasets into buckets, so flatten into a single list of datasets
+
 //                    for (dataSet in response.buckets.flatMap { it.dataSets }) {
 //                        dumpDataSet(dataSet)
 //                    }

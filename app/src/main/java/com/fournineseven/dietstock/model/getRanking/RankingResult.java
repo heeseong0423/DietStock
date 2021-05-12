@@ -16,9 +16,11 @@ public class RankingResult {
 
     @SerializedName("kcal")
     @Expose
+
     private Float kcal;
 
     public RankingResult(int user_no, String name, Float kcal){
+
         this.user_no = user_no;
         this.name = name;
         this.kcal = kcal;
@@ -32,11 +34,13 @@ public class RankingResult {
         this.name = name;
     }
 
+
     public Float getKcal() {
         return kcal;
     }
 
     public void setKcal(Float kcal) {
+
         this.kcal = kcal;
     }
 

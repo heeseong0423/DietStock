@@ -8,12 +8,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
+
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.fournineseven.dietstock.databinding.ActivityMainBinding
+
 import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
 import com.fournineseven.dietstock.ui.notifications.NotificationsFragment
@@ -33,6 +35,7 @@ class MainActivity : BaseActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
+
         setTheme(R.style.Theme_DietStock)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -86,6 +89,7 @@ class MainActivity : BaseActivity() {
 
         override fun createFragment(position: Int): Fragment {
             return when(position){
+
                 0 -> {
                     HomeFragment()
                 }
@@ -112,6 +116,7 @@ class MainActivity : BaseActivity() {
                 viewPager.currentItem = 1
                 return true
             }
+
             R.id.navigation_notifications -> {
                 viewPager.currentItem = 2
                 return true
@@ -134,7 +139,9 @@ class MainActivity : BaseActivity() {
             navView.selectedItemId = when (position) {
                 0 -> R.id.navigation_home
                 1 -> R.id.navigation_ranking
+
                 2 -> R.id.navigation_notifications
+
                 3 -> R.id.navigation_food
                 4 -> R.id.navigation_rolemodel
                 else -> error("no such position: $position")

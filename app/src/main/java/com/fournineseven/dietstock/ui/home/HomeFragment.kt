@@ -16,7 +16,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 
 import androidx.room.Room
-import com.fournineseven.dietstock.DataUtil
 import com.fournineseven.dietstock.R
 import com.fournineseven.dietstock.User
 import com.fournineseven.dietstock.room.KcalDatabase

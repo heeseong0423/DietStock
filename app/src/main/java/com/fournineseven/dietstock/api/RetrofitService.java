@@ -10,7 +10,10 @@ import com.fournineseven.dietstock.model.getRanking.GetRankingResponse;
 import com.fournineseven.dietstock.model.getRolemodel.GetRolemodelResponse;
 import com.fournineseven.dietstock.model.login.LoginModel;
 import com.fournineseven.dietstock.model.login.LoginResponse;
+import com.fournineseven.dietstock.ui.feedback.getDailyFood;
 
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -30,6 +33,7 @@ public interface RetrofitService {
 
     @GET("api/rolemodel/getRolemodel")
     Call<GetRolemodelResponse> getRolemodel();
+
 
     @Multipart
     @POST("api/member/register")
@@ -54,5 +58,9 @@ public interface RetrofitService {
 
     @POST("api/member/getKcalByWeek")
     Call<GetKcalByWeekResponse> getKcalByWeek(@Body GetKcalByWeekRequest param);
+
+    @GET("/food/getDailyFood")
+    Call<List<getDailyFood>> getDailyFood();
+
 
 }

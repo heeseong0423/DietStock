@@ -45,20 +45,12 @@ public class avoidFood_result extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(avoidFood_result.this,FeedBackFragment.class); //이동->이동할 곳(class)
+
+                Bundle bundle = new Bundle();
+                bundle.putString("메시지",message);
+
                 startActivity(intent); //액티비티 이동
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        SharedPreferences sharedPreferences = getSharedPreferences("shared_avoid",0);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        String value = avoidFood_result.getText().toString();
-        editor.putString("user_avoidFood",value);
-        editor.commit();
-
     }
 }

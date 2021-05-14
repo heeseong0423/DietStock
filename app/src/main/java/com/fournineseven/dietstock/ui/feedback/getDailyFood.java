@@ -2,9 +2,9 @@ package com.fournineseven.dietstock.ui.feedback;
 
 import com.google.gson.annotations.SerializedName;
 
-public class GetDailyFood  {
-    @SerializedName("recommend_kcal")
-    private float recommend_kcal;
+public class getDailyFood {
+    //@SerializedName("recommend_kcal")
+    //private float recommend_kcal;
     @SerializedName("food_name")
     private String food_name;
     @SerializedName("kcal")
@@ -18,13 +18,13 @@ public class GetDailyFood  {
     @SerializedName("protein")
     private float protein;
 
-    public float getRecommend_kcal() {
+    /*public float getRecommend_kcal() {
         return recommend_kcal;
     }
 
     public void setRecommend_kcal(float recommend_kcal) {
         this.recommend_kcal = recommend_kcal;
-    }
+    }*/
 
     public String getFood_name() {
         return food_name;
@@ -85,7 +85,18 @@ public class GetDailyFood  {
     @SerializedName("fat")
     private float fat;
 
-
+    @Override
+    public String toString() {
+        return "GetDailyFood{" +
+                "food_name=" + food_name +
+                ", kcal=" + kcal +
+                ", serving='" + serving +
+                ", updated_dt='" + updated_dt  +
+                ", carbs='" + carbs  +
+                ", protein='" + protein  +
+                ", fat='" + fat  +
+                '}';
+    }
 
 
 }

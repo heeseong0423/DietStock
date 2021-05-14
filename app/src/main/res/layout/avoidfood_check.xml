@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ScrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        tools:context=".MainActivity">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="알레르기 식품을 선택해 주세요"
+            android:textSize="25dp"
+            android:layout_marginTop="20dp"
+            ></TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="피드백에서 제외됩니다"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            ></TextView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+            <CheckBox
+                android:id="@+id/checkBox_poultry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="난류(계란) 및 가금류" />
+
+            <CheckBox
+                android:id="@+id/checkBox_buckwheat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="메밀" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/checkBox_peach"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="복숭아" />
+            <CheckBox
+                android:id="@+id/checkBox_tomato"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="토마토" />
+            <CheckBox
+                android:id="@+id/checkBox_walnut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="호두" /></LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/checkBox_peanut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="땅콩" />
+            <CheckBox
+                android:id="@+id/checkBox_chicken"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="닭고기" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/checkBox_beef"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="쇠고기" />
+            <CheckBox
+                android:id="@+id/checkBox_oyster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="굴" /></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/checkBox_wheat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="밀" />
+            <CheckBox
+                android:id="@+id/checkBox_crab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="게(갑각류)" /></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/checkBox_mackerel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="고등어" />
+            <CheckBox
+                android:id="@+id/checkBox_pork"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="돼지고기" /></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/checkBox_shrimp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="새우" />
+            <CheckBox
+                android:id="@+id/checkBox_squid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="오징어" /></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/checkBox_shellfish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="조개류(어패류)" />
+            <CheckBox
+                android:id="@+id/checkBox_abalone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="전복" /></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/checkBox_bean"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="대두(콩)" />
+            <CheckBox
+                android:id="@+id/checkBox_mussel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="홍합" /></LinearLayout>
+
+
+
+
+
+        <Button
+            android:id="@+id/btn_move"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="결정" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -6,6 +6,7 @@ object User{
     var sensorKcal = 0.0f
     var kcal = 0.0f
     var PKcal = 0.0f
+
     var highKcal = 0f
     var lowKcal = 0f
     var startKcal = 0f

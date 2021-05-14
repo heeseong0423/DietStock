@@ -57,14 +57,18 @@ public class RankingFragment extends Fragment {
     public void init(){
         mHandler = new Handler(Looper.getMainLooper());
         radioGroup_ranking_category = (RadioGroup)root.findViewById(R.id.radiogroup_ranking_category);
+
+
         radioButton_ranking_week = (RadioButton)root.findViewById(R.id.radiobutton_ranking_week);
         radioButton_ranking_month = (RadioButton)root.findViewById(R.id.radiobutton_ranking_month);
         radioGroup_ranking_category.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int id) {
                 RetrofitService getRankingService = App.retrofit.create(RetrofitService.class);
+
                 String division ="week";
                 switch (id){
+
                     case R.id.radiobutton_ranking_week:
                         division = "week";
                         break;
@@ -83,6 +87,7 @@ public class RankingFragment extends Fragment {
                             adapter.setEmpty();
                             for(int i=0; i<rankingResultArray.size(); i++){
                                 RankingResult rankingItem = rankingResultArray.get(i);
+
                                 adapter.addItem(new RankingItem(i+1, rankingItem.getName(),
                                         rankingItem.getKcal()));
                             }
@@ -90,6 +95,7 @@ public class RankingFragment extends Fragment {
                             recyclerView.setAdapter(adapter);
                             recyclerView.smoothScrollToPosition(13);
                             adapter.notifyDataSetChanged();
+
                         }
                     }
 

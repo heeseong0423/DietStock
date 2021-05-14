@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class UserKcalData(
+
     @PrimaryKey(autoGenerate = true)
+
     val no: Int,
 
     @ColumnInfo(name = "base_kcal")
@@ -15,6 +17,7 @@ data class UserKcalData(
 
     @ColumnInfo(name = "physical_kcal")
     val physicalKcal: Float,
+
 
     //시가
     @ColumnInfo(name = "start_time")
@@ -29,4 +32,5 @@ data class UserKcalData(
 
     @ColumnInfo(name = "low_Kcal")
     val lowKcal: Float
+
 )

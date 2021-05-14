@@ -174,7 +174,7 @@ public class SignActivity extends AppCompatActivity {
                 else if(radiobutton_activity2_register.isChecked()) typedActivity=2;
                 else typedActivity=3;
                 if(typedUserId.equals("")||typedPassword.equals("")||typedName.equals("")||typedHeight.equals("")||typedGoal.equals("")||typedSex==0||typedActivity==0||
-                typedWeight.equals("")||typedAge.equals("")) {
+                        typedWeight.equals("")||typedAge.equals("")) {
                     Toast.makeText(SignActivity.this, "빈칸을 모두 채워주세요", Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -197,13 +197,9 @@ public class SignActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
                         Log.d("debug", "onSuccess");
-                        if(response.body().isSuccess()) {
-                            tv_main_1.setVisibility(View.VISIBLE);
-                            ll_signup2.setVisibility(View.GONE);
-                            ll_sign_main.setVisibility(View.VISIBLE);
-                        }else{
-                            Log.d("debug", response.body().toString());
-                        }
+                        tv_main_1.setVisibility(View.VISIBLE);
+                        ll_signup.setVisibility(View.GONE);
+                        ll_sign_main.setVisibility(View.VISIBLE);
                     }
 
                     @Override

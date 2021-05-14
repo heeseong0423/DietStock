@@ -97,9 +97,9 @@ object DataUtil {
                 CSStock(
                         createdAt = 13,
                         open = 12.5F,
-                        close = 528.4F,
-                        shadowHigh = 605.5F,
-                        shadowLow = 12.5F
+                        close = -707F,
+                        shadowHigh = 606.4F,
+                        shadowLow = -800F
                 )
         )
     }

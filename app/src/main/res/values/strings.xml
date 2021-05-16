@@ -14,4 +14,6 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="after_image_text">현재</string>
+    <string name="before_image_text">시작</string>
 </resources>

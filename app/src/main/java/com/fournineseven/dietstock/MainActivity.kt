@@ -55,14 +55,14 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_baseline_dehaze_24)
-        supportActionBar!!.title = ""
+        supportActionBar!!.title = "DietStock"
 
 
         val contentMainViewPager = findViewById<ViewPager2>(R.id.view_pager)
         val contentMainNavView = findViewById<BottomNavigationView>(R.id.nav_view)
         //val navController = findNavController(R.id.nav_host_fragment)
 
-        //로그인 상태 확인
+        /*//로그인 상태 확인
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         var email: String ?= sharedpreferences.getString(LoginState.EMAIL_KEY, null)
         var password:String?= sharedpreferences.getString(LoginState.PASSWORD_KEY,null)
@@ -70,7 +70,7 @@ class MainActivity : BaseActivity() {
             var intent = Intent(this, SignActivity::class.java)
             startActivity(intent)
             finish()
-        }
+        }*/
 
         //viewPager = binding.viewPager
         //viewPager = contentMainBinding.viewPager

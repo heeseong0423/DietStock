@@ -6,15 +6,25 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.fournineseven.dietstock.databinding.ActivityMainBinding
+import com.fournineseven.dietstock.databinding.ContentMainBinding
 
 import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
@@ -28,6 +38,7 @@ private const val TAG = "MyTag"
 private const val PERMISSION_REQUEST_CODE = 2
 
 class MainActivity : BaseActivity() {
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var viewPager: ViewPager2
     private lateinit var navView: BottomNavigationView
@@ -38,8 +49,18 @@ class MainActivity : BaseActivity() {
 
         setTheme(R.style.Theme_DietStock)
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_baseline_dehaze_24)
+        supportActionBar!!.title = ""
+
+
+        val contentMainViewPager = findViewById<ViewPager2>(R.id.view_pager)
+        val contentMainNavView = findViewById<BottomNavigationView>(R.id.nav_view)
+        //val navController = findNavController(R.id.nav_host_fragment)
 
         //로그인 상태 확인
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
@@ -51,11 +72,18 @@ class MainActivity : BaseActivity() {
             finish()
         }
 
-        viewPager = binding.viewPager
+        //viewPager = binding.viewPager
+        //viewPager = contentMainBinding.viewPager
+        viewPager = contentMainViewPager
         viewPager.adapter = PagerAdapter(supportFragmentManager, lifecycle)
         viewPager.registerOnPageChangeCallback(PageChangeCallback())
-        navView = binding.navView
+        navView = contentMainNavView
         navView.setOnNavigationItemSelectedListener { navigationSelected(it) }
+        /*appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
+        setupActionBarWithNavController(navController, appBarConfiguration)*/
+        //navView.setupWithNavController(navController)
+
 
         requirePermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACTIVITY_RECOGNITION), PERMISSION_REQUEST_CODE)
     }
@@ -70,6 +98,14 @@ class MainActivity : BaseActivity() {
 
 
     override fun onBackPressed() {
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+
+
+        if(drawerLayout.isDrawerOpen(Gravity.LEFT)){
+            drawerLayout.closeDrawer(Gravity.LEFT)
+            return
+        }
+
         if(navView.selectedItemId == 3){
             if(FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요"){
                 super.onBackPressed()
@@ -147,5 +183,20 @@ class MainActivity : BaseActivity() {
                 else -> error("no such position: $position")
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+
+
+        if(item.itemId == android.R.id.home){
+            if(drawerLayout.isDrawerOpen(Gravity.LEFT)){
+                drawerLayout.closeDrawer(Gravity.LEFT)
+            }else{
+                drawerLayout.openDrawer(Gravity.LEFT)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }

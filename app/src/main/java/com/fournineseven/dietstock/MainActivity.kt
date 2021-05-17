@@ -3,18 +3,26 @@ package com.fournineseven.dietstock
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
+import android.view.Gravity
 import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.core.net.toFile
+import androidx.core.net.toUri
+import androidx.drawerlayout.widget.DrawerLayout
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.fournineseven.dietstock.databinding.ActivityMainBinding
 
 import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
@@ -22,43 +30,116 @@ import com.fournineseven.dietstock.ui.notifications.NotificationsFragment
 import com.fournineseven.dietstock.ui.ranking.RankingFragment
 import com.fournineseven.dietstock.ui.rolemodel.RoleModelFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
+import java.io.File
 
 
 private const val TAG = "MyTag"
+private const val REQ_CAMERA = 101
+private const val REQ_STORAGE_BEFORE = 102
+private const val REQ_STORAGE_AFTER = 103
 private const val PERMISSION_REQUEST_CODE = 2
 
-class MainActivity : BaseActivity() {
-
+class MainActivity : BaseActivity(), View.OnClickListener {
     private lateinit var viewPager: ViewPager2
     private lateinit var navView: BottomNavigationView
-    private val binding by lazy{
+
+    private lateinit var beforeImage: ImageView
+    private lateinit var afterImage: ImageView
+    private lateinit var myName: TextView
+    private lateinit var myEmail: TextView
+
+    /*private val binding by lazy{
         ActivityMainBinding.inflate(layoutInflater)
+    }*/
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.before_image -> {
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = MediaStore.Images.Media.CONTENT_TYPE
+                startActivityForResult(intent, REQ_STORAGE_BEFORE)
+            }
+            R.id.after_image -> {
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = MediaStore.Images.Media.CONTENT_TYPE
+                startActivityForResult(intent, REQ_STORAGE_AFTER)
+            }
+        }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         setTheme(R.style.Theme_DietStock)
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_baseline_dehaze_24)
+        supportActionBar!!.title = "DietStock"
+
+
+        val contentMainViewPager = findViewById<ViewPager2>(R.id.view_pager)
+        val contentMainNavView = findViewById<NavigationView>(R.id.nav_view)
+        val bottomNavView = findViewById<BottomNavigationView>(R.id.nav_bottom_view)
+        //val navController = findNavController(R.id.nav_host_fragment)
+
+        beforeImage = contentMainNavView.getHeaderView(0).findViewById(R.id.before_image)
+        afterImage = contentMainNavView.getHeaderView(0).findViewById(R.id.after_image)
 
 
         //로그인 상태 확인
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
-        var email: String ?= sharedpreferences.getString(LoginState.EMAIL_KEY, null)
-        var password:String?= sharedpreferences.getString(LoginState.PASSWORD_KEY,null)
-        if(email == null || password == null){
+        var email: String? = sharedpreferences.getString(LoginState.EMAIL_KEY, null)
+        var password: String? = sharedpreferences.getString(LoginState.PASSWORD_KEY, null)
+        var beforeImageUri: String?= sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY,null)
+        var afterImageUri:String ?= sharedpreferences.getString(LoginState.AFTER_IMAGE_KEY, null)
+        /*if (email == null || password == null) {
             var intent = Intent(this, SignActivity::class.java)
             startActivity(intent)
             finish()
+        }*/
+
+
+        if (beforeImageUri != null) {
+            beforeImage.setImageURI(beforeImageUri!!.toUri())
         }
 
-        viewPager = binding.viewPager
+        if(afterImageUri != null){
+            afterImage.setImageURI(afterImageUri!!.toUri())
+        }
+
+        if(email == null){
+            myName = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_name)
+            myEmail = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_email)
+            myName.text = "안녕하세요"
+            myEmail.text = "www.naver.com"
+        }
+
+        //viewPager = binding.viewPager
+        //viewPager = contentMainBinding.viewPager
+        viewPager = contentMainViewPager
         viewPager.adapter = PagerAdapter(supportFragmentManager, lifecycle)
         viewPager.registerOnPageChangeCallback(PageChangeCallback())
-        navView = binding.navView
+        navView = bottomNavView
         navView.setOnNavigationItemSelectedListener { navigationSelected(it) }
+        /*appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
+        setupActionBarWithNavController(navController, appBarConfiguration)*/
+        //navView.setupWithNavController(navController)
 
-        requirePermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACTIVITY_RECOGNITION), PERMISSION_REQUEST_CODE)
+
+        requirePermissions(
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACTIVITY_RECOGNITION
+            ), PERMISSION_REQUEST_CODE
+        )
     }
+
     override fun permissionGranted(requestCode: Int) {
         Log.d(TAG, "PERMISSION GRANTED")
     }
@@ -70,25 +151,33 @@ class MainActivity : BaseActivity() {
 
 
     override fun onBackPressed() {
-        if(navView.selectedItemId == 3){
-            if(FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요"){
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+
+
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.closeDrawer(Gravity.LEFT)
+            return
+        }
+
+        if (navView.selectedItemId == 3) {
+            if (FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요") {
                 super.onBackPressed()
-            }
-            else{
+            } else {
                 FoodFragmentCamera().reOpenCamera()
             }
-        }else{
+        } else {
             super.onBackPressed()
         }
     }
 
-    private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle): FragmentStateAdapter(fm, lc){
+    private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle) :
+        FragmentStateAdapter(fm, lc) {
         override fun getItemCount(): Int {
             return 5
         }
 
         override fun createFragment(position: Int): Fragment {
-            return when(position){
+            return when (position) {
 
                 0 -> {
                     HomeFragment()
@@ -133,7 +222,7 @@ class MainActivity : BaseActivity() {
         return false
     }
 
-    private inner class PageChangeCallback: ViewPager2.OnPageChangeCallback() {
+    private inner class PageChangeCallback : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             navView.selectedItemId = when (position) {
@@ -145,6 +234,52 @@ class MainActivity : BaseActivity() {
                 3 -> R.id.navigation_food
                 4 -> R.id.navigation_rolemodel
                 else -> error("no such position: $position")
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+
+
+        if (item.itemId == android.R.id.home) {
+            if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                drawerLayout.closeDrawer(Gravity.LEFT)
+            } else {
+                drawerLayout.openDrawer(Gravity.LEFT)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                REQ_STORAGE_BEFORE -> {
+                    var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+                    //val img = findViewById<ImageView>(R.id.before_image)
+                    data?.data?.let { uri ->
+                        //  img.setImageURI(uri)
+                        beforeImage.setImageURI(uri)
+                        Log.d(TAG,uri.toString())
+                        var editor = sharedpreferences.edit()
+                        editor.putString(LoginState.BEFORE_IMAGE_KEY,uri.toString())
+                        editor.apply()
+                    }
+                }
+                REQ_STORAGE_AFTER -> {
+                    var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+                    data?.data?.let { uri ->
+                        //  img.setImageURI(uri)
+                        afterImage.setImageURI(uri)
+                        Log.d(TAG,uri.toString())
+                        var editor = sharedpreferences.edit()
+                        editor.putString(LoginState.AFTER_IMAGE_KEY,uri.toString())
+                        editor.apply()
+                    }
+                }
             }
         }
     }

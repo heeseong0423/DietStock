@@ -13,17 +13,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.drawerlayout.widget.DrawerLayout
-
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-
+import com.fournineseven.dietstock.config.TaskServer
 import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
 import com.fournineseven.dietstock.ui.notifications.NotificationsFragment
@@ -31,7 +28,8 @@ import com.fournineseven.dietstock.ui.ranking.RankingFragment
 import com.fournineseven.dietstock.ui.rolemodel.RoleModelFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
-import java.io.File
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 private const val TAG = "MyTag"
@@ -80,6 +78,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_baseline_dehaze_24)
         supportActionBar!!.title = "DietStock"
 
+        App.retrofit = Retrofit.Builder()
+            .baseUrl(TaskServer.base_url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
         val contentMainViewPager = findViewById<ViewPager2>(R.id.view_pager)
         val contentMainNavView = findViewById<NavigationView>(R.id.nav_view)
@@ -96,11 +98,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         var password: String? = sharedpreferences.getString(LoginState.PASSWORD_KEY, null)
         var beforeImageUri: String?= sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY,null)
         var afterImageUri:String ?= sharedpreferences.getString(LoginState.AFTER_IMAGE_KEY, null)
-        /*if (email == null || password == null) {
+        if (email == null || password == null) {
             var intent = Intent(this, SignActivity::class.java)
             startActivity(intent)
             finish()
-        }*/
+        }
 
 
         if (beforeImageUri != null) {

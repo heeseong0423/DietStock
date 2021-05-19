@@ -24,11 +24,13 @@ import android.util.Log
 import android.util.Size
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getExternalFilesDirs
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import com.fournineseven.dietstock.LoginState
 import com.fournineseven.dietstock.R
 import com.fournineseven.dietstock.databinding.FragmentFoodCameraBinding
 import com.fournineseven.dietstock.model.FoodCamera.DefaultResponseKo
@@ -80,9 +82,10 @@ class FoodFragmentCamera : Fragment() {
     private lateinit var imageDimension: Size
     lateinit var texture: SurfaceTexture
     var fileCount = 0
-    private var foodNo: Int = 100
-    private var userNo: Int = 3
+    private var foodNo: Int = -1
+    private var userNo: Int = -1
     private var serving: Int = 1
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_food_camera, container, false)
@@ -90,6 +93,23 @@ class FoodFragmentCamera : Fragment() {
         windowManager = requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
         binding.takeBtn.setOnClickListener(ButtonListener())
         binding.textureView.surfaceTextureListener = textureListener
+        binding.submitBtn.setOnClickListener(SubmitBtnListener())
+        sharedPreferences = requireContext().getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        binding.foodSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if(!uriList.isEmpty()){
+                    uriList.clear()
+                }
+                getFoodInfo(query!!)
+                return true
+            }
+
+        })
+        userNo = sharedPreferences.getInt(LoginState.USER_NUMBER, -1)
         return binding.root
     }
 
@@ -111,6 +131,13 @@ class FoodFragmentCamera : Fragment() {
     inner class ButtonListener: View.OnClickListener{
         override fun onClick(v: View?) {
             takePicture()
+        }
+    }
+
+    inner class SubmitBtnListener: View.OnClickListener{
+        override fun onClick(v: View?) {
+            Log.d("foodNo", foodNo.toString())
+            saveFoodLog(foodNo = foodNo)
         }
     }
 
@@ -348,6 +375,7 @@ class FoodFragmentCamera : Fragment() {
         var cholesterol = binding.cholesterol
         var natrium = binding.natrium
         var btn = binding.takeBtn
+        var submitBtn = binding.submitBtn
         foodName.text = predictedFoodName
         leftConstraint.visibility = View.VISIBLE
         rightConstraint.visibility = View.VISIBLE
@@ -359,6 +387,8 @@ class FoodFragmentCamera : Fragment() {
         natrium.text = "${natrium.text}${ data.result[0].natrium}g"
         btn.isClickable = false
         btn.visibility = View.INVISIBLE
+        submitBtn.isClickable = true
+        submitBtn.visibility = View.VISIBLE
         closeCamera()
     }
 
@@ -416,11 +446,13 @@ class FoodFragmentCamera : Fragment() {
         }
     }
 
+
     fun reOpenCamera(){
         var foodName = binding.foodName
         var leftConstraint = binding.LeftConstraint
         var rightConstraint = binding.RightConstraint
         var btn = binding.takeBtn
+        var submitBtn = binding.submitBtn
         var camera = binding.textureView
         var image = binding.resultImage
         foodName.text = "음식을 촬영해 주세요"
@@ -428,6 +460,8 @@ class FoodFragmentCamera : Fragment() {
         rightConstraint.visibility = View.INVISIBLE
         btn.isClickable = true
         btn.visibility = View.VISIBLE
+        submitBtn.isClickable = false
+        submitBtn.visibility = View.INVISIBLE
         image.setImageBitmap(null)
         camera.visibility = View.VISIBLE
         FoodFragmentCamera().openCamera()
@@ -455,6 +489,7 @@ class FoodFragmentCamera : Fragment() {
                     .build()
 
             val connection = retrofit.create(FoodCameraInterface::class.java)
+            Log.d("info test", userNo.toString() + " " + foodNo.toString())
             connection.saveFoodLog(userNo,foodNo,serving,body).enqueue(object: Callback<DefaultResponseKo> {
                 override fun onFailure(call: Call<DefaultResponseKo>, t: Throwable){
                     Log.d("result1 - saveFoodLog", t.message.toString())
@@ -496,6 +531,7 @@ class FoodFragmentCamera : Fragment() {
                     Log.d("result_test", response?.toString())
                     Log.d("result2 - getFoodInfo", response?.body().toString())
                     changeSettings(response.body()!!, foodName)
+                    foodNo = response.body()!!.result[0].foodNo
                 }else{
                     Log.d("error line-114", response?.body().toString())
                 }

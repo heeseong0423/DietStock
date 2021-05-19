@@ -48,12 +48,24 @@
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:text="촬영"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textureView"
         android:visibility="visible"
         android:clickable="true"
+        android:fontFamily="@font/font_num1"/>
+
+    <Button
+        android:id="@+id/submitBtn"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:text="제출"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/LeftConstraint"
+        android:visibility="invisible"
+        android:clickable="false"
         android:fontFamily="@font/font_num1"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout

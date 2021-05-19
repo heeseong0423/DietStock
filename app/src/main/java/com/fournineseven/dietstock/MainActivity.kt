@@ -162,7 +162,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }
 
         if (navView.selectedItemId == 3) {
-            if (FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요") {
+            if(!FoodFragmentCamera().binding.foodSearch.isIconified){
+                FoodFragmentCamera().binding.foodSearch.isIconified = true
+            }
+            else if (FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요") {
                 super.onBackPressed()
             } else {
                 FoodFragmentCamera().reOpenCamera()

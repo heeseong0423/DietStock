@@ -94,22 +94,35 @@ class FoodFragmentCamera : Fragment() {
         binding.takeBtn.setOnClickListener(ButtonListener())
         binding.textureView.surfaceTextureListener = textureListener
         binding.submitBtn.setOnClickListener(SubmitBtnListener())
-        sharedPreferences = requireContext().getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        sharedPreferences = requireContext().getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE)
         binding.foodSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
                 return false
             }
 
             override fun onQueryTextSubmit(query: String?): Boolean {
+                if(!binding.foodSearch.isIconified){
+                    binding.foodName.visibility = View.VISIBLE
+                    binding.foodSearch.isIconified = true
+                    binding.foodSearch.isIconified = true
+                }
                 if(!uriList.isEmpty()){
                     uriList.clear()
                 }
                 getFoodInfo(query!!)
                 return true
             }
-
         })
-        userNo = sharedPreferences.getInt(LoginState.USER_NUMBER, -1)
+        binding.foodSearch.setOnSearchClickListener(VisibilityListener())
+        binding.foodSearch.setOnCloseListener(object : SearchView.OnCloseListener{
+            override fun onClose(): Boolean {
+                if(!binding.foodSearch.isIconified){
+                    binding.foodName.visibility = View.VISIBLE
+                }
+                return false
+            }
+        })
+        userNo = sharedPreferences.getString(LoginState.USER_NUMBER, null)!!.toInt()
         return binding.root
     }
 
@@ -138,6 +151,14 @@ class FoodFragmentCamera : Fragment() {
         override fun onClick(v: View?) {
             Log.d("foodNo", foodNo.toString())
             saveFoodLog(foodNo = foodNo)
+        }
+    }
+
+    inner class VisibilityListener: View.OnClickListener{
+        override fun onClick(v: View?) {
+            if(!binding.foodSearch.isIconified){
+                binding.foodName.visibility = View.INVISIBLE
+            }
         }
     }
 
@@ -469,44 +490,73 @@ class FoodFragmentCamera : Fragment() {
 
     fun saveFoodLog(foodNo: Int){
         try{
-            val fileName = getFileName(uriList.last())
-            val contentResolver = this.requireContext().getContentResolver()
-            val item = contentResolver.openFile(uriList.last(), "r", null)
-            val inputStream = FileInputStream(item?.fileDescriptor)
-            val file = File(this.requireContext().cacheDir, fileName)
-            val outputStream = FileOutputStream(file)
-            inputStream.copyTo(outputStream)
-            Log.d("saveFoodLogStart", "start here line 38")
-            Log.d("UriList", uriList.toString())
-            Log.d("file = ", file.length().toString())
-            val requestBody: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-            val body: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
-            val gson: Gson = GsonBuilder().setLenient().create()
-            val retrofit = Retrofit.Builder()
+            var body: MultipartBody.Part
+            try{
+                val fileName = getFileName(uriList.last())
+                val contentResolver = this.requireContext().getContentResolver()
+                val item = contentResolver.openFile(uriList.last(), "r", null)
+                val inputStream = FileInputStream(item?.fileDescriptor)
+                val file = File(this.requireContext().cacheDir, fileName)
+                val outputStream = FileOutputStream(file)
+                inputStream.copyTo(outputStream)
+                Log.d("saveFoodLogStart", "start here line 38")
+                Log.d("UriList", uriList.toString())
+                Log.d("file = ", file.length().toString())
+                val requestBody: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                body = MultipartBody.Part.createFormData("file", file.name, requestBody)
+                val gson: Gson = GsonBuilder().setLenient().create()
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://497.iptime.org")
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build()
+
+                val connection = retrofit.create(FoodCameraInterface::class.java)
+                Log.d("info test", userNo.toString() + " " + foodNo.toString())
+                connection.saveFoodLog2(userNo, foodNo, serving, body).enqueue(object: Callback<DefaultResponseKo> {
+                    override fun onFailure(call: Call<DefaultResponseKo>, t: Throwable){
+                        Log.d("result1 - saveFoodLog", t.message.toString())
+                    }
+
+                    override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
+                        if(response?.isSuccessful){
+                            Log.d("result2 - saveFoodLog", response?.body().toString())
+                        }
+                        else{
+                            Log.d("response error", response?.message())
+                            Log.d("response error", response?.code().toString())
+                            Log.d("response error", response?.errorBody().toString())
+                        }
+                    }
+
+                })
+            }catch (e: Exception) {
+                val gson: Gson = GsonBuilder().setLenient().create()
+                val retrofit = Retrofit.Builder()
 
                     .baseUrl("http://497.iptime.org")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
 
-            val connection = retrofit.create(FoodCameraInterface::class.java)
-            Log.d("info test", userNo.toString() + " " + foodNo.toString())
-            connection.saveFoodLog(userNo,foodNo,serving,body).enqueue(object: Callback<DefaultResponseKo> {
-                override fun onFailure(call: Call<DefaultResponseKo>, t: Throwable){
-                    Log.d("result1 - saveFoodLog", t.message.toString())
-                }
-
-                override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
-                    if(response?.isSuccessful){
-                        Log.d("result2 - saveFoodLog", response?.body().toString())
+                val connection = retrofit.create(FoodCameraInterface::class.java)
+                Log.d("info test", userNo.toString() + " " + foodNo.toString())
+                connection.saveFoodLog1(userNo, foodNo, serving).enqueue(object: Callback<DefaultResponseKo> {
+                    override fun onFailure(call: Call<DefaultResponseKo>, t: Throwable){
+                        Log.d("result1 - saveFoodLog", t.message.toString())
                     }
-                    else{
-                        Log.d("response error", response?.message())
-                        Log.d("response error", response?.code().toString())
-                        Log.d("response error", response?.errorBody().toString())
-                    }
-                }
 
-            })
+                    override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
+                        if(response?.isSuccessful){
+                            Log.d("result2 - saveFoodLog", response?.body().toString())
+                        }
+                        else{
+                            Log.d("response error", response?.message())
+                            Log.d("response error", response?.code().toString())
+                            Log.d("response error", response?.errorBody().toString())
+                        }
+                    }
+
+                })
+            }
         }catch (e: Exception){
             Log.d("Error!!!", e.stackTraceToString())
         }
@@ -562,22 +612,27 @@ class FoodFragmentCamera : Fragment() {
 
 
 interface FoodCameraInterface{
-    @Multipart
-    @POST("api/food/saveFoodLog")
-    fun saveFoodLog(
 
-            @Part("user_no") userNo: Int,
-            @Part("food_no") foodNo : Int,
-            @Part("serving") serving : Int,
-            @Part food_image: MultipartBody.Part
-
+    @FormUrlEncoded
+    @POST("api/food/saveFoodLog/1")
+    fun saveFoodLog1(
+        @Field("user_no") userNo: Int,
+        @Field("food_no") foodNo : Int,
+        @Field("serving") serving : Int,
     ): Call<DefaultResponseKo>
 
+    @Multipart
+    @POST("api/food/saveFoodLog/2")
+    fun saveFoodLog2(
+        @Part("user_no") userNo: Int,
+        @Part("food_no") foodNo : Int,
+        @Part("serving") serving : Int,
+        @Part food_image: MultipartBody.Part
+    ): Call<DefaultResponseKo>
 
     @FormUrlEncoded
     @POST("api/food/getFoodInfo")
     fun getFoodInfo(
-
             @Field("food_name") foodName: String
     ): Call<GetFoodResponse>
 }

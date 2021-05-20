@@ -96,11 +96,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         var password: String? = sharedpreferences.getString(LoginState.PASSWORD_KEY, null)
         var beforeImageUri: String?= sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY,null)
         var afterImageUri:String ?= sharedpreferences.getString(LoginState.AFTER_IMAGE_KEY, null)
-        /*if (email == null || password == null) {
+        if (email == null || password == null) {
             var intent = Intent(this, SignActivity::class.java)
             startActivity(intent)
             finish()
-        }*/
+        }
 
 
         if (beforeImageUri != null) {

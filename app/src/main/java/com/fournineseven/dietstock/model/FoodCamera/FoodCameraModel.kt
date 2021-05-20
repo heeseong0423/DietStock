@@ -2,17 +2,6 @@ package com.fournineseven.dietstock.model.FoodCamera
 
 import com.google.gson.annotations.SerializedName
 
-data class SaveFoodLogModel(
-
-    @SerializedName("user_no") var userNo : Int,
-    @SerializedName("serving") var serving: Int,
-    @SerializedName("food_no") var foodNo: String
-)
-
-data class GetFoodInfo(
-    @SerializedName("food_name") var foodName: String
-)
-
 data class DefaultResponseKo(
     @SerializedName("success") var success: Boolean
 )

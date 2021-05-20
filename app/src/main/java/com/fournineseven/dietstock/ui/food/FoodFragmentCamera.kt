@@ -233,7 +233,6 @@ class FoodFragmentCamera : Fragment() {
                     }
                     cameraCaptureSessions = session
                     captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
-
                     try {
                         cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, null)
                     }catch (e: CameraAccessException){

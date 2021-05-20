@@ -66,5 +66,4 @@ public interface RetrofitService {
     @POST("api/member/getRequestFoods")
     Call<GetRequestFoodResponse> getRequestFood(@Body GetRequestFoodRequest param);
 
-
 }

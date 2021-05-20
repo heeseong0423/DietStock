@@ -47,6 +47,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SignActivity extends AppCompatActivity {
 
+
+    SharedPreferences sharedpreferences;
+
     Button btn_signin, btn_signup, btn_before_image_register, btn_next_signup;
     LinearLayout ll_sign_main, ll_signin, ll_signup, ll_signup2;
     TextView tv_main_1;
@@ -68,10 +71,9 @@ public class SignActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign);
         init();
 
-        App.retrofit = new Retrofit.Builder()
-                .baseUrl(TaskServer.base_url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+        LoginState.INSTANCE.setEmail(sharedpreferences.getString(LoginState.EMAIL_KEY, null));
+        LoginState.INSTANCE.setPassword(sharedpreferences.getString(LoginState.PASSWORD_KEY, null));
     }
 
     void init(){
@@ -136,12 +138,17 @@ public class SignActivity extends AppCompatActivity {
                         Log.d("debug", response.body().toString());
                         LoginResponse getLoginResponse = (LoginResponse)response.body();
                         if(getLoginResponse.isSuccess()) {
-                            Context context = SignActivity.this;
-                            SharedPreferences sharedPref = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPref.edit();
+                            //Context context = SignActivity.this;
+                            //SharedPreferences sharedPref = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                            //SharedPreferences.Editor editor = sharedPref.edit();
+                            SharedPreferences.Editor editor = sharedpreferences.edit();
+                            editor.putString(LoginState.EMAIL_KEY, et_id.getText().toString());
+                            editor.putString(LoginState.PASSWORD_KEY, et_password.getText().toString());
+
                             int user_no= getLoginResponse.getResult().getUser_no();
-                            editor.putString("userNo", String.valueOf(user_no));
-                            editor.commit();
+                            editor.putString(LoginState.USER_NUMBER, String.valueOf(user_no));
+                            //editor.commit();
+                            editor.apply();
                             Intent intent = new Intent(SignActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
@@ -197,9 +204,16 @@ public class SignActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
                         Log.d("debug", "onSuccess");
-                        tv_main_1.setVisibility(View.VISIBLE);
+                        if(response.body().isSuccess()) {
+                            tv_main_1.setVisibility(View.VISIBLE);
+                            ll_signup2.setVisibility(View.GONE);
+                            ll_sign_main.setVisibility(View.VISIBLE);
+                        }else{
+                            Log.d("debug", response.body().toString());
+                        }
+                        /*tv_main_1.setVisibility(View.VISIBLE);
                         ll_signup.setVisibility(View.GONE);
-                        ll_sign_main.setVisibility(View.VISIBLE);
+                        ll_sign_main.setVisibility(View.VISIBLE);*/
                     }
 
                     @Override

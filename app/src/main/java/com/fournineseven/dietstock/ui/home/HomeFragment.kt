@@ -68,7 +68,7 @@ class HomeFragment : Fragment() {
         val entries = ArrayList<CandleEntry>()
 
         var num = 0
-        for (csStock in DataUtil.getCSStockData()) {
+        /*for (csStock in DataUtil.getCSStockData()) {
             entries.add(
                     CandleEntry(
                             /*csStock.no.toFloat(),
@@ -83,7 +83,7 @@ class HomeFragment : Fragment() {
                             csStock.close
                     )
             )
-        }
+        }*/
 
 
         val dataSet = CandleDataSet(entries, "").apply {

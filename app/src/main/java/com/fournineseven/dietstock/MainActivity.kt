@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.fournineseven.dietstock.databinding.ActivityMainBinding
+import com.fournineseven.dietstock.ui.feedback.FeedBackFragment
 
 import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
@@ -94,7 +95,7 @@ class MainActivity : BaseActivity() {
                     HomeFragment()
                 }
                 1 -> RankingFragment()
-                2 -> NotificationsFragment()
+                2 -> FeedBackFragment()
                 3 -> {
                     requirePermissions(arrayOf(Manifest.permission.CAMERA), PERMISSION_REQUEST_CODE)
                     FoodFragmentCamera()
@@ -117,7 +118,7 @@ class MainActivity : BaseActivity() {
                 return true
             }
 
-            R.id.navigation_notifications -> {
+            R.id.navigation_feedback -> {
                 viewPager.currentItem = 2
                 return true
             }
@@ -140,7 +141,7 @@ class MainActivity : BaseActivity() {
                 0 -> R.id.navigation_home
                 1 -> R.id.navigation_ranking
 
-                2 -> R.id.navigation_notifications
+                2 -> R.id.navigation_feedback
 
                 3 -> R.id.navigation_food
                 4 -> R.id.navigation_rolemodel

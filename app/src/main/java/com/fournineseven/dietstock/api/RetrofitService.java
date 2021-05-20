@@ -1,19 +1,20 @@
 package com.fournineseven.dietstock.api;
 
 import com.fournineseven.dietstock.model.DefaultResponse;
+import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodRequest;
+import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodResponse;
 import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsRequest;
 import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsResponse;
 
 import com.fournineseven.dietstock.model.getKcalByWeek.GetKcalByWeekRequest;
 import com.fournineseven.dietstock.model.getKcalByWeek.GetKcalByWeekResponse;
 import com.fournineseven.dietstock.model.getRanking.GetRankingResponse;
+import com.fournineseven.dietstock.model.getRequestFood.GetRequestFoodRequest;
+import com.fournineseven.dietstock.model.getRequestFood.GetRequestFoodResponse;
 import com.fournineseven.dietstock.model.getRolemodel.GetRolemodelResponse;
 import com.fournineseven.dietstock.model.login.LoginModel;
 import com.fournineseven.dietstock.model.login.LoginResponse;
-import com.fournineseven.dietstock.ui.feedback.getDailyFood;
 
-
-import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -59,8 +60,11 @@ public interface RetrofitService {
     @POST("api/member/getKcalByWeek")
     Call<GetKcalByWeekResponse> getKcalByWeek(@Body GetKcalByWeekRequest param);
 
-    @GET("/food/getDailyFood")
-    Call<List<getDailyFood>> getDailyFood();
+    @POST("api/food/getDailyFood")
+    Call<GetDailyFoodResponse> getDailyFood(@Body GetDailyFoodRequest param);
+
+    @POST("api/member/getRequestFoods")
+    Call<GetRequestFoodResponse> getRequestFood(@Body GetRequestFoodRequest param);
 
 
 }

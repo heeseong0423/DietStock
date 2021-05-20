@@ -12,7 +12,7 @@ data class GetFoodResponse(
 )
 
 data class ResultFood(
-    @SerializedName("food_no") var foodNo: String,
+    @SerializedName("food_no") var foodNo: Int,
     @SerializedName("kcal") var kcal: Float,
     @SerializedName("carbs") var carbs: Float,
     @SerializedName("protein") var protein: Float,

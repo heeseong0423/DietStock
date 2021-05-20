@@ -1,6 +1,8 @@
 package com.fournineseven.dietstock.api;
 
 import com.fournineseven.dietstock.model.DefaultResponse;
+import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodRequest;
+import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodResponse;
 import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsRequest;
 import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsResponse;
 
@@ -55,4 +57,6 @@ public interface RetrofitService {
     @POST("api/member/getKcalByWeek")
     Call<GetKcalByWeekResponse> getKcalByWeek(@Body GetKcalByWeekRequest param);
 
+    @POST("api/food/getDailyFood")
+    Call<GetDailyFoodResponse> getDailyFood(@Body GetDailyFoodRequest param);
 }

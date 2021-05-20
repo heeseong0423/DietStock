@@ -55,13 +55,13 @@
             android:id="@+id/buttn_rolemodel_detail1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="차트1"
+            android:text="칼로리"
             android:textSize="10sp"/>
         <Button
             android:id="@+id/buttn_rolemodel_detail2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="차트2"
+            android:text="식단"
             android:textSize="10sp"
             />
     </LinearLayout>
@@ -84,6 +84,7 @@
         android:layout_height="0dp"
         android:layout_width="match_parent"
         android:layout_margin="30dp"
+        android:background="@drawable/circleradius"
         app:layout_constraintTop_toBottomOf="@+id/linearlayout_rolemodel_detail_btn"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

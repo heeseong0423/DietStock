@@ -21,7 +21,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+
+import com.fournineseven.dietstock.databinding.ActivityMainBinding
+import com.fournineseven.dietstock.ui.feedback.FeedBackFragment
+
 import com.fournineseven.dietstock.config.TaskServer
+
 import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
 import com.fournineseven.dietstock.ui.notifications.NotificationsFragment
@@ -132,7 +137,10 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         }
 
         if (navView.selectedItemId == 3) {
-            if (FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요") {
+            if(!FoodFragmentCamera().binding.foodSearch.isIconified){
+                FoodFragmentCamera().binding.foodSearch.isIconified = true
+            }
+            else if (FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요") {
                 super.onBackPressed()
             } else {
                 FoodFragmentCamera().reOpenCamera()
@@ -223,7 +231,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                     HomeFragment()
                 }
                 1 -> RankingFragment()
-                2 -> NotificationsFragment()
+                2 -> FeedBackFragment()
                 3 -> {
                     requirePermissions(arrayOf(Manifest.permission.CAMERA), PERMISSION_REQUEST_CODE)
                     FoodFragmentCamera()
@@ -246,7 +254,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 return true
             }
 
-            R.id.navigation_notifications -> {
+            R.id.navigation_feedback -> {
                 viewPager.currentItem = 2
                 return true
             }
@@ -269,7 +277,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 0 -> R.id.navigation_home
                 1 -> R.id.navigation_ranking
 
-                2 -> R.id.navigation_notifications
+                2 -> R.id.navigation_feedback
 
                 3 -> R.id.navigation_food
                 4 -> R.id.navigation_rolemodel

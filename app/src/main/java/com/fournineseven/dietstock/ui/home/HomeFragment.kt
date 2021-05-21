@@ -16,7 +16,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 
 import androidx.room.Room
-import com.fournineseven.dietstock.DataUtil
 import com.fournineseven.dietstock.R
 import com.fournineseven.dietstock.User
 import com.fournineseven.dietstock.room.KcalDatabase
@@ -69,7 +68,7 @@ class HomeFragment : Fragment() {
         val entries = ArrayList<CandleEntry>()
 
         var num = 0
-        for (csStock in DataUtil.getCSStockData()) {
+        /*for (csStock in DataUtil.getCSStockData()) {
             entries.add(
                     CandleEntry(
                             /*csStock.no.toFloat(),
@@ -84,7 +83,7 @@ class HomeFragment : Fragment() {
                             csStock.close
                     )
             )
-        }
+        }*/
 
 
         val dataSet = CandleDataSet(entries, "").apply {

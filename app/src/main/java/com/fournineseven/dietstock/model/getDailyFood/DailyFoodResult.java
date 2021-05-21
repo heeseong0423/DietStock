@@ -4,9 +4,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class DailyFoodResult {
-    @SerializedName("food_name")
+
+    @SerializedName("food_image")
     @Expose
-    private String food_name;
+    private String food_image;
 
     @SerializedName("kcal")
     @Expose
@@ -19,6 +20,10 @@ public class DailyFoodResult {
     @SerializedName("updated_dt")
     @Expose
     private String updated_dt;
+
+    @SerializedName("food_name")
+    @Expose
+    private String food_name;
 
     @SerializedName("carbs")
     @Expose
@@ -35,13 +40,16 @@ public class DailyFoodResult {
 
     public DailyFoodResult(){}
 
+
+    public String getFood_image() {
+        return food_image;
+    }
+
     public float getCarbs() {
         return carbs;
     }
 
-    public float getFat() {
-        return fat;
-    }
+    public float getFat() { return fat; }
 
     public float getKcal() {
         return kcal;

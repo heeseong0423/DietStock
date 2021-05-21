@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/recommend_kcal"></EditText>
+            android:id="@+id/et_recommend_kcal"></EditText>
 
         <TextView
             android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/real_kcal"></EditText>
+            android:id="@+id/et_real_kcal"></EditText>
     </LinearLayout>
 
     <LinearLayout
@@ -99,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/recommend_carbs"></EditText>
+            android:id="@+id/et_recommend_carbs"></EditText>
 
         <TextView
             android:layout_width="wrap_content"
@@ -114,7 +114,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/real_carbs"></EditText>
+            android:id="@+id/et_real_carbs"></EditText>
     </LinearLayout>
 
     <LinearLayout
@@ -134,7 +134,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/recommend_protein"></EditText>
+            android:id="@+id/et_recommend_protein"></EditText>
 
         <TextView
             android:layout_width="wrap_content"
@@ -149,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/real_protein"></EditText>
+            android:id="@+id/et_real_protein"></EditText>
     </LinearLayout>
 
     <LinearLayout
@@ -169,7 +169,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/recommend_fat"></EditText>
+            android:id="@+id/et_recommend_fat"></EditText>
 
         <TextView
             android:layout_width="wrap_content"
@@ -184,7 +184,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/real_fat"></EditText>
+            android:id="@+id/et_real_fat"></EditText>
     </LinearLayout>
 
         <LinearLayout
@@ -193,7 +193,7 @@
             android:layout_gravity="center">
 
         <ImageView
-            android:id="@+id/bad_food"
+            android:id="@+id/iv_bad_food"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_launcher"
@@ -211,7 +211,7 @@
             </TextView>
 
         <ImageView
-            android:id="@+id/good_food"
+            android:id="@+id/iv_good_food"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_launcher"

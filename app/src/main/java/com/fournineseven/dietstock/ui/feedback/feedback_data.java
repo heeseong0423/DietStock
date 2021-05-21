@@ -8,11 +8,13 @@ public class feedback_data {
     private float protein;
     private float fat;
     private String time;
+    private float serving;
     private String foodname;
 
-    public feedback_data(String food_image,float kcal, float carbs, float protein, float fat, String time, String foodname) {
+    public feedback_data(String food_image,float serving,float kcal, float carbs, float protein, float fat, String time, String foodname) {
         this.food_image = food_image;
         this.kcal = kcal;
+        this.serving = serving;
         this.carbs = carbs;
         this.protein = protein;
         this.fat = fat;
@@ -22,6 +24,10 @@ public class feedback_data {
 
     public String getFood_image() {
         return food_image;
+    }
+
+    public float getServing() {
+        return serving;
     }
 
     public void setFood_image(String food_image) {
@@ -50,6 +56,10 @@ public class feedback_data {
 
     public void setProtein(float protein) {
         this.protein = protein;
+    }
+
+    public void setServing(float serving) {
+        this.serving = serving;
     }
 
     public float getFat() {

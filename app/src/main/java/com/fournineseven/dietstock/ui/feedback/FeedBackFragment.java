@@ -23,6 +23,8 @@ import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodResponse;
 import com.fournineseven.dietstock.model.getRequestFood.GetRequestFoodRequest;
 import com.fournineseven.dietstock.model.getRequestFood.GetRequestFoodResponse;
 import com.fournineseven.dietstock.model.getRequestFood.RequestFoodResult;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import org.checkerframework.checker.units.qual.A;
 
@@ -39,6 +41,16 @@ import static com.fournineseven.dietstock.LoginState.SHARED_PREFS;
 
 public class FeedBackFragment extends Fragment {
 
+    private EditText et_real_kcal;
+    private EditText et_real_carbs;
+    private EditText et_real_protein;
+    private EditText et_real_fat;
+    private EditText et_recommend_kcal;
+    private EditText et_recommend_carbs;
+    private EditText et_recommend_protein;
+    private EditText et_recommend_fat;
+
+
     private Button btn_gocheck;
     private String user_avoid;
     private int user_no;
@@ -47,6 +59,10 @@ public class FeedBackFragment extends Fragment {
     private String nutriention;
     private float gram;
     private float carbs=0,protein=0,fat=0;
+    private int kcal=0;
+    private float recommend_carbs=0,recommend_protein=0,recommend_fat=0;
+    private float compare[] = new float[3];
+    private float dummy[] = new float[3];
 
     ArrayList<feedback_data> arrayList;
     feedbackAdapter feedbackadapter;
@@ -57,6 +73,15 @@ public class FeedBackFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.feedback_main,container,false);
         btn_gocheck = rootView.findViewById(R.id.btn_gocheck);
+        et_real_kcal = rootView.findViewById(R.id.et_real_kcal);
+        et_real_carbs = rootView.findViewById(R.id.et_real_carbs);
+        et_real_protein = rootView.findViewById(R.id.et_real_protein);
+        et_real_fat = rootView.findViewById(R.id.et_real_fat);
+        et_recommend_kcal = rootView.findViewById(R.id.et_recommend_kcal);
+        et_recommend_carbs = rootView.findViewById(R.id.et_recommend_carbs);
+        et_recommend_protein = rootView.findViewById(R.id.et_recommend_protein);
+        et_recommend_fat = rootView.findViewById(R.id.et_recommend_fat);
+
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv);
         //linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -65,8 +90,8 @@ public class FeedBackFragment extends Fragment {
         feedbackadapter = new feedbackAdapter(arrayList);
         recyclerView.setAdapter(feedbackadapter);
 
-        Bundle bundle = getArguments();
-        user_avoid = bundle.getString("메시지"); //user_avoid = 유저가 체크한 기피식품
+        //Bundle bundle = getArguments();
+        //user_avoid = bundle.getString("메시지"); //user_avoid = 유저가 체크한 기피식품
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(user_avoid,0);
         user_avoid = sharedPreferences.getString("user_avoid","");
@@ -93,15 +118,20 @@ public class FeedBackFragment extends Fragment {
                     feedbackadapter.setEmpty();
                     for(int i=0; i<dailyFoodResults.size(); i++){
                         DailyFoodResult dailyfood = dailyFoodResults.get(i);
-                        feedback_data data = new feedback_data(dailyfood.getFood_image(),dailyfood.getKcal(),dailyfood.getCarbs(),dailyfood.getProtein(),dailyfood.getFat(),
+                        feedback_data data = new feedback_data(dailyfood.getFood_image(),dailyfood.getKcal(), dailyfood.getServing(), dailyfood.getCarbs(),dailyfood.getProtein(),dailyfood.getFat(),
                                         dailyfood.getUpdated_dt(),dailyfood.getFood_name());
                         feedbackadapter.addItem(data);
-                        carbs += data.getCarbs();
-                        protein += data.getProtein();
-                        fat += data.getFat();
+                        kcal += data.getKcal() * data.getServing();
+                        carbs += data.getCarbs() * data.getServing(); //먹은 음식의 탄수화물 총합
+                        protein += data.getProtein() * data.getServing(); //먹은 음식의 단백질 총합
+                        fat += data.getFat() * data.getServing(); //먹은 음식의 지방 총합
                     }
                     recyclerView.setAdapter(feedbackadapter);
                     feedbackadapter.notifyDataSetChanged();
+                    et_real_kcal.setText(kcal);
+                    et_real_carbs.setText((int) carbs);
+                    et_real_protein.setText((int) protein);
+                    et_real_fat.setText((int) fat);
                     //ArrayList<DailyFoodResult> dailyFoodResult = getDailyFoodResponse.getResult();
                 }
             }
@@ -112,9 +142,38 @@ public class FeedBackFragment extends Fragment {
                 Log.d("debug", "onFailure"+t.toString());
             }
         });
+        /* 유저의 권장 섭취량 칼로리= X;
+        탄 단 지 = 3 : 4 : 3
+        recommend_carbs = (X * 0.3) / 4;
+        recommend_protein = (X * 0.4) / 4;
+        recommend_fat = (X * 0.3) / 9;
+
+        et_recommend_kcal.setText(X);
+        et_recommend_carbs.setText((int) recommend_carbs);
+        et_recommend_protein.setText((int) recommend_protein);
+        et_recommend_fat.setText((int) recommend_fat);
+
+        compare[0] = carbs - recommend_carbs;
+        compare[1] = protein - recommend_protein;
+        compare[2] = fat - recommend_fat;
+        for(int i=0;i<3;i++){
+            dummy[i] = Math.abs(compare[i]);
+        }
+        float max = dummy[0];
+        int max_index=0;
+        for(int i=1;i<3;i++){
+            if(max < dummy[i]){
+                max = dummy[i];
+                max_index=i;
+            }
+        }
+        switch(max_index){
+            case 0 : nutriention = "carbs"; gram = compare[0]; break;
+            case 1 : nutriention = "protein"; gram = compare[1]; break;
+            case 2 : nutriention = "fat"; gram = compare[2]; break;
+        }*/
 
         avoid_food = user_avoid;
-        //nutriention 이랑 gram 설정해야 함
 
         RetrofitService getRequestFoodService = App.retrofit.create(RetrofitService.class);
         Call<GetRequestFoodResponse> callGetRequestFood =
@@ -127,7 +186,10 @@ public class FeedBackFragment extends Fragment {
                 GetRequestFoodResponse GetRequestFoodResponse = (GetRequestFoodResponse)response.body();
                 ArrayList<RequestFoodResult> requestFoodResultsResults = (GetRequestFoodResponse).getResult();
                 if(GetRequestFoodResponse.isSuccess()){
+                    for(int i=0; i<requestFoodResultsResults.size(); i++) {
 
+
+                    }
                 }
             }
 

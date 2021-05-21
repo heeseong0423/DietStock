@@ -62,9 +62,6 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
         public CustomViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             this.food_image = (ImageView) itemView.findViewById(R.id.food_image);
-            this.carbs = (EditText) itemView.findViewById(R.id.carbs);
-            this.protein = (EditText) itemView.findViewById(R.id.protein);
-            this.fat = (EditText) itemView.findViewById(R.id.fat);
             this.time = (EditText) itemView.findViewById(R.id.time);
             this.foodname = (EditText) itemView.findViewById(R.id.foodname);
 

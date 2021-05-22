@@ -40,7 +40,7 @@ import static com.fournineseven.dietstock.LoginState.SHARED_PREFS;
 public class FeedBackFragment extends Fragment {
 
     private Button btn_gocheck;
-    private String user_avoid;
+    private String user_avoid = "";
     private int user_no;
     long now = System.currentTimeMillis();
     private String avoid_food;
@@ -64,9 +64,6 @@ public class FeedBackFragment extends Fragment {
         arrayList = new ArrayList<>();
         feedbackadapter = new feedbackAdapter(arrayList);
         recyclerView.setAdapter(feedbackadapter);
-
-        Bundle bundle = getArguments();
-        user_avoid = bundle.getString("메시지"); //user_avoid = 유저가 체크한 기피식품
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(user_avoid,0);
         user_avoid = sharedPreferences.getString("user_avoid","");

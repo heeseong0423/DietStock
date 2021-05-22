@@ -65,9 +65,9 @@ class HomeFragment : Fragment() {
         button2.setOnClickListener {
             Log.d(TAG,"${userDao.getAll()}")
         }
-        val entries = ArrayList<CandleEntry>()
-
-        var num = 0
+//        val entries = ArrayList<CandleEntry>()
+//
+//        var num = 0
         /*for (csStock in DataUtil.getCSStockData()) {
             entries.add(
                     CandleEntry(
@@ -86,62 +86,62 @@ class HomeFragment : Fragment() {
         }*/
 
 
-        val dataSet = CandleDataSet(entries, "").apply {
-            //심지 부분
-            shadowColor = Color.LTGRAY
-            shadowWidth = 1F
-
-            //음봉
-            decreasingColor = Color.BLUE
-            decreasingPaintStyle = Paint.Style.FILL_AND_STROKE
-
-            //양봉
-            increasingColor = Color.RED
-            increasingPaintStyle = Paint.Style.FILL_AND_STROKE
-
-            neutralColor = Color.DKGRAY
-            setDrawValues(true)
-            //터치시 노란선 제거
-            highLightColor = Color.TRANSPARENT
-
-            valueTextColor = Color.BLACK
-            valueTextSize = 12.0f
-        }
-
-        dietChart.axisLeft.run{
-            setDrawAxisLine(true)
-            setDrawGridLines(false)
-            textColor = Color.TRANSPARENT
-        }
-        dietChart.axisRight.run {
-            setDrawAxisLine(true)
-            setDrawGridLines(false)
-        }
-
-        dietChart.xAxis.run{
-            textColor = Color.TRANSPARENT
-            setDrawAxisLine(false)
-            setDrawGridLines(false)
-            setAvoidFirstLastClipping(true)
-        }
-        dietChart.legend.run {
-            //isEnabled = false
-            isEnabled = false
-
-        }
-
-
-        dietChart.apply {
-            this.data = CandleData(dataSet)
-            description.isEnabled = false
-            isHighlightPerDragEnabled = true
-            requestDisallowInterceptTouchEvent(true)
-            setVisibleXRangeMaximum(7f)
-            setVisibleXRangeMinimum(0f)
-            moveViewToX(dietChart.xAxis.axisMaximum)
-            //setBackgroundColor(Color.WHITE)
-            invalidate()
-        }
+//        val dataSet = CandleDataSet(entries, "").apply {
+//            //심지 부분
+//            shadowColor = Color.LTGRAY
+//            shadowWidth = 1F
+//
+//            //음봉
+//            decreasingColor = Color.BLUE
+//            decreasingPaintStyle = Paint.Style.FILL_AND_STROKE
+//
+//            //양봉
+//            increasingColor = Color.RED
+//            increasingPaintStyle = Paint.Style.FILL_AND_STROKE
+//
+//            neutralColor = Color.DKGRAY
+//            setDrawValues(true)
+//            //터치시 노란선 제거
+//            highLightColor = Color.TRANSPARENT
+//
+//            valueTextColor = Color.BLACK
+//            valueTextSize = 12.0f
+//        }
+//
+//        dietChart.axisLeft.run{
+//            setDrawAxisLine(true)
+//            setDrawGridLines(false)
+//            textColor = Color.TRANSPARENT
+//        }
+//        dietChart.axisRight.run {
+//            setDrawAxisLine(true)
+//            setDrawGridLines(false)
+//        }
+//
+//        dietChart.xAxis.run{
+//            textColor = Color.TRANSPARENT
+//            setDrawAxisLine(false)
+//            setDrawGridLines(false)
+//            setAvoidFirstLastClipping(true)
+//        }
+//        dietChart.legend.run {
+//            //isEnabled = false
+//            isEnabled = false
+//
+//        }
+//
+//
+//        dietChart.apply {
+//            this.data = CandleData(dataSet)
+//            description.isEnabled = false
+//            isHighlightPerDragEnabled = true
+//            requestDisallowInterceptTouchEvent(true)
+//            setVisibleXRangeMaximum(7f)
+//            setVisibleXRangeMinimum(0f)
+//            moveViewToX(dietChart.xAxis.axisMaximum)
+//            //setBackgroundColor(Color.WHITE)
+//            invalidate()
+//        }
         return root
     }
 }

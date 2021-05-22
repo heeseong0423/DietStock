@@ -51,6 +51,8 @@
         </activity>
 
         <activity android:name=".ui.rolemodel.RoleModelDetailActivity" />
+        <activity android:name=".ui.feedback.avoidFood_result" />
+        <activity android:name=".ui.feedback.avoidFood_check"/>
         <activity android:name=".SignActivity" >
 
         </activity>

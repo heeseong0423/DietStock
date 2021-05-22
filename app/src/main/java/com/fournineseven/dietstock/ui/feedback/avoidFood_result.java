@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.fournineseven.dietstock.R;
 
@@ -44,12 +45,8 @@ public class avoidFood_result extends AppCompatActivity {
         page2_btn_finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(avoidFood_result.this,FeedBackFragment.class); //이동->이동할 곳(class)
-
-                Bundle bundle = new Bundle();
-                bundle.putString("메시지",message);
-
-                startActivity(intent); //액티비티 이동
+                
+                finish();
             }
         });
     }

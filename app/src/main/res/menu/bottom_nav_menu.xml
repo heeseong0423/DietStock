@@ -16,7 +16,7 @@
         android:title="@string/title_ranking" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_feedback"
 
         android:icon="@drawable/ic_baseline_feedback_24"
 

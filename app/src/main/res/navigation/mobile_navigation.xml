@@ -18,16 +18,16 @@
         tools:layout="@layout/fragment_ranking" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.fournineseven.dietstock.ui.notifications.NotificationsFragment"
+        android:id="@+id/navigation_feedback"
+        android:name="com.fournineseven.dietstock.ui.feedback.FeedBackFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/feedback_main" />
 
     <fragment
         android:id="@+id/navigation_food"
-        android:name="com.fournineseven.dietstock.ui.food.FoodFragment"
+        android:name="com.fournineseven.dietstock.ui.food.FoodFragmentCamera"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_food" />
+        tools:layout="@layout/fragment_food_camera" />
 
     <fragment
         android:id="@+id/navigation_rolemodel"

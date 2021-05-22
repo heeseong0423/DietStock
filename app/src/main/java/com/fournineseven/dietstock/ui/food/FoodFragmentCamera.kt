@@ -122,7 +122,7 @@ class FoodFragmentCamera : Fragment() {
                 return false
             }
         })
-        userNo = sharedPreferences.getString(LoginState.USER_NUMBER, null)!!.toInt()
+        userNo = sharedPreferences.getString(LoginState.USER_NUMBER, "0")!!.toInt()
         return binding.root
     }
 

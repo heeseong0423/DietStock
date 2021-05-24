@@ -24,6 +24,7 @@ import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodResponse;
 import com.fournineseven.dietstock.model.getRequestFood.GetRequestFoodRequest;
 import com.fournineseven.dietstock.model.getRequestFood.GetRequestFoodResponse;
 import com.fournineseven.dietstock.model.getRequestFood.RequestFoodResult;
+import com.fournineseven.dietstock.ui.ranking.RankingAdapter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -73,12 +74,11 @@ public class FeedBackFragment extends Fragment {
     private int activity = 0;
     private float standardweight=0;
     private float required_kcal=0;
-
-    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView recyclerView;
 
     ArrayList<feedback_data> arrayList;
     feedbackAdapter feedbackadapter;
-    RecyclerView recyclerView;
+
     LinearLayoutManager linearLayoutManager;
 
     @Override
@@ -94,17 +94,11 @@ public class FeedBackFragment extends Fragment {
         et_recommend_protein = rootView.findViewById(R.id.et_recommend_protein);
         et_recommend_fat = rootView.findViewById(R.id.et_recommend_fat);
 
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.rv);
-        //linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
 
         arrayList = new ArrayList<>();
-        feedbackadapter = new feedbackAdapter(getActivity());
-        recyclerView.setAdapter(feedbackadapter);
 
         //Bundle bundle = getArguments();
         //user_avoid = bundle.getString("메시지"); //user_avoid = 유저가 체크한 기피식품
-
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS,0);
         user_avoid = sharedPreferences.getString("user_avoid","");
@@ -117,7 +111,6 @@ public class FeedBackFragment extends Fragment {
         Date mDate = new Date(now);
         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
         String updated_dt = simpleDate.format(mDate);
-
 
         RetrofitService getDailyFoodService = App.retrofit.create(RetrofitService.class);
         Call<GetDailyFoodResponse> callGetDailyFood =
@@ -158,24 +151,28 @@ public class FeedBackFragment extends Fragment {
                 }
             }
 
+
+
             @Override
                 public void onFailure(Call<GetDailyFoodResponse> call, Throwable t) {
-
                     Log.d("debug", "onFailure"+t.toString());
             }
         });
+        recyclerView =(RecyclerView)rootView.findViewById(R.id.rv);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        feedbackadapter = new feedbackAdapter(getActivity());
 
         int sharedPreferences_sex = sharedPreferences.getInt(GENDER_KEY,0);
         gender = sharedPreferences.getInt(GENDER_KEY,0);
         float sharedPreferences_height = sharedPreferences.getFloat(HEIGHT_KEY,0);
         height = sharedPreferences.getFloat(HEIGHT_KEY,0);
-        SharedPreferences sharedPreferences_activity = getActivity().getSharedPreferences(ACTIVITY_KEY,0);
+        int sharedPreferences_activity = sharedPreferences.getInt(ACTIVITY_KEY,0);
         activity = sharedPreferences.getInt(ACTIVITY_KEY,0);
 
         Log.d("gender"," " + gender);
         Log.d("height"," " + height);
         Log.d("activity"," " + activity);
-
 
         if(gender==1){
             standardweight = (height/100) * (height/100) * 21;
@@ -223,7 +220,14 @@ public class FeedBackFragment extends Fragment {
             case 2 : nutriention = "fat"; gram = compare[2]; break;
         }
 
-        avoid_food = user_avoid;
+        //gram = 오늘 먹은 음식의 총량 중 가장 차이나는 탄 단 지 중 하나
+
+        //ex) 탄수화물 -100 -> 탄수화물이 100보다 작은 음식 넘어옴
+        //ex) 단백질 +50 -> 단백질이 50보다 큰 음식 넘어옴
+
+        String getstr = getArguments().getString("send");
+        avoid_food = getstr;
+        Log.d("avoid_food"," " + getstr);
 
         RetrofitService getRequestFoodService = App.retrofit.create(RetrofitService.class);
         Call<GetRequestFoodResponse> callGetRequestFood =
@@ -237,6 +241,14 @@ public class FeedBackFragment extends Fragment {
                 ArrayList<RequestFoodResult> requestFoodResultsResults = (GetRequestFoodResponse).getResult();
                 if(GetRequestFoodResponse.isSuccess()){
                     for(int i=0; i<requestFoodResultsResults.size(); i++) {
+                        /*private String food_name;
+                        private float kcal;
+                        private float carbs;
+                        private float protein;
+                        private float fat;
+                        private String food_image;*/
+
+
 
 
                     }

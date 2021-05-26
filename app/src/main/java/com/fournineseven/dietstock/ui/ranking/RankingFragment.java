@@ -91,8 +91,8 @@ public class RankingFragment extends Fragment {
                                 adapter.addItem(new RankingItem(i+1, rankingItem.getName(),
                                         rankingItem.getKcal()));
                             }
-
                             recyclerView.setAdapter(adapter);
+
                             recyclerView.smoothScrollToPosition(13);
                             adapter.notifyDataSetChanged();
 

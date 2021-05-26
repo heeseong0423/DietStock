@@ -122,7 +122,7 @@ class FoodFragmentCamera : Fragment() {
                 return false
             }
         })
-        userNo = sharedPreferences.getString(LoginState.USER_NUMBER, null)!!.toInt()
+        userNo = sharedPreferences.getString(LoginState.USER_NUMBER, "0")!!.toInt()
         return binding.root
     }
 
@@ -243,7 +243,7 @@ class FoodFragmentCamera : Fragment() {
             return true
 
         }catch (e: CameraAccessException){
-//            closeCamera()
+            closeCamera()
             Log.d("Error", e.message.toString())
             Log.d("Error", e.stackTraceToString())
         }
@@ -358,11 +358,11 @@ class FoodFragmentCamera : Fragment() {
 
                     Toast.makeText(this@FoodFragmentCamera.requireContext(), "사진이 촬영되었습니다", Toast.LENGTH_SHORT).show()
                     val resultName = tfLiteModel(uriList, getFileName(uriList.last()))
-                    if(resultName == "fail"){
+                    if(resultName[0].first == "fail"){
                         Log.d("classification", "fail")
                     }else{
-                        Log.d("line-300 result is ", resultName)
-                        getFoodInfo(resultName)
+                        Log.d("line-300 result is ", resultName.toString())
+//                        getFoodInfo(resultName)
 
                     }
                 }
@@ -412,7 +412,7 @@ class FoodFragmentCamera : Fragment() {
         closeCamera()
     }
 
-    private fun tfLiteModel(uriList: ArrayList<Uri>, fileName: String?): String{
+    private fun tfLiteModel(uriList: ArrayList<Uri>, fileName: String?): List<Pair<String, Float>>{
         val tf = testTF()
         val interpreter: Interpreter? = tf.getTfliteInterpreter("test_model2.tflite", this.requireActivity().assets)
         val contentResolver = this@FoodFragmentCamera.requireContext().getContentResolver()
@@ -452,12 +452,13 @@ class FoodFragmentCamera : Fragment() {
             val label: TensorLabel = TensorLabel(axisList, probabilityBuffer)
             val floatMap = label.mapWithFloatValue
             Log.d("test", floatMap.toString())
-            val values = floatMap.values.toList()
-            val res = floatMap.filter { it.value == max(values) }
-            Toast.makeText(this@FoodFragmentCamera.requireContext(), res.keys.first(), Toast.LENGTH_SHORT).show()
-            return res.keys.first()
+            val sortedList = floatMap.toList().sortedWith(compareBy({it.second}))
+            Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[0].first + " " + sortedList[0].second.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[1].first + " " + sortedList[1].second.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[2].first + " " + sortedList[2].second.toString(), Toast.LENGTH_SHORT).show()
+            return sortedList.subList(0, 4)
         }
-        return "fail"
+        return listOf(Pair<String, Float>("fail", -1f))
     }
 
     fun closeCamera(){

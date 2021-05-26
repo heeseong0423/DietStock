@@ -110,7 +110,6 @@ public class RankingFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RankingAdapter(getActivity());
-
     }
 
 }

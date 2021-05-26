@@ -236,7 +236,7 @@ class FoodFragmentCamera : Fragment() {
                     try {
                         cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, null)
                     }catch (e: CameraAccessException){
-                        openCamera()
+                        e.printStackTrace()
                     }
                 }
             }, null)

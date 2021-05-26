@@ -55,7 +55,6 @@ public class FeedBackFragment extends Fragment {
     private EditText et_recommend_protein;
     private EditText et_recommend_fat;
 
-
     private Button btn_gocheck;
     private String user_avoid = "";
     private int user_no;
@@ -68,6 +67,12 @@ public class FeedBackFragment extends Fragment {
     private float recommend_carbs=0,recommend_protein=0,recommend_fat=0;
     private float compare[] = new float[3];
     private float dummy[] = new float[3];
+
+    float [][] dailyFood_info = null;
+    private int meal_count = 0;
+    ArrayList<feedback_data> dailyFood_all = new ArrayList<>();
+
+    private int max_index=0;
 
     private float height=0;
     private int gender=0;
@@ -100,6 +105,28 @@ public class FeedBackFragment extends Fragment {
         //Bundle bundle = getArguments();
         //user_avoid = bundle.getString("메시지"); //user_avoid = 유저가 체크한 기피식품
 
+
+
+
+        // getArgument로 avoidFood_check에서 문자열을 받아오려고 시도
+        btn_gocheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(getActivity(),avoidFood_check.class);
+                startActivity(intent);
+            }
+        });
+        String getstr = getArguments().getString("send");
+        avoid_food = getstr;
+        Log.d("avoid_food"," " + getstr);
+
+
+
+
+
+
+
+
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS,0);
         user_avoid = sharedPreferences.getString("user_avoid","");
 
@@ -122,12 +149,16 @@ public class FeedBackFragment extends Fragment {
                 Log.d("debug", response.body().toString());
                 GetDailyFoodResponse getDailyFoodResponse = (GetDailyFoodResponse)response.body();
                 ArrayList<DailyFoodResult> dailyFoodResults = (getDailyFoodResponse).getResult();
+
                 if(getDailyFoodResponse.isSuccess()) { //리스트로 result를 받아옴(먹은 식단)
                     kcal = 0;
                     carbs = 0;
                     protein = 0;
                     fat = 0;
                     feedbackadapter.setEmpty();
+                    dailyFood_info = new float[dailyFoodResults.size()][3];
+                    meal_count = dailyFoodResults.size();
+
                     for(int i=0; i<dailyFoodResults.size(); i++){
                         DailyFoodResult dailyfood = dailyFoodResults.get(i);
                         feedback_data data = new feedback_data(dailyfood.getFood_image(), dailyfood.getServing(),dailyfood.getKcal(), dailyfood.getCarbs(),dailyfood.getProtein(),dailyfood.getFat(),
@@ -137,8 +168,14 @@ public class FeedBackFragment extends Fragment {
                         carbs += data.getCarbs() * data.getServing(); //먹은 음식의 탄수화물 총합
                         protein += data.getProtein() * data.getServing(); //먹은 음식의 단백질 총합
                         fat += data.getFat() * data.getServing(); //먹은 음식의 지방 총합
-                        Log.d("info idx = " + String.valueOf(i), String.valueOf(kcal) + " " + String.valueOf(carbs) + " " + String.valueOf(protein) + " " + String.valueOf(fat) + " Serving = " + String.valueOf(data.getServing()));
 
+                        dailyFood_info[i][0] = carbs;
+                        dailyFood_info[i][1] = protein;
+                        dailyFood_info[i][2] = fat;
+
+                        dailyFood_all.add(data);
+
+                        Log.d("info idx = " + String.valueOf(i), String.valueOf(kcal) + " " + String.valueOf(carbs) + " " + String.valueOf(protein) + " " + String.valueOf(fat) + " Serving = " + String.valueOf(data.getServing()));
                         Log.e("error", String.valueOf(kcal));
                     }
                     recyclerView.setAdapter(feedbackadapter);
@@ -150,8 +187,6 @@ public class FeedBackFragment extends Fragment {
                     //ArrayList<DailyFoodResult> dailyFoodResult = getDailyFoodResponse.getResult();
                 }
             }
-
-
 
             @Override
                 public void onFailure(Call<GetDailyFoodResponse> call, Throwable t) {
@@ -174,60 +209,38 @@ public class FeedBackFragment extends Fragment {
         Log.d("height"," " + height);
         Log.d("activity"," " + activity);
 
-        if(gender==1){
-            standardweight = (height/100) * (height/100) * 21;
-            Log.d("standardweight"," " + standardweight);
-        } else{
-            standardweight = (height/100) * (height/100) * 22;
-            Log.d("standardweight"," " + standardweight);
-        }
+        calculate_recommend();
 
-        switch(activity){
-            case 0 :  required_kcal = (float)(standardweight * 27.5);
-            case 1 :  required_kcal = (float) (standardweight * 32.5);
-            case 2 :  required_kcal = (float) (standardweight * 37.5);
-        }
-
-        required_kcal -= 300;
-
-        //탄 단 지 = 3 : 4 : 3
-        recommend_carbs = (float) ((required_kcal * 0.3) / 4);
-        recommend_protein = (float) ((required_kcal * 0.4) / 4);
-        recommend_fat = (float) ((required_kcal * 0.3) / 9);
-
-        et_recommend_kcal.setText(String.valueOf(Math.round((required_kcal*100)/100.0 ))+"kcal");
-        et_recommend_carbs.setText(String.valueOf(Math.round((recommend_carbs*100)/100.0 ))+"g");
-        et_recommend_protein.setText(String.valueOf(Math.round((recommend_protein*100)/100.0 ))+"g");
-        et_recommend_fat.setText(String.valueOf(Math.round((recommend_fat*100)/100.0 ))+"g");
-
+        // 섭취 - 권장 ( -:덜 먹은거 / +: 많이 먹은 거)
         compare[0] = carbs - recommend_carbs;
         compare[1] = protein - recommend_protein;
         compare[2] = fat - recommend_fat;
+
         for(int i=0;i<3;i++){
             dummy[i] = Math.abs(compare[i]);
         }
         float max = dummy[0];
-        int max_index=0;
+
         for(int i=1;i<3;i++){
             if(max < dummy[i]){
                 max = dummy[i];
                 max_index=i;
             }
-        }
-        switch(max_index){
-            case 0 : nutriention = "carbs"; gram = compare[0]; break;
-            case 1 : nutriention = "protein"; gram = compare[1]; break;
-            case 2 : nutriention = "fat"; gram = compare[2]; break;
+        } //가장 많이 차이나는 영양소 구분
+
+        switch(max_index){ //gram = 최고 차이나는 영양소량
+            case 0 : nutriention = "carbs"; gram = compare[0]; find_worstfood(); break;
+
+            case 1 : nutriention = "protein"; gram = compare[1]; find_worstfood(); break;
+
+            case 2 : nutriention = "fat"; gram = compare[2]; find_worstfood(); break;
         }
 
-        //gram = 오늘 먹은 음식의 총량 중 가장 차이나는 탄 단 지 중 하나
+        //nutriention = 오늘 먹은 음식의 총량 중 가장 차이나는 탄 단 지 중 하나
+        //gram = nutriention의 차이
 
         //ex) 탄수화물 -100 -> 탄수화물이 100보다 작은 음식 넘어옴
         //ex) 단백질 +50 -> 단백질이 50보다 큰 음식 넘어옴
-
-        String getstr = getArguments().getString("send");
-        avoid_food = getstr;
-        Log.d("avoid_food"," " + getstr);
 
         RetrofitService getRequestFoodService = App.retrofit.create(RetrofitService.class);
         Call<GetRequestFoodResponse> callGetRequestFood =
@@ -261,17 +274,75 @@ public class FeedBackFragment extends Fragment {
             }
         });
 
-
-
-        btn_gocheck.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(getActivity(),avoidFood_check.class);
-                startActivity(intent);
-            }
-        });
-
         return rootView;
+    }
+
+    private void find_worstfood() {
+        int index = 0;
+        float max=dailyFood_info[index][max_index];
+        float min=dailyFood_info[index][max_index];
+
+
+        if(gram > 0) { //초과 섭취
+            for (int i = 1; i < meal_count; i++) {
+                if(max < dailyFood_info[i][max_index]){
+                    max=dailyFood_info[i][max_index];
+                    index = i;
+                }
+            }
+            feedback_data dt = dailyFood_all.get(index);
+            switch(max_index){ //초과 섭취했으므로 가장 많은 영양소를 함유한 음식보다 적은 음식을 가져와서 구분해야함
+                case 0 : gram = dt.getCarbs() * (-1); break;
+                case 1 : gram = dt.getProtein() * (-1); break;
+                case 2 : gram = dt.getFat() * (-1); break;
+            }
+        }
+        else{ //부족 섭취
+            for (int i = 1; i < meal_count; i++) {
+                if(min > dailyFood_info[i][max_index]){
+                    min=dailyFood_info[i][max_index];
+                    index = i;
+                }
+            }
+            feedback_data dt = dailyFood_all.get(index);
+            switch(max_index){
+                case 0 : gram = dt.getCarbs() ; break;
+                case 1 : gram = dt.getProtein(); break;
+                case 2 : gram = dt.getFat(); break;
+            }
+        }
+
+
+
+    }
+
+    private void calculate_recommend() {
+
+        if(gender==1){
+            standardweight = (height/100) * (height/100) * 21;
+            Log.d("standardweight"," " + standardweight);
+        } else{
+            standardweight = (height/100) * (height/100) * 22;
+            Log.d("standardweight"," " + standardweight);
+        }
+
+        switch(activity){
+            case 0 :  required_kcal = (float)(standardweight * 27.5);
+            case 1 :  required_kcal = (float) (standardweight * 32.5);
+            case 2 :  required_kcal = (float) (standardweight * 37.5);
+        }
+
+        required_kcal -= 300;
+
+        //탄 단 지 = 3 : 4 : 3
+        recommend_carbs = (float) ((required_kcal * 0.3) / 4);
+        recommend_protein = (float) ((required_kcal * 0.4) / 4);
+        recommend_fat = (float) ((required_kcal * 0.3) / 9);
+
+        et_recommend_kcal.setText(String.valueOf(Math.round((required_kcal*100)/100.0 ))+"kcal");
+        et_recommend_carbs.setText(String.valueOf(Math.round((recommend_carbs*100)/100.0 ))+"g");
+        et_recommend_protein.setText(String.valueOf(Math.round((recommend_protein*100)/100.0 ))+"g");
+        et_recommend_fat.setText(String.valueOf(Math.round((recommend_fat*100)/100.0 ))+"g");
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,6 +55,9 @@ public class FeedBackFragment extends Fragment {
     private EditText et_recommend_carbs;
     private EditText et_recommend_protein;
     private EditText et_recommend_fat;
+    private ImageView iv_bad_food;
+    private ImageView iv_good_food;
+
 
     private Button btn_gocheck;
     private String user_avoid = "";
@@ -72,6 +76,7 @@ public class FeedBackFragment extends Fragment {
     private int meal_count = 0;
     ArrayList<feedback_data> dailyFood_all = new ArrayList<>();
 
+    private int index = 0;
     private int max_index=0;
 
     private float height=0;
@@ -98,6 +103,8 @@ public class FeedBackFragment extends Fragment {
         et_recommend_carbs = rootView.findViewById(R.id.et_recommend_carbs);
         et_recommend_protein = rootView.findViewById(R.id.et_recommend_protein);
         et_recommend_fat = rootView.findViewById(R.id.et_recommend_fat);
+        iv_bad_food = rootView.findViewById(R.id.iv_bad_food);
+        iv_good_food = rootView.findViewById(R.id.iv_good_food);
 
 
         arrayList = new ArrayList<>();
@@ -253,7 +260,28 @@ public class FeedBackFragment extends Fragment {
                 GetRequestFoodResponse GetRequestFoodResponse = (GetRequestFoodResponse)response.body();
                 ArrayList<RequestFoodResult> requestFoodResultsResults = (GetRequestFoodResponse).getResult();
                 if(GetRequestFoodResponse.isSuccess()){
-                    for(int i=0; i<requestFoodResultsResults.size(); i++) {
+                    kcal = 0;
+                    carbs = 0;
+                    protein = 0;
+                    fat = 0;
+
+                    for(int j=0;j<dailyFood_all.size();j++){ //오늘 먹은 음식들 중 최악을 뺀 음식들의 영양소 합
+                        if(j!=index){
+                            kcal += dailyFood_all.get(j).getKcal() * dailyFood_all.get(j).getServing();
+                            carbs += dailyFood_all.get(j).getCarbs() * dailyFood_all.get(j).getServing();
+                            protein += dailyFood_all.get(j).getProtein() * dailyFood_all.get(j).getServing();
+                            fat += dailyFood_all.get(j).getFat() * dailyFood_all.get(j).getServing();
+                        }
+                    }
+
+                    //iv_bad_food.setImageResource(dailyFood_all.get(index).getFood_image());
+
+                    if(kcal > required_kcal) kcal=0;
+                    if(carbs > recommend_carbs) carbs = 0;
+                    if(protein > recommend_protein) protein = 0;
+                    if(fat>recommend_fat) fat=0;
+
+                    for(int i=0; i<requestFoodResultsResults.size(); i++) { //
                         /*private String food_name;
                         private float kcal;
                         private float carbs;
@@ -278,7 +306,7 @@ public class FeedBackFragment extends Fragment {
     }
 
     private void find_worstfood() {
-        int index = 0;
+        index=0;
         float max=dailyFood_info[index][max_index];
         float min=dailyFood_info[index][max_index];
 

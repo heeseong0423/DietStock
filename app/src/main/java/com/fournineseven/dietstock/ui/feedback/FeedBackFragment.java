@@ -57,6 +57,7 @@ public class FeedBackFragment extends Fragment {
     private EditText et_recommend_fat;
     private ImageView iv_bad_food;
     private ImageView iv_good_food;
+    private ImageView food_image;
 
 
     private Button btn_gocheck;
@@ -95,6 +96,7 @@ public class FeedBackFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.feedback_main,container,false);
         btn_gocheck = rootView.findViewById(R.id.btn_gocheck);
+        food_image = rootView.findViewById(R.id.food_image);
         et_real_kcal = rootView.findViewById(R.id.et_real_kcal);
         et_real_carbs = rootView.findViewById(R.id.et_real_carbs);
         et_real_protein = rootView.findViewById(R.id.et_real_protein);
@@ -175,6 +177,8 @@ public class FeedBackFragment extends Fragment {
                         carbs += data.getCarbs() * data.getServing(); //먹은 음식의 탄수화물 총합
                         protein += data.getProtein() * data.getServing(); //먹은 음식의 단백질 총합
                         fat += data.getFat() * data.getServing(); //먹은 음식의 지방 총합
+
+                        food_image.setImageResource(Integer.parseInt(data.getFood_image()));
 
                         dailyFood_info[i][0] = carbs;
                         dailyFood_info[i][1] = protein;
@@ -264,6 +268,9 @@ public class FeedBackFragment extends Fragment {
                     carbs = 0;
                     protein = 0;
                     fat = 0;
+                    int flag = 0;
+                    int ratio=1;
+                    ArrayList<RequestFoodResult> correct_requestFood = new ArrayList<>();
 
                     for(int j=0;j<dailyFood_all.size();j++){ //오늘 먹은 음식들 중 최악을 뺀 음식들의 영양소 합
                         if(j!=index){
@@ -274,25 +281,45 @@ public class FeedBackFragment extends Fragment {
                         }
                     }
 
-                    //iv_bad_food.setImageResource(dailyFood_all.get(index).getFood_image());
-
-                    if(kcal > required_kcal) kcal=0;
-                    if(carbs > recommend_carbs) carbs = 0;
-                    if(protein > recommend_protein) protein = 0;
-                    if(fat>recommend_fat) fat=0;
+                    iv_bad_food.setImageResource(Integer.parseInt(dailyFood_all.get(index).getFood_image()));
 
                     for(int i=0; i<requestFoodResultsResults.size(); i++) { //
-                        /*private String food_name;
-                        private float kcal;
-                        private float carbs;
-                        private float protein;
-                        private float fat;
-                        private String food_image;*/
 
+                        flag = 0;
 
+                        float virtual_Carbs = carbs+requestFoodResultsResults.get(i).getCarbs();
+                        float virtual_Protein = protein+requestFoodResultsResults.get(i).getProtein();
+                        float virtual_Fat = fat+requestFoodResultsResults.get(i).getFat();
 
+                        if(!(virtual_Carbs >= recommend_carbs*(1-ratio) && virtual_Carbs <= recommend_carbs*(1+ratio))){
+                            flag = 1;
+                        }
+                        if(!(virtual_Protein >= recommend_protein*(1-ratio) && virtual_Protein <= recommend_protein*(1+ratio))){
+                            flag = 1;
+                        }
+                        if(!(virtual_Fat >= recommend_fat*(1-ratio) && virtual_Fat <= recommend_fat*(1+ratio))){
+                            flag = 1;
+                        }
 
+                        if(flag==0){
+                            correct_requestFood.add(requestFoodResultsResults.get(i));
+                        }
+                        ratio +=3;
                     }
+
+                    float min_carbs = correct_requestFood.get(0).getCarbs();
+                    int min_carbs_index=0;
+
+                    for(int i=1;i<correct_requestFood.size();i++){
+                        if(min_carbs > correct_requestFood.get(i).getCarbs()){
+                            min_carbs = correct_requestFood.get(i).getCarbs();
+                            min_carbs_index = i;
+                        }
+                    }
+
+                    iv_good_food.setImageResource(Integer.parseInt(correct_requestFood.get(min_carbs_index).food_image()));
+
+
                 }
             }
 

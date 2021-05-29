@@ -20,6 +20,7 @@ public class avoidFood_check extends AppCompatActivity {
     private CheckBox checkBox_poultry,checkBox_buckwheat,checkBox_peach,checkBox_tomato,checkBox_walnut;
     private CheckBox checkBox_peanut,checkBox_chicken,checkBox_beef,checkBox_oyster,checkBox_wheat,checkBox_crab,checkBox_mackerel;
     private CheckBox checkBox_pork,checkBox_shrimp,checkBox_squid,checkBox_shellfish,checkBox_abalone,checkBox_bean,checkBox_mussel;
+    static String avoidFood_str;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,11 +111,7 @@ public class avoidFood_check extends AppCompatActivity {
                 if (checkBox_mussel.isChecked()) {
                     result += checkBox_mussel.getText().toString() + ",";
                 }
-                Bundle bundle = new Bundle();
-                String sendstr = result;
-                bundle.putString("send", sendstr );
-                Fragment fragment = new FeedBackFragment();
-                fragment.setArguments(bundle);
+                avoidFood_str = result;
 
                 finish();
             }

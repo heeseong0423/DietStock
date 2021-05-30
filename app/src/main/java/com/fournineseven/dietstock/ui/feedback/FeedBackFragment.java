@@ -57,10 +57,12 @@ public class FeedBackFragment extends Fragment {
     private EditText et_recommend_fat;
     private ImageView iv_bad_food;
     private ImageView iv_good_food;
+    private ImageView food_image;
 
 
     private Button btn_gocheck;
     private String user_avoid = "";
+    private String getstr = "";
     private int user_no;
     long now = System.currentTimeMillis();
     private String avoid_food ="";
@@ -95,6 +97,7 @@ public class FeedBackFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.feedback_main,container,false);
         btn_gocheck = rootView.findViewById(R.id.btn_gocheck);
+        food_image = rootView.findViewById(R.id.food_image);
         et_real_kcal = rootView.findViewById(R.id.et_real_kcal);
         et_real_carbs = rootView.findViewById(R.id.et_real_carbs);
         et_real_protein = rootView.findViewById(R.id.et_real_protein);
@@ -123,20 +126,14 @@ public class FeedBackFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        String getstr = getArguments().getString("send");
-        avoid_food = getstr;
-        Log.d("avoid_food"," " + getstr);
 
-
-
-
-
+        //avoid_food = avoidFood_check.avoidFood_str;
 
 
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS,0);
         user_avoid = sharedPreferences.getString("user_avoid","");
-
+        Log.d("user_avoid"," " + user_avoid);
 
         SharedPreferences sharedPreferences1 = getActivity().getSharedPreferences(SHARED_PREFS,0);
         int sharedPreferences_user_no = Integer.valueOf(sharedPreferences.getString(LoginState.USER_NUMBER,null));
@@ -158,6 +155,7 @@ public class FeedBackFragment extends Fragment {
                 ArrayList<DailyFoodResult> dailyFoodResults = (getDailyFoodResponse).getResult();
 
                 if(getDailyFoodResponse.isSuccess()) { //리스트로 result를 받아옴(먹은 식단)
+
                     kcal = 0;
                     carbs = 0;
                     protein = 0;
@@ -175,6 +173,8 @@ public class FeedBackFragment extends Fragment {
                         carbs += data.getCarbs() * data.getServing(); //먹은 음식의 탄수화물 총합
                         protein += data.getProtein() * data.getServing(); //먹은 음식의 단백질 총합
                         fat += data.getFat() * data.getServing(); //먹은 음식의 지방 총합
+
+                        food_image.setImageResource(Integer.parseInt(data.getFood_image()));
 
                         dailyFood_info[i][0] = carbs;
                         dailyFood_info[i][1] = protein;
@@ -204,6 +204,8 @@ public class FeedBackFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         feedbackadapter = new feedbackAdapter(getActivity());
+
+
 
         int sharedPreferences_sex = sharedPreferences.getInt(GENDER_KEY,0);
         gender = sharedPreferences.getInt(GENDER_KEY,0);
@@ -235,73 +237,113 @@ public class FeedBackFragment extends Fragment {
             }
         } //가장 많이 차이나는 영양소 구분
 
-        switch(max_index){ //gram = 최고 차이나는 영양소량
-            case 0 : nutriention = "carbs"; gram = compare[0]; find_worstfood(); break;
+        
 
-            case 1 : nutriention = "protein"; gram = compare[1]; find_worstfood(); break;
+        if(meal_count != 0) {
 
-            case 2 : nutriention = "fat"; gram = compare[2]; find_worstfood(); break;
-        }
+            switch (max_index) { //gram = 최고 차이나는 영양소량
+                case 0:
+                    nutriention = "carbs";
+                    gram = compare[0];
+                    find_worstfood();
+                    break;
 
-        //nutriention = 오늘 먹은 음식의 총량 중 가장 차이나는 탄 단 지 중 하나
-        //gram = nutriention의 차이
+                case 1:
+                    nutriention = "protein";
+                    gram = compare[1];
+                    find_worstfood();
+                    break;
 
-        //ex) 탄수화물 -100 -> 탄수화물이 100보다 작은 음식 넘어옴
-        //ex) 단백질 +50 -> 단백질이 50보다 큰 음식 넘어옴
+                case 2:
+                    nutriention = "fat";
+                    gram = compare[2];
+                    find_worstfood();
+                    break;
+            }
 
-        RetrofitService getRequestFoodService = App.retrofit.create(RetrofitService.class);
-        Call<GetRequestFoodResponse> callGetRequestFood =
-                getRequestFoodService.getRequestFood(new GetRequestFoodRequest(avoid_food, nutriention, gram));
+            //nutriention = 오늘 먹은 음식의 총량 중 가장 차이나는 탄 단 지 중 하나
+            //gram = nutriention의 차이
 
-        callGetRequestFood.enqueue(new Callback<GetRequestFoodResponse>() {
-            @Override
-            public void onResponse(Call<GetRequestFoodResponse> call, Response<GetRequestFoodResponse> response) {
-                Log.d("debug", response.body().toString());
-                GetRequestFoodResponse GetRequestFoodResponse = (GetRequestFoodResponse)response.body();
-                ArrayList<RequestFoodResult> requestFoodResultsResults = (GetRequestFoodResponse).getResult();
-                if(GetRequestFoodResponse.isSuccess()){
-                    kcal = 0;
-                    carbs = 0;
-                    protein = 0;
-                    fat = 0;
+            //ex) 탄수화물 -100 -> 탄수화물이 100보다 작은 음식 넘어옴
+            //ex) 단백질 +50 -> 단백질이 50보다 큰 음식 넘어옴
 
-                    for(int j=0;j<dailyFood_all.size();j++){ //오늘 먹은 음식들 중 최악을 뺀 음식들의 영양소 합
-                        if(j!=index){
-                            kcal += dailyFood_all.get(j).getKcal() * dailyFood_all.get(j).getServing();
-                            carbs += dailyFood_all.get(j).getCarbs() * dailyFood_all.get(j).getServing();
-                            protein += dailyFood_all.get(j).getProtein() * dailyFood_all.get(j).getServing();
-                            fat += dailyFood_all.get(j).getFat() * dailyFood_all.get(j).getServing();
+            RetrofitService getRequestFoodService = App.retrofit.create(RetrofitService.class);
+            Call<GetRequestFoodResponse> callGetRequestFood =
+                    getRequestFoodService.getRequestFood(new GetRequestFoodRequest(avoid_food, nutriention, gram));
+
+            callGetRequestFood.enqueue(new Callback<GetRequestFoodResponse>() {
+                @Override
+                public void onResponse(Call<GetRequestFoodResponse> call, Response<GetRequestFoodResponse> response) {
+                    Log.d("debug", response.body().toString());
+                    GetRequestFoodResponse GetRequestFoodResponse = (GetRequestFoodResponse) response.body();
+                    ArrayList<RequestFoodResult> requestFoodResultsResults = (GetRequestFoodResponse).getResult();
+                    if (GetRequestFoodResponse.isSuccess()) {
+                        kcal = 0;
+                        carbs = 0;
+                        protein = 0;
+                        fat = 0;
+                        int flag = 0;
+                        int ratio = 1;
+                        ArrayList<RequestFoodResult> correct_requestFood = new ArrayList<>();
+
+                        for (int j = 0; j < dailyFood_all.size(); j++) { //오늘 먹은 음식들 중 최악을 뺀 음식들의 영양소 합
+                            if (j != index) {
+                                kcal += dailyFood_all.get(j).getKcal() * dailyFood_all.get(j).getServing();
+                                carbs += dailyFood_all.get(j).getCarbs() * dailyFood_all.get(j).getServing();
+                                protein += dailyFood_all.get(j).getProtein() * dailyFood_all.get(j).getServing();
+                                fat += dailyFood_all.get(j).getFat() * dailyFood_all.get(j).getServing();
+                            }
                         }
-                    }
 
-                    //iv_bad_food.setImageResource(dailyFood_all.get(index).getFood_image());
+                        iv_bad_food.setImageResource(Integer.parseInt(dailyFood_all.get(index).getFood_image()));
 
-                    if(kcal > required_kcal) kcal=0;
-                    if(carbs > recommend_carbs) carbs = 0;
-                    if(protein > recommend_protein) protein = 0;
-                    if(fat>recommend_fat) fat=0;
+                        for (int i = 0; i < requestFoodResultsResults.size(); i++) { //
 
-                    for(int i=0; i<requestFoodResultsResults.size(); i++) { //
-                        /*private String food_name;
-                        private float kcal;
-                        private float carbs;
-                        private float protein;
-                        private float fat;
-                        private String food_image;*/
+                            flag = 0;
 
+                            float virtual_Carbs = carbs + requestFoodResultsResults.get(i).getCarbs();
+                            float virtual_Protein = protein + requestFoodResultsResults.get(i).getProtein();
+                            float virtual_Fat = fat + requestFoodResultsResults.get(i).getFat();
 
+                            if (!(virtual_Carbs >= recommend_carbs * (1 - ratio) && virtual_Carbs <= recommend_carbs * (1 + ratio))) {
+                                flag = 1;
+                            }
+                            if (!(virtual_Protein >= recommend_protein * (1 - ratio) && virtual_Protein <= recommend_protein * (1 + ratio))) {
+                                flag = 1;
+                            }
+                            if (!(virtual_Fat >= recommend_fat * (1 - ratio) && virtual_Fat <= recommend_fat * (1 + ratio))) {
+                                flag = 1;
+                            }
+
+                            if (flag == 0) {
+                                correct_requestFood.add(requestFoodResultsResults.get(i));
+                            }
+                            ratio += 3;
+                        }
+
+                        float min_carbs = correct_requestFood.get(0).getCarbs();
+                        int min_carbs_index = 0;
+
+                        for (int i = 1; i < correct_requestFood.size(); i++) {
+                            if (min_carbs > correct_requestFood.get(i).getCarbs()) {
+                                min_carbs = correct_requestFood.get(i).getCarbs();
+                                min_carbs_index = i;
+                            }
+                        }
+
+                        iv_good_food.setImageResource(Integer.parseInt(correct_requestFood.get(min_carbs_index).food_image()));
 
 
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<GetRequestFoodResponse> call, Throwable t) {
-                Log.d("debug", "onFailure"+t.toString());
-            }
-        });
+                @Override
+                public void onFailure(Call<GetRequestFoodResponse> call, Throwable t) {
+                    Log.d("debug", "onFailure" + t.toString());
+                }
+            });
 
+        }
         return rootView;
     }
 

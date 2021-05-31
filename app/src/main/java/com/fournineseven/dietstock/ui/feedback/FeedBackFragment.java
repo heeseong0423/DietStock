@@ -173,8 +173,13 @@ public class FeedBackFragment extends Fragment {
                         carbs += data.getCarbs() * data.getServing(); //먹은 음식의 탄수화물 총합
                         protein += data.getProtein() * data.getServing(); //먹은 음식의 단백질 총합
                         fat += data.getFat() * data.getServing(); //먹은 음식의 지방 총합
+                        try{
+                            Log.d("test", data.getFood_image());
+                            food_image.setImageResource(Integer.parseInt(data.getFood_image()));
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
+                        }
 
-                        food_image.setImageResource(Integer.parseInt(data.getFood_image()));
 
                         dailyFood_info[i][0] = carbs;
                         dailyFood_info[i][1] = protein;

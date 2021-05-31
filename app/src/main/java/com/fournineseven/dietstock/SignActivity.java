@@ -149,6 +149,8 @@ public class SignActivity extends AppCompatActivity {
                             editor.putString(LoginState.USER_NUMBER, String.valueOf(user_no));
                             //editor.commit();
                             editor.apply();
+
+                            Log.d("MyTag","the " + user_no);
                             Intent intent = new Intent(SignActivity.this, MainActivity.class);
                             startActivity(intent);
                         }

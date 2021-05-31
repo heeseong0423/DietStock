@@ -1,6 +1,7 @@
-package com.fournineseven.dietstock.ui.food
+    package com.fournineseven.dietstock.ui.food
 
 import android.Manifest
+import android.app.AlertDialog
 import android.app.AppOpsManager
 import android.content.*
 import android.content.ContentValues.TAG
@@ -29,6 +30,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getExternalFilesDirs
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.fournineseven.dietstock.LoginState
 import com.fournineseven.dietstock.R
@@ -118,6 +120,11 @@ class FoodFragmentCamera : Fragment() {
             override fun onClose(): Boolean {
                 if(!binding.foodSearch.isIconified){
                     binding.foodName.visibility = View.VISIBLE
+                    if(binding.resultImage.visibility == View.VISIBLE){
+                        binding.LeftConstraint.visibility = View.VISIBLE
+                        binding.RightConstraint.visibility = View.VISIBLE
+                        binding.submitBtn.visibility = View.VISIBLE
+                    }
                 }
                 return false
             }
@@ -138,6 +145,7 @@ class FoodFragmentCamera : Fragment() {
 
         override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
             openCamera()
+
         }
     }
 
@@ -158,11 +166,16 @@ class FoodFragmentCamera : Fragment() {
         override fun onClick(v: View?) {
             if(!binding.foodSearch.isIconified){
                 binding.foodName.visibility = View.INVISIBLE
+                if(binding.resultImage.visibility == View.VISIBLE){
+                    binding.LeftConstraint.visibility = View.INVISIBLE
+                    binding.RightConstraint.visibility = View.INVISIBLE
+                    binding.submitBtn.visibility = View.INVISIBLE
+                }
             }
         }
     }
 
-    private fun openCamera(){
+    fun openCamera(){
         Log.e(TAG, "openCamera(): openCamera()메서드 호출")
 
         val manager: CameraManager = requireActivity().getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -180,6 +193,7 @@ class FoodFragmentCamera : Fragment() {
 
             }
             manager.openCamera(cameraId!!, stateCallback, null)
+            flipVisibility(true)
         }catch(e: CameraAccessException){
             Log.d("AcessException", "Here Problem")
             e.printStackTrace()
@@ -197,11 +211,13 @@ class FoodFragmentCamera : Fragment() {
         }
         override fun onDisconnected(camera : CameraDevice){
             Log.d(TAG, "stateCallback: onDisconnected")
-            cameraDevice!!.close()
+            flipVisibility(false)
+            closeCamera()
         }
         override fun onError(camera: CameraDevice, error: Int){
             Log.d(TAG, "stateCallback: OnError")
-            cameraDevice!!.close()
+            flipVisibility(false)
+            closeCamera()
         }
     }
 
@@ -341,6 +357,7 @@ class FoodFragmentCamera : Fragment() {
                                 output?.close()
                             }
                             binding.resultImage.setImageBitmap(rotatedBitmap)
+                            binding.resultImage.visibility = View.VISIBLE
                             fileCount++
                         }
                     }catch (e: FileNotFoundException){
@@ -362,9 +379,19 @@ class FoodFragmentCamera : Fragment() {
                     if(resultName[0].first == "fail"){
                         Log.d("classification", "fail")
                     }else{
+                        var selectList: MutableList<String> = arrayListOf()
+                        for(i in resultName){
+                            selectList.add(i.first)
+                        }
                         Log.d("line-300 result is ", resultName.toString())
-//                        getFoodInfo(resultName)
-
+                        var finalResultName: String = ""
+                        val arraySelect = selectList.toTypedArray()
+                        var selectDialog = AlertDialog.Builder(requireContext()).setSingleChoiceItems(arraySelect, -1){
+                            dialog, which-> finalResultName = arraySelect[which]
+                        }.setPositiveButton("확인"){
+                            dialog, which -> getFoodInfo((finalResultName))
+                            Toast.makeText(this@FoodFragmentCamera.requireContext(), finalResultName, Toast.LENGTH_SHORT).show()
+                        }.setTitle("선택해 주세요").show()
                     }
                 }
             }
@@ -387,30 +414,19 @@ class FoodFragmentCamera : Fragment() {
 
     private fun changeSettings(data: GetFoodResponse, predictedFoodName: String){
         var foodName = binding.foodName
-        var leftConstraint = binding.LeftConstraint
-        var rightConstraint = binding.RightConstraint
         var carbohydrate = binding.carbohydrate
         var kcal = binding.kcal
         var protein = binding.protein
         var fat = binding.fat
         var cholesterol = binding.cholesterol
         var natrium = binding.natrium
-        var btn = binding.takeBtn
-        var submitBtn = binding.submitBtn
         foodName.text = predictedFoodName
-        leftConstraint.visibility = View.VISIBLE
-        rightConstraint.visibility = View.VISIBLE
         carbohydrate.text = "${carbohydrate.text}${ data.result[0].carbs}g"
         kcal.text = "${kcal.text}${ data.result[0].kcal}kcal"
         protein.text = "${protein.text}${ data.result[0].protein}g"
         fat.text = "${fat.text}${ data.result[0].fat}g"
         cholesterol.text = "${cholesterol.text}${ data.result[0].cholesterol}g"
         natrium.text = "${natrium.text}${ data.result[0].natrium}g"
-        btn.isClickable = false
-        btn.visibility = View.INVISIBLE
-        submitBtn.isClickable = true
-        submitBtn.visibility = View.VISIBLE
-        closeCamera()
     }
 
     private fun tfLiteModel(uriList: ArrayList<Uri>, fileName: String?): List<Pair<String, Float>>{
@@ -468,8 +484,7 @@ class FoodFragmentCamera : Fragment() {
         }
     }
 
-
-    fun reOpenCamera(){
+    fun flipVisibility(cameraOn: Boolean){
         var foodName = binding.foodName
         var leftConstraint = binding.LeftConstraint
         var rightConstraint = binding.RightConstraint
@@ -477,19 +492,34 @@ class FoodFragmentCamera : Fragment() {
         var submitBtn = binding.submitBtn
         var camera = binding.textureView
         var image = binding.resultImage
-        foodName.text = "음식을 촬영해 주세요"
-        leftConstraint.visibility = View.INVISIBLE
-        rightConstraint.visibility = View.INVISIBLE
-        btn.isClickable = true
-        btn.visibility = View.VISIBLE
-        submitBtn.isClickable = false
-        submitBtn.visibility = View.INVISIBLE
-        image.setImageBitmap(null)
-        camera.visibility = View.VISIBLE
-        FoodFragmentCamera().openCamera()
+        var servingConstraint = binding.servingConstraint
+        if(cameraOn){
+            foodName.text = "음식을 촬영해 주세요"
+            leftConstraint.visibility = View.INVISIBLE
+            rightConstraint.visibility = View.INVISIBLE
+            submitBtn.visibility = View.INVISIBLE
+            servingConstraint.visibility = View.INVISIBLE
+            image.visibility = View.INVISIBLE
+            btn.visibility = View.VISIBLE
+            camera.visibility = View.VISIBLE
+            btn.isClickable = true
+            submitBtn.isClickable = false
+            image.setImageBitmap(null)
+        }else{
+            btn.visibility = View.INVISIBLE
+            camera.visibility = View.INVISIBLE
+            leftConstraint.visibility = View.VISIBLE
+            rightConstraint.visibility = View.VISIBLE
+            submitBtn.visibility = View.VISIBLE
+            servingConstraint.visibility = View.VISIBLE
+            image.visibility = View.VISIBLE
+            btn.isClickable = false
+            submitBtn.isClickable = true
+        }
     }
 
     fun saveFoodLog(foodNo: Int){
+        serving = binding.serving.text.toString().toInt()
         try{
             var body: MultipartBody.Part
             try{
@@ -565,6 +595,7 @@ class FoodFragmentCamera : Fragment() {
     }
 
     fun getFoodInfo(foodName: String){
+        Log.d("FoodName", foodName)
         val retrofit = Retrofit.Builder()
 
                 .baseUrl("http://497.iptime.org")
@@ -582,6 +613,8 @@ class FoodFragmentCamera : Fragment() {
                     Log.d("result_test", response?.toString())
                     Log.d("result2 - getFoodInfo", response?.body().toString())
                     changeSettings(response.body()!!, foodName)
+                    flipVisibility(false)
+                    closeCamera()
                     foodNo = response.body()!!.result[0].foodNo
                 }else{
                     Log.d("error line-114", response?.body().toString())

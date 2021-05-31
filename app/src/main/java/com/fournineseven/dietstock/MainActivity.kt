@@ -147,7 +147,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 (FoodFragmentCamera().binding.LeftConstraint.visibility == View.INVISIBLE && FoodFragmentCamera().binding.RightConstraint.visibility == View.INVISIBLE)) {
                 super.onBackPressed()
             } else {
-                FoodFragmentCamera().reOpenCamera()
+                FoodFragmentCamera().flipVisibility(true)
+                FoodFragmentCamera().openCamera()
             }
         } else {
             super.onBackPressed()

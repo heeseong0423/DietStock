@@ -5,10 +5,11 @@
     android:id="@+id/ScrollView1"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
@@ -70,7 +71,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/et_recommend_kcal"></EditText>
+            android:id="@+id/et_recommend_kcal"
+            ></EditText>
 
         <TextView
             android:layout_width="wrap_content"
@@ -91,7 +93,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -105,7 +108,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/et_recommend_carbs"></EditText>
+            android:id="@+id/et_recommend_carbs"
+            ></EditText>
 
         <TextView
             android:layout_width="wrap_content"
@@ -140,7 +144,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/et_recommend_protein"></EditText>
+            android:id="@+id/et_recommend_protein"
+            ></EditText>
 
         <TextView
             android:layout_width="wrap_content"
@@ -198,14 +203,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center">
 
-        <ImageView
-            android:id="@+id/iv_bad_food"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher"
-            android:layout_weight="1">
+            <ImageView
+                android:id="@+id/iv_bad_food"
+                android:layout_width="52dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_baseline_arrow_drop_down_24">
 
-        </ImageView>
+            </ImageView>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -216,14 +221,14 @@
 
             </TextView>
 
-        <ImageView
-            android:id="@+id/iv_good_food"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher"
-            android:layout_weight="1">
+            <ImageView
+                android:id="@+id/iv_good_food"
+                android:layout_width="52dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_baseline_arrow_drop_up_24">
 
-        </ImageView>
+            </ImageView>
 
         </LinearLayout>
 

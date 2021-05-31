@@ -37,7 +37,7 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
 
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = inflater.inflate(R.layout.feedback_list, parent, false);
-        return new feedbackAdapter.CustomViewHolder(itemView);
+        return new feedbackAdapter.CustomViewHolder(itemView,context);
     }
 
     @Override
@@ -59,10 +59,12 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
         LinearLayout linearlayout_ranking_item;
         ImageView food_image;
         EditText time;
-                EditText foodname;
+        EditText foodname;
+        Context context;
 
-        public CustomViewHolder(@NonNull @NotNull View itemView) {
+        public CustomViewHolder(@NonNull @NotNull View itemView, Context context) {
             super(itemView);
+            this.context = context;
             food_image = (ImageView) itemView.findViewById(R.id.food_image);
             time = (EditText)itemView.findViewById(R.id.time);
             foodname = (EditText)itemView.findViewById(R.id.foodname);
@@ -71,6 +73,8 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
 
         public void setItem(feedback_data item){
             food_image.setImageResource(Integer.parseInt(item.getFood_image()));
+            Glide.with(context).load(TaskServer.base_url+item.getFood_image()).error(R.drawable.hindoongi)
+                    .placeholder(R.drawable.hindoongi).into(food_image);
             time.setText(item.getTime());
             foodname.setText(item.getFoodname());
         }

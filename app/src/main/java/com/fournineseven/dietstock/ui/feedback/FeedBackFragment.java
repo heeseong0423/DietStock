@@ -117,7 +117,6 @@ public class FeedBackFragment extends Fragment {
 
 
 
-
         // getArgument로 avoidFood_check에서 문자열을 받아오려고 시도
         btn_gocheck.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +137,7 @@ public class FeedBackFragment extends Fragment {
         SharedPreferences sharedPreferences1 = getActivity().getSharedPreferences(SHARED_PREFS,0);
         int sharedPreferences_user_no = Integer.valueOf(sharedPreferences.getString(LoginState.USER_NUMBER,null));
         user_no = sharedPreferences_user_no;
+
         Log.d("user_no"," " + user_no);
         Date mDate = new Date(now);
         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -332,8 +332,6 @@ public class FeedBackFragment extends Fragment {
                         }
 
                         iv_good_food.setImageResource(Integer.parseInt(correct_requestFood.get(min_carbs_index).food_image()));
-
-
                     }
                 }
 
@@ -381,9 +379,6 @@ public class FeedBackFragment extends Fragment {
                 case 2 : gram = dt.getFat(); break;
             }
         }
-
-
-
     }
 
     private void calculate_recommend() {

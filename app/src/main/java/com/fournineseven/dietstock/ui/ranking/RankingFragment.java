@@ -57,7 +57,35 @@ public class RankingFragment extends Fragment {
     public void init(){
         mHandler = new Handler(Looper.getMainLooper());
         radioGroup_ranking_category = (RadioGroup)root.findViewById(R.id.radiogroup_ranking_category);
+        RetrofitService getRankingService = App.retrofit.create(RetrofitService.class);
+        Call<GetRankingResponse> call = getRankingService.getRanking("week");
+        call.enqueue(new Callback<GetRankingResponse>() {
+            @Override
+            public void onResponse(Call<GetRankingResponse> call, Response<GetRankingResponse> response) {
+                Log.d("debug", response.body().toString());
+                GetRankingResponse getRankingResponse = (GetRankingResponse)response.body();
+                ArrayList<RankingResult> rankingResultArray = getRankingResponse.getResult();
+                if(getRankingResponse.isSuccess()){
+                    adapter.setEmpty();
+                    for(int i=0; i<rankingResultArray.size(); i++){
+                        RankingResult rankingItem = rankingResultArray.get(i);
 
+                        adapter.addItem(new RankingItem(i+1, rankingItem.getName(),
+                                rankingItem.getKcal()));
+                    }
+                    recyclerView.setAdapter(adapter);
+
+                    recyclerView.smoothScrollToPosition(13);
+                    adapter.notifyDataSetChanged();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetRankingResponse> call, Throwable t) {
+                Log.d("debug", "onFailure: "+t.getMessage());
+            }
+        });
 
         radioButton_ranking_week = (RadioButton)root.findViewById(R.id.radiobutton_ranking_week);
         radioButton_ranking_month = (RadioButton)root.findViewById(R.id.radiobutton_ranking_month);

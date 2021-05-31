@@ -125,7 +125,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
 
         //요청 보내기
-        RetrofitBuilder.api.getUserInfo("22").enqueue(object : Callback<getUserInfoResponse>{
+       /*RetrofitBuilder.api.getUserInfo("22").enqueue(object : Callback<getUserInfoResponse>{
             override fun onResponse(
                 call: Call<getUserInfoResponse>,
                 response: Response<getUserInfoResponse>
@@ -137,8 +137,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             override fun onFailure(call: Call<getUserInfoResponse>, t: Throwable) {
                 Log.d(TAG,"YOu 실패")
             }
-
-        })
+        })*/
 
 
         App.retrofit = Retrofit.Builder()

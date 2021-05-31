@@ -145,7 +145,6 @@ class FoodFragmentCamera : Fragment() {
 
         override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
             openCamera()
-
         }
     }
 

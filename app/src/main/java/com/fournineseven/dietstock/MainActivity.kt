@@ -19,6 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 
@@ -44,10 +45,9 @@ private const val REQ_STORAGE_BEFORE = 102
 private const val REQ_STORAGE_AFTER = 103
 private const val PERMISSION_REQUEST_CODE = 2
 
-class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInterface{
+class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInterface, NavigationView.OnNavigationItemSelectedListener{
     private lateinit var viewPager: ViewPager2
     private lateinit var navView: BottomNavigationView
-    private lateinit var drawnav: Menu
     private lateinit var beforeImage: ImageView
     private lateinit var afterImage: ImageView
     private lateinit var myName: TextView
@@ -58,10 +58,33 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
     private lateinit var myGoalTextView: TextView
     private lateinit var myGenderTextView: TextView
     private lateinit var myActivityTypeTextView: TextView
+    private lateinit var navigationView: NavigationView
 
     private val mySettingDialog by lazy{
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         UserSettingDialog(this,this,sharedpreferences)
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.nav_change_info->{
+                mySettingDialog.show()
+                return true
+            }
+            R.id.nav_log_out->{
+                var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+                var editor = sharedpreferences.edit()
+                editor.putString(LoginState.EMAIL_KEY,"")
+                editor.putString(LoginState.PASSWORD_KEY,"")
+                editor.apply()
+
+                var intent = Intent(this, SignActivity::class.java)
+                startActivity(intent)
+                finish()
+                return true
+            }
+        }
+        return false
     }
 
     override fun onClick(v: View?) {
@@ -75,10 +98,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.type = MediaStore.Images.Media.CONTENT_TYPE
                 startActivityForResult(intent, REQ_STORAGE_AFTER)
-            }
-            R.id.button4->{
-                Log.d(TAG,"THis is button 4")
-                mySettingDialog.show()
             }
         }
     }
@@ -95,6 +114,10 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_baseline_dehaze_24)
         supportActionBar!!.title = "DietStock"
 
+        navigationView = findViewById(R.id.nav_view)
+
+        navigationView.setNavigationItemSelectedListener(this)
+
         App.retrofit = Retrofit.Builder()
             .baseUrl(TaskServer.base_url)
             .addConverterFactory(GsonConverterFactory.create())
@@ -102,7 +125,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         val contentMainViewPager = findViewById<ViewPager2>(R.id.view_pager)
         val bottomNavView = findViewById<BottomNavigationView>(R.id.nav_bottom_view)
-
         setUser()
 
         viewPager = contentMainViewPager
@@ -179,11 +201,11 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         var myAge:Int = sharedpreferences.getInt(LoginState.AGE_KEY,0)
         var myGender:Int = sharedpreferences.getInt(LoginState.GENDER_KEY,0)
         var myActivityType:Int = sharedpreferences.getInt(LoginState.ACTIVITY_KEY,0)
-        if (email == null || password == null) {
+        /*if (email == null || password == null) {
             var intent = Intent(this, SignActivity::class.java)
             startActivity(intent)
             finish()
-        }
+        }*/
 
         var userNo: Int? = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
 
@@ -224,10 +246,10 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             myWeightTextView.text = "몸무게 입력값 없음"
         }
         if(myGender < 1){
-            myGenderTextView.text = "남"
+            myGenderTextView.text = "남자"
         }
         if(myActivityType < 1){
-            myActivityTypeTextView.text= "적음"
+            myActivityTypeTextView.text= "활동량 적음"
         }
 
     }

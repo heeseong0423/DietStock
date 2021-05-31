@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,11 +29,9 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
     private ArrayList<feedback_data> items =new ArrayList<>();
     private Context context;
 
-    public feedbackAdapter(Context context) {this.context = context;
-    }
+    public feedbackAdapter(Context context) {this.context = context;}
 
     @NonNull
-
     @Override
     public CustomViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
 
@@ -41,7 +41,7 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull feedbackAdapter.CustomViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull feedbackAdapter.CustomViewHolder holder, int position) {
         feedback_data item = items.get(position);
         holder.setItem(item);
     }
@@ -49,34 +49,28 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
     public void addItem(feedback_data item){items.add(item);}
     @Override
     public int getItemCount() {
-        return (null != items ? items.size() : 0);
+        return items.size();
     }
 
     public void setEmpty(){items.clear();}
 
 
-    public class CustomViewHolder extends RecyclerView.ViewHolder {
-
-        protected ImageView food_image;
-        protected EditText carbs;
-        protected EditText protein;
-        protected EditText fat;
-        protected EditText time;
-        protected EditText foodname;
+    static class CustomViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout linearlayout_ranking_item;
+        ImageView food_image;
+        EditText time;
+                EditText foodname;
 
         public CustomViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            this.food_image = (ImageView) itemView.findViewById(R.id.food_image);
-            this.time = (EditText) itemView.findViewById(R.id.time);
-            this.foodname = (EditText) itemView.findViewById(R.id.foodname);
-
-
-
+            food_image = (ImageView) itemView.findViewById(R.id.food_image);
+            time = (EditText)itemView.findViewById(R.id.time);
+            foodname = (EditText)itemView.findViewById(R.id.foodname);
+            linearlayout_ranking_item = (LinearLayout) itemView.findViewById(R.id.linearlayout_dailyFood);
         }
 
         public void setItem(feedback_data item){
-            Glide.with(context).load(TaskServer.base_url+item.getFood_image()).error(R.drawable.hindoongi)
-                    .placeholder(R.drawable.hindoongi).override(40, 30).into(food_image);
+            food_image.setImageResource(Integer.parseInt(item.getFood_image()));
             time.setText(item.getTime());
             foodname.setText(item.getFoodname());
         }

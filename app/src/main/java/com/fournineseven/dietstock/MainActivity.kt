@@ -22,11 +22,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.fournineseven.dietstock.App.retrofit
 
 import com.fournineseven.dietstock.databinding.ActivityMainBinding
 import com.fournineseven.dietstock.ui.feedback.FeedBackFragment
 
 import com.fournineseven.dietstock.config.TaskServer
+import com.fournineseven.dietstock.model.FoodCamera.DefaultResponseKo
+import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsRequest
+import com.fournineseven.dietstock.ui.food.FoodCameraInterface
 
 import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
@@ -125,21 +129,47 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
 
         //요청 보내기
-        RetrofitBuilder.api.getUserInfo("22").enqueue(object : Callback<getUserInfoResponse>{
+        RetrofitBuilder.api.getUserInfo(GetUserInfoRequest(33)).enqueue(object : Callback<GetUserInfoResponse>{
             override fun onResponse(
-                call: Call<getUserInfoResponse>,
-                response: Response<getUserInfoResponse>
+                call: Call<GetUserInfoResponse>,
+                response: Response<GetUserInfoResponse>
             ) {
-                Log.d(TAG,"${response.body()?.height} is height")
-                Log.d(TAG,"${response.body()?.name}")
+                Log.d(TAG,"${response.body()?.result?.get(0)?.user_name}")
+                Log.d(TAG,"${response.body()?.result?.get(0)?.activity}")
+                Log.d(TAG,"${response.body()?.result?.get(0)?.age}")
+                Log.d(TAG,"${response.body()?.result?.get(0)?.beforeImage}")
+                Log.d(TAG,"${response.body()?.result?.get(0)?.before_weight}")
+                Log.d(TAG,"${response.body()?.result?.get(0)?.bmi}")
+                Log.d(TAG,"${response.body()?.result?.get(0)?.goal}")
+
+
+
             }
 
-            override fun onFailure(call: Call<getUserInfoResponse>, t: Throwable) {
+            override fun onFailure(call: Call<GetUserInfoResponse>, t: Throwable) {
                 Log.d(TAG,"YOu 실패")
             }
-
         })
 
+
+        /*val connection = retrofit.create(API::class.java)
+        connection.getUserInfo(GetUserInfoRequest(33)).enqueue(object: Callback<GetUserInfoResponse> {
+            override fun onFailure(call: Call<DefaultResponseKo>, t: Throwable){
+                Log.d("result1 - saveFoodLog", t.message.toString())
+            }
+
+            override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
+                if(response?.isSuccessful){
+                    Log.d("result2 - saveFoodLog", response?.body().toString())
+                }
+                else{
+                    Log.d("response error", response?.message())
+                    Log.d("response error", response?.code().toString())
+                    Log.d("response error", response?.errorBody().toString())
+                }
+            }
+
+        })*/
 
         App.retrofit = Retrofit.Builder()
             .baseUrl(TaskServer.base_url)

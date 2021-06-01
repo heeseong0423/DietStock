@@ -123,7 +123,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         navigationView.setNavigationItemSelectedListener(this)
 
 
-
+/*
         //요청 보내기
         RetrofitBuilder.api.getUserInfo("22").enqueue(object : Callback<getUserInfoResponse>{
             override fun onResponse(
@@ -139,7 +139,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             }
 
         })
-
+*/
 
         App.retrofit = Retrofit.Builder()
             .baseUrl(TaskServer.base_url)

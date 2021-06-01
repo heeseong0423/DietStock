@@ -176,22 +176,14 @@ public class FeedBackFragment extends Fragment {
                         carbs += data.getCarbs() * data.getServing(); //먹은 음식의 탄수화물 총합
                         protein += data.getProtein() * data.getServing(); //먹은 음식의 단백질 총합
                         fat += data.getFat() * data.getServing(); //먹은 음식의 지방 총합
-                        try{
+                        /*try{
                             Log.d("test", data.getFood_image());
                             food_image.setImageResource(Integer.parseInt(data.getFood_image()));
                         }catch (NullPointerException e){
                             e.printStackTrace();
-                        }
+                        }*/
 
                         //food_image.setImageResource(Integer.parseInt((data.getFood_image())));
-
-                        if( !(TextUtils.isEmpty(data.getFood_image()))){ //비어있지 않다면
-                        Glide.with(rootView).load(TaskServer.base_url+data.getFood_image()).error(R.drawable.food_icon)
-                                .placeholder(R.drawable.food_icon).into(food_image);
-                        }
-                        else{
-                            food_image.setImageResource(R.drawable.food_icon);
-                        }
 
                         dailyFood_info[i][0] = carbs;
                         dailyFood_info[i][1] = protein;

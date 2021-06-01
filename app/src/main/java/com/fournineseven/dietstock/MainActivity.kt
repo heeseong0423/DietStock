@@ -128,6 +128,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         val contentMainViewPager = findViewById<ViewPager2>(R.id.view_pager)
         val bottomNavView = findViewById<BottomNavigationView>(R.id.nav_bottom_view)
+
         setUser()
 
         viewPager = contentMainViewPager
@@ -142,7 +143,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.ACTIVITY_RECOGNITION,
-                Manifest.permission.CAMERAs
+                Manifest.permission.CAMERA
             ), PERMISSION_REQUEST_CODE
         )
 
@@ -336,7 +337,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             var intent = Intent(this, SignActivity::class.java)
             Log.d("시발", "시발")
             startActivity(intent)
-            //finish()
+            finish()
         }
 
         //var userNo: Int? = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()

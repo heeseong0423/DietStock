@@ -1,7 +1,5 @@
 package com.fournineseven.dietstock.api;
 
-import com.fournineseven.dietstock.GetUserInfoRequest;
-import com.fournineseven.dietstock.GetUserInfoResponse;
 import com.fournineseven.dietstock.model.DefaultResponse;
 import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodRequest;
 import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodResponse;

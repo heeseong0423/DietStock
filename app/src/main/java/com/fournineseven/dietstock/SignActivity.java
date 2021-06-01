@@ -74,6 +74,7 @@ public class SignActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         LoginState.INSTANCE.setEmail(sharedpreferences.getString(LoginState.EMAIL_KEY, null));
         LoginState.INSTANCE.setPassword(sharedpreferences.getString(LoginState.PASSWORD_KEY, null));
+        RetrofitService loginService = App.retrofit.create(RetrofitService.class);
     }
 
     void init(){

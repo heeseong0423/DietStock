@@ -3,6 +3,7 @@ package com.fournineseven.dietstock.ui.feedback;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -184,12 +185,12 @@ public class FeedBackFragment extends Fragment {
 
                         //food_image.setImageResource(Integer.parseInt((data.getFood_image())));
 
-                        try{
-                            Glide.with(rootView).load(TaskServer.base_url+data.getFood_image()).error(R.drawable.hindoongi)
-                                    .placeholder(R.drawable.hindoongi).into(food_image);
-                        }catch (Exception e){
-                            food_image.setImageResource(R.drawable.ic_baseline_arrow_drop_up_24);
-                            e.printStackTrace();
+                        if( !(TextUtils.isEmpty(data.getFood_image()))){ //비어있지 않다면
+                        Glide.with(rootView).load(TaskServer.base_url+data.getFood_image()).error(R.drawable.food_icon)
+                                .placeholder(R.drawable.food_icon).into(food_image);
+                        }
+                        else{
+                            food_image.setImageResource(R.drawable.food_icon);
                         }
 
                         dailyFood_info[i][0] = carbs;
@@ -312,8 +313,8 @@ public class FeedBackFragment extends Fragment {
                         }
 
 
-                        Glide.with(rootView).load(TaskServer.base_url+dailyFood_all.get(index).getFood_image()).error(R.drawable.hindoongi)
-                                    .placeholder(R.drawable.hindoongi).into(iv_bad_food);
+                        Glide.with(rootView).load(TaskServer.base_url+dailyFood_all.get(index).getFood_image()).error(R.drawable.food_icon)
+                                    .placeholder(R.drawable.food_icon).into(iv_bad_food);
 
 
                         //iv_bad_food.setImageResource(Integer.parseInt(dailyFood_all.get(index).getFood_image()));
@@ -352,8 +353,8 @@ public class FeedBackFragment extends Fragment {
                             }
                         }
 
-                        Glide.with(rootView).load(TaskServer.base_url+correct_requestFood.get(min_carbs_index).food_image()).error(R.drawable.hindoongi)
-                                .placeholder(R.drawable.hindoongi).into(iv_good_food);
+                        Glide.with(rootView).load(TaskServer.base_url+correct_requestFood.get(min_carbs_index).food_image()).error(R.drawable.food_icon)
+                                .placeholder(R.drawable.food_icon).into(iv_good_food);
                         //iv_good_food.setImageResource(Integer.parseInt(correct_requestFood.get(min_carbs_index).food_image()));
                     }
                 }

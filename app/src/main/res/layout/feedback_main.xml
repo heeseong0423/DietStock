@@ -208,7 +208,8 @@
                 android:layout_width="52dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_baseline_arrow_drop_down_24">
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/no_food_icon">
 
             </ImageView>
 
@@ -223,10 +224,10 @@
 
             <ImageView
                 android:id="@+id/iv_good_food"
-                android:layout_width="52dp"
-                android:layout_height="match_parent"
+                android:layout_width="80dp"
+                android:layout_height="77dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_baseline_arrow_drop_up_24">
+                android:src="@drawable/food_icon">
 
             </ImageView>
 

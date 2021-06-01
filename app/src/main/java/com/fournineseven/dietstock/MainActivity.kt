@@ -110,6 +110,11 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        var sharedpreferencestest = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+        /*var editor = sharedpreferencestest.edit()
+        editor.putString(LoginState.EMAIL_KEY,"")
+        editor.apply()*/
+
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -147,162 +152,227 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         var userNumber = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
-        //요청 보내기
-        RetrofitBuilder.api.getUserInfo(GetUserInfoRequest(userNumber)).enqueue(object : Callback<GetUserInfoResponse>{
-            override fun onResponse(
-                call: Call<GetUserInfoResponse>,
-                response: Response<GetUserInfoResponse>
-            ) {
+
+        var userNumberCheck = sharedpreferencestest.getString(LoginState.USER_NUMBER,null)
+        if(userNumberCheck!=null) {
+            //요청 보내기
+            RetrofitBuilder.api.getUserInfo(GetUserInfoRequest(userNumber))
+                .enqueue(object : Callback<GetUserInfoResponse> {
+                    override fun onResponse(
+                        call: Call<GetUserInfoResponse>,
+                        response: Response<GetUserInfoResponse>
+                    ) {
 
 
-                var loading_layout: ConstraintLayout = findViewById(R.id.loading_layout)
-                contentMainViewPager.visibility = View.VISIBLE
-                loading_layout.visibility = View.GONE
-                val contentMainNavView = findViewById<NavigationView>(R.id.nav_view)
+                        var loading_layout: ConstraintLayout = findViewById(R.id.loading_layout)
+                        contentMainViewPager.visibility = View.VISIBLE
+                        loading_layout.visibility = View.GONE
+                        val contentMainNavView = findViewById<NavigationView>(R.id.nav_view)
 
-                Log.d(TAG,"이름 : ${response.body()?.result?.get(0)?.user_name}")
-                Log.d(TAG,"활동량 : ${response.body()?.result?.get(0)?.activity}")
-                Log.d(TAG,"나이 : ${response.body()?.result?.get(0)?.age}")
-                Log.d(TAG,"전 이미지 : ${response.body()?.result?.get(0)?.beforeImage}")
-                Log.d(TAG,"다음 이미지: ${response.body()?.result?.get(0)?.before_weight}")
-                Log.d(TAG," BIM : ${response.body()?.result?.get(0)?.bmi}")
-                Log.d(TAG,"목표 : ${response.body()?.result?.get(0)?.goal}")
-
-
-
-                beforeImage = contentMainNavView.getHeaderView(0).findViewById(R.id.before_image)
-                afterImage = contentMainNavView.getHeaderView(0).findViewById(R.id.after_image)
-                myGoalTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_goal)
-                myWeightTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_weight)
-                myHeightTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_height)
-                myAgeTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_age)
-                myGenderTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_gender)
-                myActivityTypeTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_activity_type)
-
-                var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
-                var editor = sharedpreferences.edit()
-                editor.putString(LoginState.NAME_KEY,response.body()?.result?.get(0)?.user_name)
-                editor.putString(LoginState.BEFORE_IMAGE_KEY,response.body()?.result?.get(0)?.beforeImage)
-                editor.putFloat(LoginState.GOAL_KEY,response.body()?.result?.get(0)?.goal!!.toFloat())
-                editor.putFloat(LoginState.WEIGHT_KEY,response.body()?.result?.get(0)?.weight!!.toFloat())
-                editor.putFloat(LoginState.HEIGHT_KEY,response.body()?.result?.get(0)?.height!!.toFloat())
-                editor.putInt(LoginState.AGE_KEY,response.body()?.result?.get(0)?.age!!.toInt())
-                editor.putInt(LoginState.GENDER_KEY,response.body()?.result?.get(0)?.sex!!.toInt())
-                editor.putInt(LoginState.ACTIVITY_KEY,response.body()?.result?.get(0)?.activity!!.toInt())
-                editor.apply()
-
-
-                var beforeImageUri: String?= sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY,null)
-                var afterImageUri:String ?= sharedpreferences.getString(LoginState.AFTER_IMAGE_KEY, null)
-                var myGoal:Float= sharedpreferences.getFloat(LoginState.GOAL_KEY,0.0f)
-                var myWeight:Float = sharedpreferences.getFloat(LoginState.WEIGHT_KEY,0.0f)
-                var myHeight:Float = sharedpreferences.getFloat(LoginState.HEIGHT_KEY,0.0f)
-                var myAge:Int = sharedpreferences.getInt(LoginState.AGE_KEY,0)
-                var myGender:Int = sharedpreferences.getInt(LoginState.GENDER_KEY,0)
-                var myActivityType:Int = sharedpreferences.getInt(LoginState.ACTIVITY_KEY,0)
-                var userName: String? = sharedpreferences.getString(LoginState.NAME_KEY,null)
-                var userEmail:String ?= sharedpreferences.getString(LoginState.EMAIL_KEY,null)
-
-                Log.d(TAG,"값들 : $myWeight $myHeight")
-
-                /*if(beforeImageUri !=response.body()?.result?.get(0)?.beforeImage){
-                    editor.putString(LoginState.BEFORE_IMAGE_KEY,response.body()?.result?.get(0)?.beforeImage)
-                    beforeImageUri = sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY,null)
-                    Log.d(TAG,"전11 이미지 : $beforeImageUri")
-                }
-                if(myGoal != response.body()?.result?.get(0)?.goal){
-                    editor.putFloat(LoginState.GOAL_KEY,response.body()?.result?.get(0)?.goal!!.toFloat())
-                    myGoal = sharedpreferences.getFloat(LoginState.GOAL_KEY,0.0f)
-                    Log.d(TAG,"목표 : ${myGoal}")
-                }
-                if(myWeight != response.body()?.result?.get(0)?.weight){
-                    editor.putFloat(LoginState.WEIGHT_KEY,response.body()?.result?.get(0)?.weight!!.toFloat())
-                    myWeight = sharedpreferences.getFloat(LoginState.WEIGHT_KEY,0.0f)
-                    Log.d(TAG,"몸무게 : $myWeight")
-                }
-                if(myHeight != response.body()?.result?.get(0)?.height){
-                    editor.putFloat(LoginState.HEIGHT_KEY,response.body()?.result?.get(0)?.height!!.toFloat())
-                    myHeight = sharedpreferences.getFloat(LoginState.HEIGHT_KEY,0.0f)
-                    Log.d(TAG,"키 : $myHeight")
-                }
-                if(myAge != response.body()?.result?.get(0)?.age){
-                    editor.putInt(LoginState.AGE_KEY,response.body()?.result?.get(0)?.age!!.toInt())
-                    myAge = sharedpreferences.getInt(LoginState.AGE_KEY,0)
-                    Log.d(TAG,"나이 : $myAge")
-                }
-                if(myGender != response.body()?.result?.get(0)?.sex){
-                    editor.putInt(LoginState.GENDER_KEY,response.body()?.result?.get(0)?.sex!!.toInt())
-                    myGender = sharedpreferences.getInt(LoginState.GENDER_KEY,0)
-                }
-                if(myActivityType != response.body()?.result?.get(0)?.activity){
-                    editor.putInt(LoginState.ACTIVITY_KEY,response.body()?.result?.get(0)?.activity!!.toInt())
-                    myActivityType = sharedpreferences.getInt(LoginState.ACTIVITY_KEY,0)
-                }*/
+                        Log.d(TAG, "이름 : ${response.body()?.result?.get(0)?.user_name}")
+                        Log.d(TAG, "활동량 : ${response.body()?.result?.get(0)?.activity}")
+                        Log.d(TAG, "나이 : ${response.body()?.result?.get(0)?.age}")
+                        Log.d(TAG, "전 이미지 : ${response.body()?.result?.get(0)?.beforeImage}")
+                        Log.d(TAG, "다음 이미지: ${response.body()?.result?.get(0)?.before_weight}")
+                        Log.d(TAG, " BIM : ${response.body()?.result?.get(0)?.bmi}")
+                        Log.d(TAG, "목표 : ${response.body()?.result?.get(0)?.goal}")
 
 
 
+                        beforeImage =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.before_image)
+                        afterImage =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.after_image)
+                        myGoalTextView =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_goal)
+                        myWeightTextView =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_weight)
+                        myHeightTextView =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_height)
+                        myAgeTextView =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_age)
+                        myGenderTextView =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_gender)
+                        myActivityTypeTextView = contentMainNavView.getHeaderView(0)
+                            .findViewById(R.id.nav_header_activity_type)
 
-                //초기화
-                if (beforeImageUri != null) {
-                    beforeImage.setImageURI(beforeImageUri!!.toUri())
-                }
-
-                if(afterImageUri != null){
-                    afterImage.setImageURI(afterImageUri!!.toUri())
-                }
-                myAgeTextView.text = "나이 : " + myAge.toString() + "살"
-                myGoalTextView.text = "목표 : " + myGoal.toString() + "KG"
-                myWeightTextView.text = "몸무게 : " + myWeight.toString() + "KG"
-                myHeightTextView.text = "키 : " + myHeight.toString() +"CM"
-
-
-                myName = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_name)
-                myEmail = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_email)
-
-                if(myName != null){
-                    myName.text = userName
-                }
-
-                if(myEmail != null){
-                    myEmail.text = userEmail
-                }
-
-                if(myGoal < 0.2f){
-                    myGoalTextView.text = "목표 입력값 없음"
-                }
-                if(myAge <1){
-                    myAgeTextView.text = "나이 입력값 없음"
-                }
-                if(myHeight < 0.2f){
-                    myHeightTextView.text = "키 입력값 없음"
-                }
-                if(myWeight < 0.2f){
-                    myWeightTextView.text = "몸무게 입력값 없음"
-                }
-
-
-                if(myGender < 1){
-                    myGenderTextView.text = "남자"
-                }else{
-                    myGenderTextView.text = "여자"
-                }
+                        var sharedpreferences =
+                            getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+                        var editor = sharedpreferences.edit()
+                        editor.putString(
+                            LoginState.NAME_KEY,
+                            response.body()?.result?.get(0)?.user_name
+                        )
+                        editor.putString(
+                            LoginState.BEFORE_IMAGE_KEY,
+                            response.body()?.result?.get(0)?.beforeImage
+                        )
+                        editor.putFloat(
+                            LoginState.GOAL_KEY,
+                            response.body()?.result?.get(0)?.goal!!.toFloat()
+                        )
+                        editor.putFloat(
+                            LoginState.WEIGHT_KEY,
+                            response.body()?.result?.get(0)?.weight!!.toFloat()
+                        )
+                        editor.putFloat(
+                            LoginState.HEIGHT_KEY,
+                            response.body()?.result?.get(0)?.height!!.toFloat()
+                        )
+                        editor.putInt(
+                            LoginState.AGE_KEY,
+                            response.body()?.result?.get(0)?.age!!.toInt()
+                        )
+                        editor.putInt(
+                            LoginState.GENDER_KEY,
+                            response.body()?.result?.get(0)?.sex!!.toInt()
+                        )
+                        editor.putInt(
+                            LoginState.ACTIVITY_KEY,
+                            response.body()?.result?.get(0)?.activity!!.toInt()
+                        )
+                        editor.apply()
 
 
-                if(myActivityType < 1){
-                    myActivityTypeTextView.text= "활동량 적음"
-                }else if(myActivityType < 2 ){
-                    myActivityTypeTextView.text = "활동량 보통"
-                }else {
-                    myActivityTypeTextView.text = "활동량 많음"
-                }
-            }
+                        var beforeImageUri: String? =
+                            sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY, null)
+                        var afterImageUri: String? =
+                            sharedpreferences.getString(LoginState.AFTER_IMAGE_KEY, null)
+                        var myGoal: Float = sharedpreferences.getFloat(LoginState.GOAL_KEY, 0.0f)
+                        var myWeight: Float =
+                            sharedpreferences.getFloat(LoginState.WEIGHT_KEY, 0.0f)
+                        var myHeight: Float =
+                            sharedpreferences.getFloat(LoginState.HEIGHT_KEY, 0.0f)
+                        var myAge: Int = sharedpreferences.getInt(LoginState.AGE_KEY, 0)
+                        var myGender: Int = sharedpreferences.getInt(LoginState.GENDER_KEY, 0)
+                        var myActivityType: Int =
+                            sharedpreferences.getInt(LoginState.ACTIVITY_KEY, 0)
+                        var userName: String? =
+                            sharedpreferences.getString(LoginState.NAME_KEY, null)
+                        var userEmail: String? =
+                            sharedpreferences.getString(LoginState.EMAIL_KEY, null)
 
-            override fun onFailure(call: Call<GetUserInfoResponse>, t: Throwable) {
-                Log.d(TAG,"You 실패")
-                Toast.makeText(baseContext,"네트워크 연결을 확인해주세요.",Toast.LENGTH_LONG).show()
-                finish()
-            }
-        })
+                        Log.d(TAG, "값들 : $myWeight $myHeight")
+
+                        if (beforeImageUri != response.body()?.result?.get(0)?.beforeImage) {
+                            editor.putString(
+                                LoginState.BEFORE_IMAGE_KEY,
+                                response.body()?.result?.get(0)?.beforeImage
+                            )
+                            beforeImageUri =
+                                sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY, null)
+                            Log.d(TAG, "전11 이미지 : $beforeImageUri")
+                        }
+                        if (myGoal != response.body()?.result?.get(0)?.goal) {
+                            editor.putFloat(
+                                LoginState.GOAL_KEY,
+                                response.body()?.result?.get(0)?.goal!!.toFloat()
+                            )
+                            myGoal = sharedpreferences.getFloat(LoginState.GOAL_KEY, 0.0f)
+                            Log.d(TAG, "목표 : ${myGoal}")
+                        }
+                        if (myWeight != response.body()?.result?.get(0)?.weight) {
+                            editor.putFloat(
+                                LoginState.WEIGHT_KEY,
+                                response.body()?.result?.get(0)?.weight!!.toFloat()
+                            )
+                            myWeight = sharedpreferences.getFloat(LoginState.WEIGHT_KEY, 0.0f)
+                            Log.d(TAG, "몸무게 : $myWeight")
+                        }
+                        if (myHeight != response.body()?.result?.get(0)?.height) {
+                            editor.putFloat(
+                                LoginState.HEIGHT_KEY,
+                                response.body()?.result?.get(0)?.height!!.toFloat()
+                            )
+                            myHeight = sharedpreferences.getFloat(LoginState.HEIGHT_KEY, 0.0f)
+                            Log.d(TAG, "키 : $myHeight")
+                        }
+                        if (myAge != response.body()?.result?.get(0)?.age) {
+                            editor.putInt(
+                                LoginState.AGE_KEY,
+                                response.body()?.result?.get(0)?.age!!.toInt()
+                            )
+                            myAge = sharedpreferences.getInt(LoginState.AGE_KEY, 0)
+                            Log.d(TAG, "나이 : $myAge")
+                        }
+                        if (myGender != response.body()?.result?.get(0)?.sex) {
+                            editor.putInt(
+                                LoginState.GENDER_KEY,
+                                response.body()?.result?.get(0)?.sex!!.toInt()
+                            )
+                            myGender = sharedpreferences.getInt(LoginState.GENDER_KEY, 0)
+                        }
+                        if (myActivityType != response.body()?.result?.get(0)?.activity) {
+                            editor.putInt(
+                                LoginState.ACTIVITY_KEY,
+                                response.body()?.result?.get(0)?.activity!!.toInt()
+                            )
+                            myActivityType = sharedpreferences.getInt(LoginState.ACTIVITY_KEY, 0)
+                        }
+
+
+                        //초기화
+                        if (beforeImageUri != null) {
+                            beforeImage.setImageURI(beforeImageUri!!.toUri())
+                        }
+
+                        if (afterImageUri != null) {
+                            afterImage.setImageURI(afterImageUri!!.toUri())
+                        }
+                        myAgeTextView.text = "나이 : " + myAge.toString() + "살"
+                        myGoalTextView.text = "목표 : " + myGoal.toString() + "KG"
+                        myWeightTextView.text = "몸무게 : " + myWeight.toString() + "KG"
+                        myHeightTextView.text = "키 : " + myHeight.toString() + "CM"
+
+
+                        myName = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_name)
+                        myEmail = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_email)
+
+                        if (myName != null) {
+                            myName.text = userName
+                        }
+
+                        if (myEmail != null) {
+                            myEmail.text = userEmail
+                        }
+
+                        if (myGoal < 0.2f) {
+                            myGoalTextView.text = "목표 입력값 없음"
+                        }
+                        if (myAge < 1) {
+                            myAgeTextView.text = "나이 입력값 없음"
+                        }
+                        if (myHeight < 0.2f) {
+                            myHeightTextView.text = "키 입력값 없음"
+                        }
+                        if (myWeight < 0.2f) {
+                            myWeightTextView.text = "몸무게 입력값 없음"
+                        }
+
+
+                        if (myGender < 1) {
+                            myGenderTextView.text = "남자"
+                        } else {
+                            myGenderTextView.text = "여자"
+                        }
+
+
+                        if (myActivityType < 1) {
+                            myActivityTypeTextView.text = "활동량 적음"
+                        } else if (myActivityType < 2) {
+                            myActivityTypeTextView.text = "활동량 보통"
+                        } else {
+                            myActivityTypeTextView.text = "활동량 많음"
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetUserInfoResponse>, t: Throwable) {
+                        Log.d(TAG, "You 실패")
+                        Toast.makeText(baseContext, "네트워크 연결을 확인해주세요.", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                })
+        }
     }
 
     private fun setUser(){

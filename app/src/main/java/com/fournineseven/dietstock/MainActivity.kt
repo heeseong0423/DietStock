@@ -35,6 +35,10 @@ import com.fournineseven.dietstock.ui.ranking.RankingFragment
 import com.fournineseven.dietstock.ui.rolemodel.RoleModelFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -74,8 +78,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             R.id.nav_log_out->{
                 var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
                 var editor = sharedpreferences.edit()
-                editor.putString(LoginState.EMAIL_KEY,"")
-                editor.putString(LoginState.PASSWORD_KEY,"")
+                editor.putString(LoginState.EMAIL_KEY,null)
+                editor.putString(LoginState.PASSWORD_KEY,null)
                 editor.apply()
 
                 var intent = Intent(this, SignActivity::class.java)
@@ -117,6 +121,24 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         navigationView = findViewById(R.id.nav_view)
 
         navigationView.setNavigationItemSelectedListener(this)
+
+
+
+        //요청 보내기
+       /*RetrofitBuilder.api.getUserInfo("22").enqueue(object : Callback<getUserInfoResponse>{
+            override fun onResponse(
+                call: Call<getUserInfoResponse>,
+                response: Response<getUserInfoResponse>
+            ) {
+                Log.d(TAG,"${response.body()?.height} is height")
+                Log.d(TAG,"${response.body()?.name}")
+            }
+
+            override fun onFailure(call: Call<getUserInfoResponse>, t: Throwable) {
+                Log.d(TAG,"YOu 실패")
+            }
+        })*/
+
 
         App.retrofit = Retrofit.Builder()
             .baseUrl(TaskServer.base_url)
@@ -201,15 +223,17 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         var myAge:Int = sharedpreferences.getInt(LoginState.AGE_KEY,0)
         var myGender:Int = sharedpreferences.getInt(LoginState.GENDER_KEY,0)
         var myActivityType:Int = sharedpreferences.getInt(LoginState.ACTIVITY_KEY,0)
-        /*if (email == null || password == null) {
+
+        //로그인 안되어있으면 SignActivity 실행
+        if ((email == "" || email == null) || (password == "" || password == null)) {
             var intent = Intent(this, SignActivity::class.java)
             startActivity(intent)
             finish()
-        }*/
+        }
 
         var userNo: Int? = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
 
-        Log.d(TAG,"${email} , ${password} ${userNo}  bbbbbbbbbbbbbbbbbbbb")
+        Log.d(TAG,"이메일: ${email} , 비밀번호 : ${password} 유저번호 : ${userNo}  bbbbbbbbbbbbbbbbbbbb")
 
         //초기화
         if (beforeImageUri != null) {

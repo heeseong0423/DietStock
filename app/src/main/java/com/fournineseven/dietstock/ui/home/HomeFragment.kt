@@ -43,8 +43,6 @@ class HomeFragment : Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         val textView: TextView = root.findViewById(R.id.text_home)
-        val button: Button = root.findViewById(R.id.button2)
-        val button2: Button = root.findViewById(R.id.button3)
         val dietChart:CandleStickChart = root.findViewById(R.id.dietStockChart)
         homeViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
@@ -56,15 +54,6 @@ class HomeFragment : Fragment() {
         ).allowMainThreadQueries()
                 .build()
         val userDao = db.kcalDao()
-
-        button.setOnClickListener {
-            var userKcalData = UserKcalData(0, User.kcal,User.PKcal,User.startKcal,User.endKcal,User.highKcal,User.lowKcal)
-            userDao.insert(userKcalData)
-        }
-
-        button2.setOnClickListener {
-            Log.d(TAG,"${userDao.getAll()}")
-        }
 //        val entries = ArrayList<CandleEntry>()
 //
 //        var num = 0

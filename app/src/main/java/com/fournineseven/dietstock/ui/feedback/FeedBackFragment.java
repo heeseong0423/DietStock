@@ -15,10 +15,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.fournineseven.dietstock.App;
 import com.fournineseven.dietstock.LoginState;
 import com.fournineseven.dietstock.R;
 import com.fournineseven.dietstock.api.RetrofitService;
+import com.fournineseven.dietstock.config.TaskServer;
 import com.fournineseven.dietstock.model.getDailyFood.DailyFoodResult;
 import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodRequest;
 import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodResponse;
@@ -117,7 +119,6 @@ public class FeedBackFragment extends Fragment {
 
 
 
-
         // getArgument로 avoidFood_check에서 문자열을 받아오려고 시도
         btn_gocheck.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +139,7 @@ public class FeedBackFragment extends Fragment {
         SharedPreferences sharedPreferences1 = getActivity().getSharedPreferences(SHARED_PREFS,0);
         int sharedPreferences_user_no = Integer.valueOf(sharedPreferences.getString(LoginState.USER_NUMBER,null));
         user_no = sharedPreferences_user_no;
+
         Log.d("user_no"," " + user_no);
         Date mDate = new Date(now);
         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -180,6 +182,15 @@ public class FeedBackFragment extends Fragment {
                             e.printStackTrace();
                         }
 
+                        //food_image.setImageResource(Integer.parseInt((data.getFood_image())));
+
+                        try{
+                            Glide.with(rootView).load(TaskServer.base_url+data.getFood_image()).error(R.drawable.hindoongi)
+                                    .placeholder(R.drawable.hindoongi).into(food_image);
+                        }catch (Exception e){
+                            food_image.setImageResource(R.drawable.ic_baseline_arrow_drop_up_24);
+                            e.printStackTrace();
+                        }
 
                         dailyFood_info[i][0] = carbs;
                         dailyFood_info[i][1] = protein;
@@ -300,7 +311,12 @@ public class FeedBackFragment extends Fragment {
                             }
                         }
 
-                        iv_bad_food.setImageResource(Integer.parseInt(dailyFood_all.get(index).getFood_image()));
+
+                        Glide.with(rootView).load(TaskServer.base_url+dailyFood_all.get(index).getFood_image()).error(R.drawable.hindoongi)
+                                    .placeholder(R.drawable.hindoongi).into(iv_bad_food);
+
+
+                        //iv_bad_food.setImageResource(Integer.parseInt(dailyFood_all.get(index).getFood_image()));
 
                         for (int i = 0; i < requestFoodResultsResults.size(); i++) { //
 
@@ -336,9 +352,9 @@ public class FeedBackFragment extends Fragment {
                             }
                         }
 
-                        iv_good_food.setImageResource(Integer.parseInt(correct_requestFood.get(min_carbs_index).food_image()));
-
-
+                        Glide.with(rootView).load(TaskServer.base_url+correct_requestFood.get(min_carbs_index).food_image()).error(R.drawable.hindoongi)
+                                .placeholder(R.drawable.hindoongi).into(iv_good_food);
+                        //iv_good_food.setImageResource(Integer.parseInt(correct_requestFood.get(min_carbs_index).food_image()));
                     }
                 }
 
@@ -386,9 +402,6 @@ public class FeedBackFragment extends Fragment {
                 case 2 : gram = dt.getFat(); break;
             }
         }
-
-
-
     }
 
     private void calculate_recommend() {

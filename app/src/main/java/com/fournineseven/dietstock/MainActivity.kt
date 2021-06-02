@@ -182,7 +182,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         var userNumber = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
-/*
+
         var userNumberCheck = sharedpreferences.getString(LoginState.USER_NUMBER,null)
         if(userNumberCheck!=null) {
             //요청 보내기
@@ -402,7 +402,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         finish()
                     }
                 })
-        }*/
+        }
     }
 
     private fun setUser(){
@@ -435,12 +435,12 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         var endKcal: Float = sharedpreferences.getFloat(LoginState.END_KEY,0.0f) //종료칼로리
         var date:String? = sharedpreferences.getString(LoginState.DATE_KEY,null)
 
-       /* //로그인 안되어있으면 SignActivity 실행
+        //로그인 안되어있으면 SignActivity 실행
         if ((email == "" || email == null) || (password == "" || password == null)) {
             var intent = Intent(this, SignActivity::class.java)
             startActivity(intent)
             finish()
-        }*/
+        }
 
         //처음상태면
         if(date == null){

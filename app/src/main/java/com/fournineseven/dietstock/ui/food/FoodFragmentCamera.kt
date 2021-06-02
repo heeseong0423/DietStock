@@ -121,8 +121,7 @@ class FoodFragmentCamera : Fragment() {
                 if(!binding.foodSearch.isIconified){
                     binding.foodName.visibility = View.VISIBLE
                     if(binding.resultImage.visibility == View.VISIBLE){
-                        binding.LeftConstraint.visibility = View.VISIBLE
-                        binding.RightConstraint.visibility = View.VISIBLE
+                        binding.SubConstraint.visibility = View.VISIBLE
                         binding.submitBtn.visibility = View.VISIBLE
                     }
                 }
@@ -166,8 +165,7 @@ class FoodFragmentCamera : Fragment() {
             if(!binding.foodSearch.isIconified){
                 binding.foodName.visibility = View.INVISIBLE
                 if(binding.resultImage.visibility == View.VISIBLE){
-                    binding.LeftConstraint.visibility = View.INVISIBLE
-                    binding.RightConstraint.visibility = View.INVISIBLE
+                    binding.SubConstraint.visibility = View.INVISIBLE
                     binding.submitBtn.visibility = View.INVISIBLE
                 }
             }
@@ -484,8 +482,7 @@ class FoodFragmentCamera : Fragment() {
 
     fun flipVisibility(cameraOn: Boolean){
         var foodName = binding.foodName
-        var leftConstraint = binding.LeftConstraint
-        var rightConstraint = binding.RightConstraint
+        var subConstraint = binding.SubConstraint
         var btn = binding.takeBtn
         var submitBtn = binding.submitBtn
         var camera = binding.textureView
@@ -493,8 +490,7 @@ class FoodFragmentCamera : Fragment() {
         var servingConstraint = binding.servingConstraint
         if(cameraOn){
             foodName.text = "음식을 촬영해 주세요"
-            leftConstraint.visibility = View.INVISIBLE
-            rightConstraint.visibility = View.INVISIBLE
+            subConstraint.visibility = View.INVISIBLE
             submitBtn.visibility = View.INVISIBLE
             servingConstraint.visibility = View.INVISIBLE
             image.visibility = View.INVISIBLE
@@ -506,8 +502,7 @@ class FoodFragmentCamera : Fragment() {
         }else{
             btn.visibility = View.INVISIBLE
             camera.visibility = View.INVISIBLE
-            leftConstraint.visibility = View.VISIBLE
-            rightConstraint.visibility = View.VISIBLE
+            subConstraint.visibility = View.VISIBLE
             submitBtn.visibility = View.VISIBLE
             servingConstraint.visibility = View.VISIBLE
             image.visibility = View.VISIBLE

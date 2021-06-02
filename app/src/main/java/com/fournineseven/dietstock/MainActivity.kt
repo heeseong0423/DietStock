@@ -412,7 +412,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 FoodFragmentCamera().binding.foodSearch.isIconified = true
             }
             else if (FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요" ||
-                (FoodFragmentCamera().binding.LeftConstraint.visibility == View.INVISIBLE && FoodFragmentCamera().binding.RightConstraint.visibility == View.INVISIBLE)) {
+                (FoodFragmentCamera().binding.SubConstraint.visibility == View.INVISIBLE)) {
                 super.onBackPressed()
             } else {
                 FoodFragmentCamera().flipVisibility(true)

@@ -67,6 +67,7 @@ public class SignActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("login", "login 시작");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
         init();

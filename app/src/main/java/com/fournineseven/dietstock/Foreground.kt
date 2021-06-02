@@ -185,6 +185,7 @@ class Foreground : Service() {
 
     fun alarmRegister(){
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
         val intent = Intent(this, AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             this, AlarmReceiver.REQUEST_ID, intent,

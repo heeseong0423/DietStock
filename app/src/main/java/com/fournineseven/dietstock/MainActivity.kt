@@ -25,8 +25,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.fournineseven.dietstock.ui.feedback.FeedBackFragment
 
 import com.fournineseven.dietstock.config.TaskServer
-import com.fournineseven.dietstock.retrofitness.GetUserInfoResponse
-import com.fournineseven.dietstock.retrofitness.RetrofitBuilder
+import com.fournineseven.dietstock.retrofitness.*
 
 import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
@@ -493,9 +492,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         }
     }
 
-
-    private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle) :
-        FragmentStateAdapter(fm, lc) {
+    private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle) : FragmentStateAdapter(fm, lc) {
         override fun getItemCount(): Int {
             return 5
         }
@@ -611,15 +608,12 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         myGoalTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_goal)
         myWeightTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_weight)
         myHeightTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_height)
-        myAgeTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_age)
 
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         var myGoal:Float= sharedpreferences.getFloat(LoginState.GOAL_KEY,0.0f)
         var myWeight:Float = sharedpreferences.getFloat(LoginState.WEIGHT_KEY,0.0f)
         var myHeight:Float = sharedpreferences.getFloat(LoginState.HEIGHT_KEY,0.0f)
-        var myAge:Int = sharedpreferences.getInt(LoginState.AGE_KEY,0)
 
-        myAgeTextView.text = "나이 : " + myAge.toString() + "살"
         myGoalTextView.text = "목표 : " + myGoal.toString() + "KG"
         myWeightTextView.text = "몸무게 : " + myWeight.toString() + "KG"
         myHeightTextView.text = "키 : " + myHeight.toString() +"CM"

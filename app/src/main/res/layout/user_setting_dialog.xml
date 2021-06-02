@@ -15,31 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/dialog_age_text"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="50dp"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/dialog_age"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/font1"
-            android:text="나이 : "
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:layout_constraintBottom_toBottomOf="@+id/dialog_age_text"
-            app:layout_constraintEnd_toStartOf="@+id/dialog_age_text"
-            app:layout_constraintHorizontal_bias="0.431"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/dialog_age_text" />
-
         <TextView
             android:id="@+id/dialog_height"
             android:layout_width="wrap_content"
@@ -57,11 +32,12 @@
             android:id="@+id/dialog_height_text"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="50dp"
             android:ems="10"
             android:inputType="numberDecimal"
-            app:layout_constraintEnd_toEndOf="@+id/dialog_age_text"
-            app:layout_constraintTop_toBottomOf="@+id/dialog_age_text" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/dialog_weight_text"
@@ -128,16 +104,6 @@
             android:text="확인"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/textView16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="살"
-            app:layout_constraintBottom_toBottomOf="@+id/dialog_age_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/dialog_age_text"
-            app:layout_constraintTop_toTopOf="@+id/dialog_age_text" />
 
         <TextView
             android:id="@+id/textView17"

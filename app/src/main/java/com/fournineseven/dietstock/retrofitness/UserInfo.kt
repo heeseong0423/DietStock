@@ -8,6 +8,20 @@ class GetUserInfoRequest(
     @field:SerializedName("user_no") private val user_no: Int
 )
 
+class UpdateWeightRequest(
+    @field:SerializedName("user_no") private val user_no: Int,
+    @field:SerializedName("weight") private val weight: Float
+)
+
+class UpdateHeightRequest(
+    @field:SerializedName("user_no") private val user_no: Int,
+    @field:SerializedName("height") private val height: Float
+)
+
+class UpdateGoalRequest(
+    @field:SerializedName("user_no") private val user_no: Int,
+    @field:SerializedName("goal") private val goal: Float
+)
 
 class RequestUserInfoResult {
     @SerializedName("name")
@@ -24,12 +38,12 @@ class RequestUserInfoResult {
 
     @SerializedName("beforeimage")
     @Expose
-    val beforeImage: String ?= null
+    val beforeImage: String? = null
 
 
     @SerializedName("activity")
     @Expose
-    val activity:Int = 0
+    val activity: Int = 0
 
     @SerializedName("age")
     @Expose

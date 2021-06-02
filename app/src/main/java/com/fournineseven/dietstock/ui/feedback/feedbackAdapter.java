@@ -72,10 +72,9 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
         }
 
         public void setItem(feedback_data item){
-            food_image.setImageResource(Integer.parseInt(item.getFood_image()));
-            Glide.with(context).load(TaskServer.base_url+item.getFood_image()).error(R.drawable.hindoongi)
-                    .placeholder(R.drawable.hindoongi).into(food_image);
-            time.setText(item.getTime());
+            //food_image.setImageResource(Integer.parseInt(item.getFood_image()));
+            Glide.with(context).load(TaskServer.base_url+item.getFood_image()).error(R.drawable.food_icon)
+                    .placeholder(R.drawable.food_icon).into(food_image);
             foodname.setText(item.getFoodname());
         }
     }

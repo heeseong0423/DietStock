@@ -133,6 +133,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         val contentMainViewPager = findViewById<ViewPager2>(R.id.view_pager)
         val bottomNavView = findViewById<BottomNavigationView>(R.id.nav_bottom_view)
+
         setUser()
 
         viewPager = contentMainViewPager
@@ -146,7 +147,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.ACTIVITY_RECOGNITION
+                Manifest.permission.ACTIVITY_RECOGNITION,
+                Manifest.permission.CAMERA
             ), PERMISSION_REQUEST_CODE
         )
 
@@ -403,6 +405,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         //로그인 안되어있으면 SignActivity 실행
         if ((email == "" || email == null) || (password == "" || password == null)) {
             var intent = Intent(this, SignActivity::class.java)
+            Log.d("시발", "시발")
             startActivity(intent)
             finish()
         }
@@ -482,7 +485,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 (FoodFragmentCamera().binding.LeftConstraint.visibility == View.INVISIBLE && FoodFragmentCamera().binding.RightConstraint.visibility == View.INVISIBLE)) {
                 super.onBackPressed()
             } else {
-                FoodFragmentCamera().reOpenCamera()
+                FoodFragmentCamera().flipVisibility(true)
+                FoodFragmentCamera().openCamera()
             }
         } else {
             super.onBackPressed()
@@ -502,10 +506,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 0 -> HomeFragment()
                 1 -> RankingFragment()
                 2 -> FeedBackFragment()
-                3 -> {
-                    requirePermissions(arrayOf(Manifest.permission.CAMERA), PERMISSION_REQUEST_CODE)
-                    FoodFragmentCamera()
-                }
+                3 -> FoodFragmentCamera()
                 4 -> RoleModelFragment()
                 else -> error("no such Position $position")
             }

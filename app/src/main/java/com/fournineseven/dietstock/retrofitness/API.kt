@@ -1,9 +1,6 @@
 package com.fournineseven.dietstock.retrofitness
 
-import com.fournineseven.dietstock.GetUserInfoRequest
-import com.fournineseven.dietstock.UpdateGoalRequest
-import com.fournineseven.dietstock.UpdateHeightRequest
-import com.fournineseven.dietstock.UpdateWeightRequest
+import com.fournineseven.dietstock.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -23,4 +20,8 @@ interface API {
     @POST("api/member/updateGoal")
     fun updateGoal(@Body param: UpdateGoalRequest)
     : Call<UpdateGoalResponse>
+
+    @POST("api/member/saveKcalLog")
+    fun saveKcalLog(@Body param: SaveKcalLogRequest)
+    : Call<SaveKcalLogResponse>
 }

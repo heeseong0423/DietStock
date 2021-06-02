@@ -28,6 +28,8 @@ object LoginState {
     const val GENDER_KEY = "gender_key"
     const val ACTIVITY_KEY = "activity_key"
 
+
+
     // variable for shared preferences.
     //var sharedpreferences: SharedPreferences? = null
     var email: String?=null
@@ -38,4 +40,13 @@ object LoginState {
     var weight:Float=0.0f
     var height:Float=0.0f
     var age:Int = 0
+
+
+    //ex: {"user_no" : 33, "low" : -12.2, "high":831.2, "start_kcal": 0.0 ,"end_kcal": 323.5, "date":"2021-05-01"}
+    const val LOW_KEY = "low_key" //섭취한 칼로리만 표시
+    const val HIGH_KEY = "high_key" //소모한 칼로리만 표시
+    const val START_KEY = "start_key" // 어제의 시작 또는 0
+    const val END_KEY = "end_key" //오늘의 소모한칼로리 - 섭취한 칼로리
+    const val DATE_KEY = "date_key" // 오늘의 날짜
+    const val START_TIME_KEY = "start_time_key"
 }

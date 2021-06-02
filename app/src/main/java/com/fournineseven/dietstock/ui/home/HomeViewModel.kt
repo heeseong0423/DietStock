@@ -9,7 +9,7 @@ class HomeViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
 
-        value = "현재 칼로리 소모량 : ${User.kcal + User.PKcal}"
+        value = "칼로리 소모량 : ${User.kcal + User.PKcal} Kcal"
 
     }
     val text: LiveData<String> = _text

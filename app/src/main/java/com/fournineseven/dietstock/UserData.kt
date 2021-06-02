@@ -13,6 +13,8 @@ object User{
     var endKcal = 0f
 }
 
+
+
 object TimeCheck{
     var appStartTime :Long ?= null
     var appDate = 0

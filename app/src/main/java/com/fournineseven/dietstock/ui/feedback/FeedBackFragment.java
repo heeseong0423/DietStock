@@ -3,6 +3,7 @@ package com.fournineseven.dietstock.ui.feedback;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +16,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.fournineseven.dietstock.App;
 import com.fournineseven.dietstock.LoginState;
 import com.fournineseven.dietstock.R;
 import com.fournineseven.dietstock.api.RetrofitService;
+import com.fournineseven.dietstock.config.TaskServer;
 import com.fournineseven.dietstock.model.getDailyFood.DailyFoodResult;
 import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodRequest;
 import com.fournineseven.dietstock.model.getDailyFood.GetDailyFoodResponse;
@@ -117,7 +120,6 @@ public class FeedBackFragment extends Fragment {
 
 
 
-
         // getArgument로 avoidFood_check에서 문자열을 받아오려고 시도
         btn_gocheck.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +140,7 @@ public class FeedBackFragment extends Fragment {
         SharedPreferences sharedPreferences1 = getActivity().getSharedPreferences(SHARED_PREFS,0);
         int sharedPreferences_user_no = Integer.valueOf(sharedPreferences.getString(LoginState.USER_NUMBER,null));
         user_no = sharedPreferences_user_no;
+
         Log.d("user_no"," " + user_no);
         Date mDate = new Date(now);
         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -174,7 +177,17 @@ public class FeedBackFragment extends Fragment {
                         protein += data.getProtein() * data.getServing(); //먹은 음식의 단백질 총합
                         fat += data.getFat() * data.getServing(); //먹은 음식의 지방 총합
 
-                        food_image.setImageResource(Integer.parseInt(data.getFood_image()));
+
+                        //food_image.setImageResource(Integer.parseInt((data.getFood_image())));
+
+                        if( !(TextUtils.isEmpty(data.getFood_image()))){ //비어있지 않다면
+                        Glide.with(rootView).load(TaskServer.base_url+data.getFood_image()).error(R.drawable.food_icon)
+                                .placeholder(R.drawable.food_icon).into(food_image);
+                        }
+                        else{
+                            food_image.setImageResource(R.drawable.food_icon);
+                        }
+
 
                         dailyFood_info[i][0] = carbs;
                         dailyFood_info[i][1] = protein;
@@ -295,7 +308,12 @@ public class FeedBackFragment extends Fragment {
                             }
                         }
 
-                        iv_bad_food.setImageResource(Integer.parseInt(dailyFood_all.get(index).getFood_image()));
+
+                        Glide.with(rootView).load(TaskServer.base_url+dailyFood_all.get(index).getFood_image()).error(R.drawable.food_icon)
+                                    .placeholder(R.drawable.food_icon).into(iv_bad_food);
+
+
+                        //iv_bad_food.setImageResource(Integer.parseInt(dailyFood_all.get(index).getFood_image()));
 
                         for (int i = 0; i < requestFoodResultsResults.size(); i++) { //
 
@@ -331,9 +349,9 @@ public class FeedBackFragment extends Fragment {
                             }
                         }
 
-                        iv_good_food.setImageResource(Integer.parseInt(correct_requestFood.get(min_carbs_index).food_image()));
-
-
+                        Glide.with(rootView).load(TaskServer.base_url+correct_requestFood.get(min_carbs_index).food_image()).error(R.drawable.food_icon)
+                                .placeholder(R.drawable.food_icon).into(iv_good_food);
+                        //iv_good_food.setImageResource(Integer.parseInt(correct_requestFood.get(min_carbs_index).food_image()));
                     }
                 }
 
@@ -381,9 +399,6 @@ public class FeedBackFragment extends Fragment {
                 case 2 : gram = dt.getFat(); break;
             }
         }
-
-
-
     }
 
     private void calculate_recommend() {

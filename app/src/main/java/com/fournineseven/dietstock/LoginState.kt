@@ -18,7 +18,7 @@ object LoginState {
 
     // key for storing password.
     const val PASSWORD_KEY = "password_key"
-
+    const val NAME_KEY = "name_key"
     const val BEFORE_IMAGE_KEY = "before_image"
     const val AFTER_IMAGE_KEY = "after_image"
     const val GOAL_KEY = "goal_key"

@@ -39,8 +39,9 @@
     <ImageView
         android:id="@+id/resultImage"
         android:layout_width="match_parent"
-        android:layout_height="410dp"
-        app:layout_constraintTop_toTopOf="@id/textureView"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/textureView"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/takeBtn"
@@ -53,36 +54,70 @@
         app:layout_constraintTop_toBottomOf="@id/textureView"
         android:visibility="visible"
         android:clickable="true"
-        android:fontFamily="@font/font_num1"/>
+        android:fontFamily="@font/poorstory"
+        android:background="@drawable/shadow"/>
 
     <Button
         android:id="@+id/submitBtn"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="35dp"
         android:text="제출"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/LeftConstraint"
+        app:layout_constraintTop_toBottomOf="@id/SubConstraint"
         android:visibility="invisible"
         android:clickable="false"
-        android:fontFamily="@font/font_num1"/>
+        android:fontFamily="@font/poorstory"
+        android:background="@drawable/shadow"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/LeftConstraint"
-        android:layout_width="180dp"
+        android:id="@+id/servingConstraint"
+        android:layout_width="250dp"
+        android:layout_height="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/submitBtn"
+        android:layout_marginBottom="20dp"
+        android:visibility="invisible"
+        android:fontFamily="@font/poorstory">
+        <EditText
+            android:id="@+id/serving"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:text="1"
+            android:textSize="20dp"
+            android:inputType="number"
+            android:maxLines="1"/>
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:text="인분"
+            android:textSize="20dp"
+            app:layout_constraintLeft_toLeftOf="@id/serving"
+            app:layout_constraintTop_toTopOf="@id/serving"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/SubConstraint"
+        android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:layout_marginBottom="165dp"
+        android:layout_marginBottom="180dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/shadow">
 
         <TextView
             android:id="@+id/carbohydrate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:fontFamily="@font/font_num1"
+            android:fontFamily="@font/poorstory"
             android:text="탄수화물"
             app:layout_constraintBottom_toTopOf="@+id/protein"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -97,34 +132,24 @@
             android:layout_marginLeft="40dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:fontFamily="@font/font_num1"/>
+            android:fontFamily="@font/poorstory"/>
 
         <TextView
             android:id="@+id/protein"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="36dp"
-            android:fontFamily="@font/font_num1"
+            android:fontFamily="@font/poorstory"
             android:text="단백질"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginLeft="40dp"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/RightConstraint"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_marginBottom="165dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/fat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/font_num1"
+            android:fontFamily="@font/poorstory"
             android:text="지방"
             app:layout_constraintBottom_toTopOf="@+id/cholesterol"
             app:layout_constraintEnd_toEndOf="parent"
@@ -137,7 +162,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="36dp"
-            android:fontFamily="@font/font_num1"
+            android:fontFamily="@font/poorstory"
             android:text="콜레스테롤"
             app:layout_constraintBottom_toTopOf="@+id/natrium"
             app:layout_constraintRight_toRightOf="parent"
@@ -148,7 +173,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:fontFamily="@font/font_num1"
+            android:fontFamily="@font/poorstory"
             android:text="나트륨"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"

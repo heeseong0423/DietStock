@@ -1,19 +1,21 @@
 package com.fournineseven.dietstock
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -22,20 +24,29 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 
-import com.fournineseven.dietstock.databinding.ActivityMainBinding
 import com.fournineseven.dietstock.ui.feedback.FeedBackFragment
 
 import com.fournineseven.dietstock.config.TaskServer
+import com.fournineseven.dietstock.retrofitness.*
 
 import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
-import com.fournineseven.dietstock.ui.notifications.NotificationsFragment
 import com.fournineseven.dietstock.ui.ranking.RankingFragment
 import com.fournineseven.dietstock.ui.rolemodel.RoleModelFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.NullPointerException
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.util.*
 
 
 private const val TAG = "MyTag"
@@ -44,10 +55,9 @@ private const val REQ_STORAGE_BEFORE = 102
 private const val REQ_STORAGE_AFTER = 103
 private const val PERMISSION_REQUEST_CODE = 2
 
-class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInterface{
+class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInterface, NavigationView.OnNavigationItemSelectedListener{
     private lateinit var viewPager: ViewPager2
     private lateinit var navView: BottomNavigationView
-    private lateinit var drawnav: Menu
     private lateinit var beforeImage: ImageView
     private lateinit var afterImage: ImageView
     private lateinit var myName: TextView
@@ -58,10 +68,33 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
     private lateinit var myGoalTextView: TextView
     private lateinit var myGenderTextView: TextView
     private lateinit var myActivityTypeTextView: TextView
+    private lateinit var navigationView: NavigationView
 
     private val mySettingDialog by lazy{
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         UserSettingDialog(this,this,sharedpreferences)
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.nav_change_info->{
+                mySettingDialog.show()
+                return true
+            }
+            R.id.nav_log_out->{
+                var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+                var editor = sharedpreferences.edit()
+                editor.putString(LoginState.EMAIL_KEY,null)
+                editor.putString(LoginState.PASSWORD_KEY,null)
+                editor.apply()
+
+                var intent = Intent(this, SignActivity::class.java)
+                startActivity(intent)
+                finish()
+                return true
+            }
+        }
+        return false
     }
 
     override fun onClick(v: View?) {
@@ -75,10 +108,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.type = MediaStore.Images.Media.CONTENT_TYPE
                 startActivityForResult(intent, REQ_STORAGE_AFTER)
-            }
-            R.id.button4->{
-                Log.d(TAG,"THis is button 4")
-                mySettingDialog.show()
             }
         }
     }
@@ -94,6 +123,29 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_baseline_dehaze_24)
         supportActionBar!!.title = "DietStock"
+
+        navigationView = findViewById(R.id.nav_view)
+
+        navigationView.setNavigationItemSelectedListener(this)
+
+        alarmRegister()
+/*
+        //요청 보내기
+        RetrofitBuilder.api.getUserInfo("22").enqueue(object : Callback<getUserInfoResponse>{
+            override fun onResponse(
+                call: Call<getUserInfoResponse>,
+                response: Response<getUserInfoResponse>
+            ) {
+                Log.d(TAG,"${response.body()?.height} is height")
+                Log.d(TAG,"${response.body()?.name}")
+            }
+
+            override fun onFailure(call: Call<getUserInfoResponse>, t: Throwable) {
+                Log.d(TAG,"YOu 실패")
+            }
+
+        })
+*/
 
         App.retrofit = Retrofit.Builder()
             .baseUrl(TaskServer.base_url)
@@ -116,40 +168,240 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.ACTIVITY_RECOGNITION
+                Manifest.permission.ACTIVITY_RECOGNITION,
+                Manifest.permission.CAMERA
             ), PERMISSION_REQUEST_CODE
         )
-    }
-
-    override fun permissionGranted(requestCode: Int) {
-        Log.d(TAG, "PERMISSION GRANTED")
-    }
-
-    override fun permissionDenied(requestCode: Int) {
-        Toast.makeText(baseContext, "권한 거부됨", Toast.LENGTH_LONG).show()
-        finish()
-    }
-
-    override fun onBackPressed() {
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        var loading_layout: ConstraintLayout = findViewById(R.id.loading_layout)
+        contentMainViewPager.visibility = View.VISIBLE
+        loading_layout.visibility = View.GONE
+        val contentMainNavView = findViewById<NavigationView>(R.id.nav_view)
 
 
-        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-            drawerLayout.closeDrawer(Gravity.LEFT)
-            return
-        }
 
-        if (navView.selectedItemId == 3) {
-            if(!FoodFragmentCamera().binding.foodSearch.isIconified){
-                FoodFragmentCamera().binding.foodSearch.isIconified = true
-            }
-            else if (FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요") {
-                super.onBackPressed()
-            } else {
-                FoodFragmentCamera().reOpenCamera()
-            }
-        } else {
-            super.onBackPressed()
+
+        var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+        var userNumber = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
+
+        var userNumberCheck = sharedpreferences.getString(LoginState.USER_NUMBER,null)
+        if(userNumberCheck!=null) {
+            //요청 보내기
+            RetrofitBuilder.api.getUserInfo(GetUserInfoRequest(userNumber))
+                .enqueue(object : Callback<GetUserInfoResponse> {
+                    override fun onResponse(
+                        call: Call<GetUserInfoResponse>,
+                        response: Response<GetUserInfoResponse>
+                    ) {
+
+
+                        var loading_layout: ConstraintLayout = findViewById(R.id.loading_layout)
+                        contentMainViewPager.visibility = View.VISIBLE
+                        loading_layout.visibility = View.GONE
+                        val contentMainNavView = findViewById<NavigationView>(R.id.nav_view)
+
+                        Log.d(TAG, "이름 : ${response.body()?.result?.get(0)?.user_name}")
+                        Log.d(TAG, "활동량 : ${response.body()?.result?.get(0)?.activity}")
+                        Log.d(TAG, "나이 : ${response.body()?.result?.get(0)?.age}")
+                        Log.d(TAG, "전 이미지 : ${response.body()?.result?.get(0)?.beforeImage}")
+                        Log.d(TAG, "다음 이미지: ${response.body()?.result?.get(0)?.before_weight}")
+                        Log.d(TAG, " BIM : ${response.body()?.result?.get(0)?.bmi}")
+                        Log.d(TAG, "목표 : ${response.body()?.result?.get(0)?.goal}")
+
+
+
+                        beforeImage =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.before_image)
+                        afterImage =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.after_image)
+                        myGoalTextView =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_goal)
+                        myWeightTextView =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_weight)
+                        myHeightTextView =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_height)
+                        myAgeTextView =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_age)
+                        myGenderTextView =
+                            contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_gender)
+                        myActivityTypeTextView = contentMainNavView.getHeaderView(0)
+                            .findViewById(R.id.nav_header_activity_type)
+
+                        var sharedpreferences =
+                            getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+                        var editor = sharedpreferences.edit()
+                        editor.putString(
+                            LoginState.NAME_KEY,
+                            response.body()?.result?.get(0)?.user_name
+                        )
+                        editor.putString(
+                            LoginState.BEFORE_IMAGE_KEY,
+                            response.body()?.result?.get(0)?.beforeImage
+                        )
+                        editor.putFloat(
+                            LoginState.GOAL_KEY,
+                            response.body()?.result?.get(0)?.goal!!.toFloat()
+                        )
+                        editor.putFloat(
+                            LoginState.WEIGHT_KEY,
+                            response.body()?.result?.get(0)?.weight!!.toFloat()
+                        )
+                        editor.putFloat(
+                            LoginState.HEIGHT_KEY,
+                            response.body()?.result?.get(0)?.height!!.toFloat()
+                        )
+                        editor.putInt(
+                            LoginState.AGE_KEY,
+                            response.body()?.result?.get(0)?.age!!.toInt()
+                        )
+                        editor.putInt(
+                            LoginState.GENDER_KEY,
+                            response.body()?.result?.get(0)?.sex!!.toInt()
+                        )
+                        editor.putInt(
+                            LoginState.ACTIVITY_KEY,
+                            response.body()?.result?.get(0)?.activity!!.toInt()
+                        )
+                        editor.apply()
+
+
+                        var beforeImageUri: String? =
+                            sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY, null)
+                        var afterImageUri: String? =
+                            sharedpreferences.getString(LoginState.AFTER_IMAGE_KEY, null)
+                        var myGoal: Float = sharedpreferences.getFloat(LoginState.GOAL_KEY, 0.0f)
+                        var myWeight: Float =
+                            sharedpreferences.getFloat(LoginState.WEIGHT_KEY, 0.0f)
+                        var myHeight: Float =
+                            sharedpreferences.getFloat(LoginState.HEIGHT_KEY, 0.0f)
+                        var myAge: Int = sharedpreferences.getInt(LoginState.AGE_KEY, 0)
+                        var myGender: Int = sharedpreferences.getInt(LoginState.GENDER_KEY, 0)
+                        var myActivityType: Int =
+                            sharedpreferences.getInt(LoginState.ACTIVITY_KEY, 0)
+                        var userName: String? =
+                            sharedpreferences.getString(LoginState.NAME_KEY, null)
+                        var userEmail: String? =
+                            sharedpreferences.getString(LoginState.EMAIL_KEY, null)
+
+                        Log.d(TAG, "값들 : $myWeight $myHeight")
+
+                        if (beforeImageUri != response.body()?.result?.get(0)?.beforeImage) {
+                            editor.putString(
+                                LoginState.BEFORE_IMAGE_KEY,
+                                response.body()?.result?.get(0)?.beforeImage
+                            )
+                            beforeImageUri =
+                                sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY, null)
+                            Log.d(TAG, "전11 이미지 : $beforeImageUri")
+                        }
+                        if (myGoal != response.body()?.result?.get(0)?.goal) {
+                            editor.putFloat(
+                                LoginState.GOAL_KEY,
+                                response.body()?.result?.get(0)?.goal!!.toFloat()
+                            )
+                            myGoal = sharedpreferences.getFloat(LoginState.GOAL_KEY, 0.0f)
+                            Log.d(TAG, "목표 : ${myGoal}")
+                        }
+                        if (myWeight != response.body()?.result?.get(0)?.weight) {
+                            editor.putFloat(
+                                LoginState.WEIGHT_KEY,
+                                response.body()?.result?.get(0)?.weight!!.toFloat()
+                            )
+                            myWeight = sharedpreferences.getFloat(LoginState.WEIGHT_KEY, 0.0f)
+                            Log.d(TAG, "몸무게 : $myWeight")
+                        }
+                        if (myHeight != response.body()?.result?.get(0)?.height) {
+                            editor.putFloat(
+                                LoginState.HEIGHT_KEY,
+                                response.body()?.result?.get(0)?.height!!.toFloat()
+                            )
+                            myHeight = sharedpreferences.getFloat(LoginState.HEIGHT_KEY, 0.0f)
+                            Log.d(TAG, "키 : $myHeight")
+                        }
+                        if (myAge != response.body()?.result?.get(0)?.age) {
+                            editor.putInt(
+                                LoginState.AGE_KEY,
+                                response.body()?.result?.get(0)?.age!!.toInt()
+                            )
+                            myAge = sharedpreferences.getInt(LoginState.AGE_KEY, 0)
+                            Log.d(TAG, "나이 : $myAge")
+                        }
+                        if (myGender != response.body()?.result?.get(0)?.sex) {
+                            editor.putInt(
+                                LoginState.GENDER_KEY,
+                                response.body()?.result?.get(0)?.sex!!.toInt()
+                            )
+                            myGender = sharedpreferences.getInt(LoginState.GENDER_KEY, 0)
+                        }
+                        if (myActivityType != response.body()?.result?.get(0)?.activity) {
+                            editor.putInt(
+                                LoginState.ACTIVITY_KEY,
+                                response.body()?.result?.get(0)?.activity!!.toInt()
+                            )
+                            myActivityType = sharedpreferences.getInt(LoginState.ACTIVITY_KEY, 0)
+                        }
+
+
+                        //초기화
+                        if (beforeImageUri != null) {
+                            beforeImage.setImageURI(beforeImageUri!!.toUri())
+                        }
+
+                        if (afterImageUri != null) {
+                            afterImage.setImageURI(afterImageUri!!.toUri())
+                        }
+                        myAgeTextView.text = "나이 : " + myAge.toString() + "살"
+                        myGoalTextView.text = "목표 : " + myGoal.toString() + "KG"
+                        myWeightTextView.text = "몸무게 : " + myWeight.toString() + "KG"
+                        myHeightTextView.text = "키 : " + myHeight.toString() + "CM"
+
+
+                        myName = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_name)
+                        myEmail = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_email)
+
+                        if (myName != null) {
+                            myName.text = userName
+                        }
+
+                        if (myEmail != null) {
+                            myEmail.text = userEmail
+                        }
+
+                        if (myGoal < 0.2f) {
+                            myGoalTextView.text = "목표 입력값 없음"
+                        }
+                        if (myAge < 1) {
+                            myAgeTextView.text = "나이 입력값 없음"
+                        }
+                        if (myHeight < 0.2f) {
+                            myHeightTextView.text = "키 입력값 없음"
+                        }
+                        if (myWeight < 0.2f) {
+                            myWeightTextView.text = "몸무게 입력값 없음"
+                        }
+
+
+                        if (myGender < 1) {
+                            myGenderTextView.text = "남자"
+                        } else {
+                            myGenderTextView.text = "여자"
+                        }
+
+
+                        if (myActivityType < 1) {
+                            myActivityTypeTextView.text = "활동량 적음"
+                        } else if (myActivityType < 2) {
+                            myActivityTypeTextView.text = "활동량 보통"
+                        } else {
+                            myActivityTypeTextView.text = "활동량 많음"
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetUserInfoResponse>, t: Throwable) {
+                        Log.d(TAG, "You 실패")
+                        Toast.makeText(baseContext, "네트워크 연결을 확인해주세요.", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                })
         }
     }
 
@@ -177,15 +429,43 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         var myAge:Int = sharedpreferences.getInt(LoginState.AGE_KEY,0)
         var myGender:Int = sharedpreferences.getInt(LoginState.GENDER_KEY,0)
         var myActivityType:Int = sharedpreferences.getInt(LoginState.ACTIVITY_KEY,0)
-        if (email == null || password == null) {
+        var lowKcal:Float = sharedpreferences.getFloat(LoginState.LOW_KEY,0.0f) //섭취칼로리
+        var highKcal:Float = sharedpreferences.getFloat(LoginState.HIGH_KEY,0.0f) //소모 칼로리
+        var startKcal:Float = sharedpreferences.getFloat(LoginState.START_KEY,0.0f) // 시작칼로리
+        var endKcal: Float = sharedpreferences.getFloat(LoginState.END_KEY,0.0f) //종료칼로리
+        var date:String? = sharedpreferences.getString(LoginState.DATE_KEY,null)
+
+        //로그인 안되어있으면 SignActivity 실행
+        if ((email == "" || email == null) || (password == "" || password == null)) {
             var intent = Intent(this, SignActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        var userNo: Int? = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
+        //처음상태면
+        if(date == null){
+            Log.d(TAG,"날짜가 null입니다.")
+            val dt = Date()
+            val full_sdf = SimpleDateFormat("yyyy-MM-dd")
+            var todayDate:String = full_sdf.format(dt).toString()
+            var todayDateMidNight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
+                .toEpochSecond()
 
-        Log.d(TAG,"${email} , ${password} ${userNo}  bbbbbbbbbbbbbbbbbbbb")
+            var editor = sharedpreferences.edit()
+            editor.putFloat(LoginState.START_KEY,0.0f)
+            editor.putString(LoginState.DATE_KEY,todayDate)
+            editor.putLong(LoginState.START_TIME_KEY,todayDateMidNight)
+            editor.apply()
+        }
+
+
+
+
+
+        //var userNo: Int? = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
+        var userNumber = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
+
+        Log.d(TAG,"이메일: ${email} , 비밀번호 : ${password} 유저번호 : ${userNumber}  bbbbbbbbbbbbbbbbbbbb")
 
         //초기화
         if (beforeImageUri != null) {
@@ -222,16 +502,35 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             myWeightTextView.text = "몸무게 입력값 없음"
         }
         if(myGender < 1){
-            myGenderTextView.text = "남"
+            myGenderTextView.text = "남자"
         }
         if(myActivityType < 1){
-            myActivityTypeTextView.text= "적음"
+            myActivityTypeTextView.text= "활동량 적음"
         }
 
+        Log.d(TAG,"값들 : $myWeight $myHeight $myActivityType , $myAge")
     }
 
-    private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle) :
-        FragmentStateAdapter(fm, lc) {
+    override fun permissionGranted(requestCode: Int) {
+        Log.d(TAG, "PERMISSION GRANTED")
+    }
+
+    override fun permissionDenied(requestCode: Int) {
+        Toast.makeText(baseContext, "권한 거부됨", Toast.LENGTH_LONG).show()
+        finish()
+    }
+
+    override fun onBackPressed() {
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.closeDrawer(Gravity.LEFT)
+            return
+        }else{
+            super.onBackPressed()
+        }
+    }
+
+    private inner class PagerAdapter(fm: FragmentManager, lc: Lifecycle) : FragmentStateAdapter(fm, lc) {
         override fun getItemCount(): Int {
             return 5
         }
@@ -242,10 +541,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 0 -> HomeFragment()
                 1 -> RankingFragment()
                 2 -> FeedBackFragment()
-                3 -> {
-                    requirePermissions(arrayOf(Manifest.permission.CAMERA), PERMISSION_REQUEST_CODE)
-                    FoodFragmentCamera()
-                }
+                3 -> FoodFragmentCamera()
                 4 -> RoleModelFragment()
                 else -> error("no such Position $position")
             }
@@ -350,17 +646,34 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         myGoalTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_goal)
         myWeightTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_weight)
         myHeightTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_height)
-        myAgeTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_age)
 
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         var myGoal:Float= sharedpreferences.getFloat(LoginState.GOAL_KEY,0.0f)
         var myWeight:Float = sharedpreferences.getFloat(LoginState.WEIGHT_KEY,0.0f)
         var myHeight:Float = sharedpreferences.getFloat(LoginState.HEIGHT_KEY,0.0f)
-        var myAge:Int = sharedpreferences.getInt(LoginState.AGE_KEY,0)
 
-        myAgeTextView.text = "나이 : " + myAge.toString() + "살"
         myGoalTextView.text = "목표 : " + myGoal.toString() + "KG"
         myWeightTextView.text = "몸무게 : " + myWeight.toString() + "KG"
         myHeightTextView.text = "키 : " + myHeight.toString() +"CM"
+    }
+
+    fun alarmRegister(){
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, AlarmReceiver.REQUEST_ID, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val repeatInterval: Long =  86400/2 // 하루시간
+        //val repeatInterval: Long =  60 // 하루시간
+        /*val triggerTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
+            .toEpochSecond() + 1619741870*/
+        val triggerTime = LocalDateTime.of(LocalDate.now(),LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toEpochSecond()
+
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            triggerTime, repeatInterval,
+            pendingIntent)
     }
 }

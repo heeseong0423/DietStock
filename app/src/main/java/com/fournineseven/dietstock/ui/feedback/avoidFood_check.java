@@ -8,6 +8,9 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.fournineseven.dietstock.R;
 
@@ -17,7 +20,7 @@ public class avoidFood_check extends AppCompatActivity {
     private CheckBox checkBox_poultry,checkBox_buckwheat,checkBox_peach,checkBox_tomato,checkBox_walnut;
     private CheckBox checkBox_peanut,checkBox_chicken,checkBox_beef,checkBox_oyster,checkBox_wheat,checkBox_crab,checkBox_mackerel;
     private CheckBox checkBox_pork,checkBox_shrimp,checkBox_squid,checkBox_shellfish,checkBox_abalone,checkBox_bean,checkBox_mussel;
-    private TextView tv_result;
+    static String avoidFood_str;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +51,6 @@ public class avoidFood_check extends AppCompatActivity {
         btn_move.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(avoidFood_check.this, avoidFood_result.class); //이동->이동할 곳(class)
 
                 String result = "";
 
@@ -109,9 +111,9 @@ public class avoidFood_check extends AppCompatActivity {
                 if (checkBox_mussel.isChecked()) {
                     result += checkBox_mussel.getText().toString() + ",";
                 }
+                avoidFood_str = result;
 
-                intent.putExtra("메시지", result);
-                startActivity(intent); //액티비티 이동
+                finish();
             }
         });
     }

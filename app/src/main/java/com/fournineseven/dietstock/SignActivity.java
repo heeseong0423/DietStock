@@ -67,6 +67,7 @@ public class SignActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("login", "login 시작");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
         init();
@@ -74,6 +75,7 @@ public class SignActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         LoginState.INSTANCE.setEmail(sharedpreferences.getString(LoginState.EMAIL_KEY, null));
         LoginState.INSTANCE.setPassword(sharedpreferences.getString(LoginState.PASSWORD_KEY, null));
+        RetrofitService loginService = App.retrofit.create(RetrofitService.class);
     }
 
     void init(){
@@ -149,6 +151,8 @@ public class SignActivity extends AppCompatActivity {
                             editor.putString(LoginState.USER_NUMBER, String.valueOf(user_no));
                             //editor.commit();
                             editor.apply();
+
+                            Log.d("MyTag","the " + user_no);
                             Intent intent = new Intent(SignActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
@@ -251,6 +255,23 @@ public class SignActivity extends AppCompatActivity {
             BitmapFactory.Options options = new BitmapFactory.Options();
             Bitmap originalBm = BitmapFactory.decodeFile(beforeImageFile.getAbsolutePath(), options);
             iv_before_image_register.setImageBitmap(originalBm);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(ll_sign_main.getVisibility()==View.VISIBLE)
+        {
+            super.onBackPressed();
+        }else if(ll_signup.getVisibility() == View.VISIBLE){
+            ll_signup.setVisibility(View.GONE);
+            ll_sign_main.setVisibility(View.VISIBLE);
+        }else if(ll_signin.getVisibility() ==View.VISIBLE){
+            ll_signin.setVisibility(View.GONE);
+            ll_sign_main.setVisibility(View.VISIBLE);
+        }else if(ll_signup2.getVisibility() == View.VISIBLE){
+            ll_signup2.setVisibility(View.GONE);
+            ll_signup.setVisibility(View.VISIBLE);
         }
     }
 }

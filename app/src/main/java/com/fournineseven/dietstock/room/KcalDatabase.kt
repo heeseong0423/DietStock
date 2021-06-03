@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 
 
 
-@Database(entities = arrayOf(UserKcalData::class), version = 2)
+@Database(entities = arrayOf(UserKcalData::class), version = 3)
 
 abstract class KcalDatabase : RoomDatabase(){
     abstract fun kcalDao(): KcalDao

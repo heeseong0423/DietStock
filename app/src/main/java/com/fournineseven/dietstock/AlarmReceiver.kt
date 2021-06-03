@@ -11,6 +11,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.room.Room
+import com.fournineseven.dietstock.retrofitness.GetDailyKcalResponse
 import com.fournineseven.dietstock.retrofitness.RetrofitBuilder
 import com.fournineseven.dietstock.retrofitness.SaveKcalLogResponse
 import com.fournineseven.dietstock.room.KcalDatabase
@@ -41,6 +42,23 @@ class AlarmReceiver : BroadcastReceiver() {
 
         Log.d(TAG,"오늘 $today 그리고 쉐어드의 ${sharedToday}")
         Log.d(TAG, "Received intent : $intent")
+
+
+        //테스트
+         RetrofitBuilder.api.getDailyKcal(GetDailyKcalRequest(user_no = 2, date = sharedToday.toString()))
+             .enqueue(object : Callback<GetDailyKcalResponse>{
+                 override fun onResponse(
+                     call: Call<GetDailyKcalResponse>,
+                     response: Response<GetDailyKcalResponse>
+                 ) {
+                     Log.d(TAG,"ㅇㅗㄴㅡㄹㅇㅡㅣ ㅅㅓㅂㅊㅜㅣㅋㅏㄹㄹㅗㄹㅣ${response.body()?.result}")
+                 }
+
+                 override fun onFailure(call: Call<GetDailyKcalResponse>, t: Throwable) {
+                     Log.d(TAG,"ㅅㅣㄹㅍㅐㅎㅐㅆㅅㅡㅂㄴㅣㄷㅏ")
+                 }
+
+             })
 
         //테스트
        /* RetrofitBuilder.api.saveKcalLog(SaveKcalLogRequest(user_no = 22, low = -500.0f,

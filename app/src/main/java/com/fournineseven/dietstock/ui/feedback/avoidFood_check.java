@@ -2,6 +2,7 @@ package com.fournineseven.dietstock.ui.feedback;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,7 +21,7 @@ public class avoidFood_check extends AppCompatActivity {
     private CheckBox checkBox_poultry,checkBox_buckwheat,checkBox_peach,checkBox_tomato,checkBox_walnut;
     private CheckBox checkBox_peanut,checkBox_chicken,checkBox_beef,checkBox_oyster,checkBox_wheat,checkBox_crab,checkBox_mackerel;
     private CheckBox checkBox_pork,checkBox_shrimp,checkBox_squid,checkBox_shellfish,checkBox_abalone,checkBox_bean,checkBox_mussel;
-    static String avoidFood_str;
+    static String avoidFood_str ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +113,8 @@ public class avoidFood_check extends AppCompatActivity {
                     result += checkBox_mussel.getText().toString() + ",";
                 }
                 avoidFood_str = result;
-
+                Log.e("check", "------------------------------------");
+                Log.d("avoid_food", avoidFood_str);
                 finish();
             }
         });

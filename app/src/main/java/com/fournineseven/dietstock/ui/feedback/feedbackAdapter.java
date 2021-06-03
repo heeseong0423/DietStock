@@ -3,6 +3,7 @@ package com.fournineseven.dietstock.ui.feedback;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +79,7 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
             Glide.with(context).load(TaskServer.base_url+item.getFood_image()).error(R.drawable.food_icon)
                     .placeholder(R.drawable.food_icon).into(food_image);
             foodname.setText(item.getFoodname());
-            kcal.setText((int) item.getKcal());
+            kcal.setText(String.valueOf((int) item.getKcal()));
         }
     }
 }

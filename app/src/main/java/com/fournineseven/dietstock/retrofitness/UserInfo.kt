@@ -37,6 +37,12 @@ class SaveKcalLogRequest(
     @field:SerializedName("date") private val date: String,
 )
 
+class RequestKcalInfoResult{
+    @SerializedName("sumkcal")
+    @Expose
+    val kcalSum: Float = 0.0f
+}
+
 class RequestUserInfoResult {
     @SerializedName("name")
     @Expose
@@ -78,5 +84,4 @@ class RequestUserInfoResult {
     @SerializedName("sex")
     @Expose
     val sex: Int = 0
-
 }

@@ -21,7 +21,7 @@ interface API {
     fun updateGoal(@Body param: UpdateGoalRequest)
     : Call<UpdateGoalResponse>
 
-    @POST("api/member/saveKcalLog")
+    @POST("api/kcal/saveKcalLog")
     fun saveKcalLog(@Body param: SaveKcalLogRequest)
     : Call<SaveKcalLogResponse>
 }

@@ -21,7 +21,7 @@ public class avoidFood_check extends AppCompatActivity {
     private CheckBox checkBox_poultry,checkBox_buckwheat,checkBox_peach,checkBox_tomato,checkBox_walnut;
     private CheckBox checkBox_peanut,checkBox_chicken,checkBox_beef,checkBox_oyster,checkBox_wheat,checkBox_crab,checkBox_mackerel;
     private CheckBox checkBox_pork,checkBox_shrimp,checkBox_squid,checkBox_shellfish,checkBox_abalone,checkBox_bean,checkBox_mussel;
-    static String avoidFood_str ="";
+    private String avoidFood_str ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +115,9 @@ public class avoidFood_check extends AppCompatActivity {
                 avoidFood_str = result;
                 Log.e("check", "------------------------------------");
                 Log.d("avoid_food", avoidFood_str);
+                Intent intent = new Intent();
+                intent.putExtra("result", avoidFood_str);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });

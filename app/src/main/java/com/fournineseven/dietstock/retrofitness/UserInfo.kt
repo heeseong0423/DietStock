@@ -43,6 +43,14 @@ class RequestKcalInfoResult{
     val kcalSum: Float = 0.0f
 }
 
+class GetDailyKcalResponseResult{
+    @SerializedName("name")
+    @Expose
+    val sumKcal: Float = 0.0f
+
+}
+
+
 class RequestUserInfoResult {
     @SerializedName("name")
     @Expose

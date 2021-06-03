@@ -61,6 +61,7 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
         EditText time;
         EditText foodname;
         Context context;
+        EditText kcal;
 
         public CustomViewHolder(@NonNull @NotNull View itemView, Context context) {
             super(itemView);
@@ -68,6 +69,7 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
             food_image = (ImageView) itemView.findViewById(R.id.food_image);
             time = (EditText)itemView.findViewById(R.id.time);
             foodname = (EditText)itemView.findViewById(R.id.foodname);
+            kcal = (EditText)itemView.findViewById(R.id.kcal);
             linearlayout_ranking_item = (LinearLayout) itemView.findViewById(R.id.linearlayout_dailyFood);
         }
 
@@ -76,6 +78,7 @@ public class feedbackAdapter extends RecyclerView.Adapter<feedbackAdapter.Custom
             Glide.with(context).load(TaskServer.base_url+item.getFood_image()).error(R.drawable.food_icon)
                     .placeholder(R.drawable.food_icon).into(food_image);
             foodname.setText(item.getFoodname());
+            kcal.setText((int) item.getKcal());
         }
     }
 }

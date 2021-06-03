@@ -1,5 +1,6 @@
 package com.fournineseven.dietstock.retrofitness
 
+import com.fournineseven.dietstock.RequestKcalInfoResult
 import com.fournineseven.dietstock.RequestUserInfoResult
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -11,5 +12,7 @@ data class GetDailyKcalResponse(
 
     @SerializedName("result")
     @Expose
-    val result: Float
+    //val result: Float
+    val result: ArrayList<RequestKcalInfoResult>? = null
+
 )

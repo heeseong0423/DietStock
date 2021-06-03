@@ -51,7 +51,7 @@ class AlarmReceiver : BroadcastReceiver() {
                      call: Call<GetDailyKcalResponse>,
                      response: Response<GetDailyKcalResponse>
                  ) {
-                     Log.d(TAG,"ㅇㅗㄴㅡㄹㅇㅡㅣ ㅅㅓㅂㅊㅜㅣㅋㅏㄹㄹㅗㄹㅣ${response.body()?.result}")
+                     Log.d(TAG,"ㅇㅗㄴㅡㄹㅇㅡㅣ ㅅㅓㅂㅊㅜㅣㅋㅏㄹㄹㅗㄹㅣ${response.body()?.result?.get(0)?.kcalSum}")
                  }
 
                  override fun onFailure(call: Call<GetDailyKcalResponse>, t: Throwable) {

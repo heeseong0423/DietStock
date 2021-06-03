@@ -1,6 +1,8 @@
 package com.fournineseven.dietstock
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -38,6 +40,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.NullPointerException
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.util.*
 
 
 private const val TAG = "MyTag"
@@ -109,11 +118,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var sharedpreferencestest = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
-        /*var editor = sharedpreferencestest.edit()
-        editor.putString(LoginState.EMAIL_KEY,"")
-        editor.apply()*/
-
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -124,6 +128,24 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         navigationView.setNavigationItemSelectedListener(this)
 
+        alarmRegister()
+/*
+        //요청 보내기
+        RetrofitBuilder.api.getUserInfo("22").enqueue(object : Callback<getUserInfoResponse>{
+            override fun onResponse(
+                call: Call<getUserInfoResponse>,
+                response: Response<getUserInfoResponse>
+            ) {
+                Log.d(TAG,"${response.body()?.height} is height")
+                Log.d(TAG,"${response.body()?.name}")
+            }
+
+            override fun onFailure(call: Call<getUserInfoResponse>, t: Throwable) {
+                Log.d(TAG,"YOu 실패")
+            }
+
+        })
+*/
 
         App.retrofit = Retrofit.Builder()
             .baseUrl(TaskServer.base_url)
@@ -150,11 +172,18 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 Manifest.permission.CAMERA
             ), PERMISSION_REQUEST_CODE
         )
+        var loading_layout: ConstraintLayout = findViewById(R.id.loading_layout)
+        contentMainViewPager.visibility = View.VISIBLE
+        loading_layout.visibility = View.GONE
+        val contentMainNavView = findViewById<NavigationView>(R.id.nav_view)
+
+
+
 
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         var userNumber = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
 
-        var userNumberCheck = sharedpreferencestest.getString(LoginState.USER_NUMBER,null)
+        var userNumberCheck = sharedpreferences.getString(LoginState.USER_NUMBER,null)
         if(userNumberCheck!=null) {
             //요청 보내기
             RetrofitBuilder.api.getUserInfo(GetUserInfoRequest(userNumber))
@@ -400,14 +429,38 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         var myAge:Int = sharedpreferences.getInt(LoginState.AGE_KEY,0)
         var myGender:Int = sharedpreferences.getInt(LoginState.GENDER_KEY,0)
         var myActivityType:Int = sharedpreferences.getInt(LoginState.ACTIVITY_KEY,0)
+        var lowKcal:Float = sharedpreferences.getFloat(LoginState.LOW_KEY,0.0f) //섭취칼로리
+        var highKcal:Float = sharedpreferences.getFloat(LoginState.HIGH_KEY,0.0f) //소모 칼로리
+        var startKcal:Float = sharedpreferences.getFloat(LoginState.START_KEY,0.0f) // 시작칼로리
+        var endKcal: Float = sharedpreferences.getFloat(LoginState.END_KEY,0.0f) //종료칼로리
+        var date:String? = sharedpreferences.getString(LoginState.DATE_KEY,null)
 
         //로그인 안되어있으면 SignActivity 실행
         if ((email == "" || email == null) || (password == "" || password == null)) {
             var intent = Intent(this, SignActivity::class.java)
-            Log.d("시발", "시발")
             startActivity(intent)
             finish()
         }
+
+        //처음상태면
+        if(date == null){
+            Log.d(TAG,"날짜가 null입니다.")
+            val dt = Date()
+            val full_sdf = SimpleDateFormat("yyyy-MM-dd")
+            var todayDate:String = full_sdf.format(dt).toString()
+            var todayDateMidNight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
+                .toEpochSecond()
+
+            var editor = sharedpreferences.edit()
+            editor.putFloat(LoginState.START_KEY,0.0f)
+            editor.putString(LoginState.DATE_KEY,todayDate)
+            editor.putLong(LoginState.START_TIME_KEY,todayDateMidNight)
+            editor.apply()
+        }
+
+
+
+
 
         //var userNo: Int? = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
         var userNumber = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
@@ -602,5 +655,25 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         myGoalTextView.text = "목표 : " + myGoal.toString() + "KG"
         myWeightTextView.text = "몸무게 : " + myWeight.toString() + "KG"
         myHeightTextView.text = "키 : " + myHeight.toString() +"CM"
+    }
+
+    fun alarmRegister(){
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, AlarmReceiver.REQUEST_ID, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+
+        //val repeatInterval: Long =  86400 // 하루시간
+        val repeatInterval: Long =  60 // 하루시간
+        /*val triggerTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
+            .toEpochSecond() + 1619741870*/
+        val triggerTime = LocalDateTime.of(LocalDate.now(),LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toEpochSecond()
+
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            triggerTime, repeatInterval,
+            pendingIntent)
     }
 }

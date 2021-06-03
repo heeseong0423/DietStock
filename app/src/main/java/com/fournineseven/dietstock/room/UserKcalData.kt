@@ -9,7 +9,6 @@ import androidx.room.PrimaryKey
 data class UserKcalData(
 
     @PrimaryKey(autoGenerate = true)
-
     val no: Int,
 
     @ColumnInfo(name = "base_kcal")

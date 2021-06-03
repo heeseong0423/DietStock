@@ -23,6 +23,15 @@ class UpdateGoalRequest(
     @field:SerializedName("goal") private val goal: Float
 )
 
+class SaveKcalLogRequest(
+    @field:SerializedName("user_no") private val user_no: Int,
+    @field:SerializedName("low") private val low: Float,
+    @field:SerializedName("high") private val high: Float,
+    @field:SerializedName("start_kcal") private val start_kcal: Float,
+    @field:SerializedName("end_kcal") private val end_kcal: Float,
+    @field:SerializedName("date") private val date: String,
+)
+
 class RequestUserInfoResult {
     @SerializedName("name")
     @Expose

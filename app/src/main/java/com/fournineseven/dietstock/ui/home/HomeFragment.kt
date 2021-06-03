@@ -57,6 +57,7 @@ class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var rootView: View
     private lateinit var textView:TextView
+    private lateinit var consumeTextVIew: TextView
     private var CoroutineState = false
 
     //필요한 권한들 정의
@@ -81,6 +82,7 @@ class HomeFragment : Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         textView = root.findViewById(R.id.text_home)
+        consumeTextVIew = root.findViewById(R.id.textConsume)
         val dietChart:CandleStickChart = root.findViewById(R.id.dietStockChart)
         val button: Button = root.findViewById(R.id.google_button)
         val account = GoogleSignIn.getAccountForExtension(root.context, fitnessOptions)
@@ -120,11 +122,12 @@ class HomeFragment : Fragment() {
         super.onResume()
         val dt = Date()
         val full_sdf = SimpleDateFormat("yyyy-MM-dd")
-
+        val dietChart: CandleStickChart = rootView.findViewById(R.id.dietStockChart)
         //오늘 날짜 Long값으로 받기
         var sharedpreferences = this.activity?.getSharedPreferences(LoginState.SHARED_PREFS,
             Context.MODE_PRIVATE)
         var startTime = sharedpreferences?.getLong(LoginState.START_TIME_KEY,0)
+        var consumeKcal = sharedpreferences?.getFloat(LoginState.LOW_KEY,0.0f)
         if(startTime!! <2){
             var editor = sharedpreferences?.edit()
             startTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
@@ -146,6 +149,8 @@ class HomeFragment : Fragment() {
                         "현재 ${User.highKcal}, ${User.lowKcal} and ${full_sdf.format(dt)}")
                 updateCalories(startTime!!)
                 textView.text = "칼로리 소모량 : ${User.kcal + User.PKcal}Kcal"
+                consumeTextVIew.text = "칼로리 소모량 : ${User.UserIntakeKcal} Kcal"
+                drawCandlestickChart(dietChart,rootView)
                 delay(3000)
             }
         }
@@ -303,7 +308,7 @@ class HomeFragment : Fragment() {
             )
         }*/
 
-        userDao.insert(UserKcalData(0,13.2f,141.0f,0.0f,434.3f,2323.0f,-23.3f))
+        //userDao.insert(UserKcalData(0,13.2f,141.0f,0.0f,434.3f,2323.0f,-23.3f))
         Log.d(TAG,"${userDao.getLastData()}")
 
         for(csStock in userDao.getAll()){
@@ -319,6 +324,15 @@ class HomeFragment : Fragment() {
         }
 
 
+        entries.add(
+            CandleEntry(
+                userDao.getLastData().no+1.toFloat(),
+                User.PKcal + User.kcal,
+                User.UserIntakeKcal,
+                0.0f,
+                User.PKcal + User.kcal - User.UserIntakeKcal
+            )
+        )
 
         val dataSet = CandleDataSet(entries, "").apply {
             //심지 부분

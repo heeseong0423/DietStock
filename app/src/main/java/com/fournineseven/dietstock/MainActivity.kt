@@ -403,6 +403,25 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                     }
                 })
         }
+
+        var today =sharedpreferences.getString(LoginState.DATE_KEY,null)
+        if(today != null){
+            RetrofitBuilder.api.getDailyKcal(GetDailyKcalRequest(user_no = 2, date = today))
+                .enqueue(object : Callback<GetDailyKcalResponse>{
+                    override fun onResponse(
+                        call: Call<GetDailyKcalResponse>,
+                        response: Response<GetDailyKcalResponse>
+                    ) {
+                        Log.d(AlarmReceiver.TAG,"ㅇㅗㄴㅡㄹㅇㅡㅣ ㅅㅓㅂㅊㅜㅣㅋㅏㄹㄹㅗㄹㅣ${response.body()?.result?.get(0)?.kcalSum}")
+                        User.UserIntakeKcal = response.body()?.result?.get(0)!!.kcalSum
+                    }
+
+                    override fun onFailure(call: Call<GetDailyKcalResponse>, t: Throwable) {
+                        Log.d(AlarmReceiver.TAG,"ㅅㅣㄹㅍㅐㅎㅐㅆㅅㅡㅂㄴㅣㄷㅏ")
+                    }
+
+                })
+        }
     }
 
     private fun setUser(){

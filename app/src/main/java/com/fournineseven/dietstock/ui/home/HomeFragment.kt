@@ -39,6 +39,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.NullPointerException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -323,16 +324,21 @@ class HomeFragment : Fragment() {
             )
         }
 
-
-        entries.add(
-            CandleEntry(
-                userDao.getLastData().no+1.toFloat(),
-                User.PKcal + User.kcal,
-                User.UserIntakeKcal,
-                0.0f,
-                User.PKcal + User.kcal - User.UserIntakeKcal
+        try {
+            entries.add(
+                CandleEntry(
+                    userDao.getLastData().no+1.toFloat(),
+                    User.PKcal + User.kcal,
+                    User.UserIntakeKcal,
+                    0.0f,
+                    User.PKcal + User.kcal - User.UserIntakeKcal
+                )
             )
-        )
+
+        }catch (e: NullPointerException)
+        {
+            Log.d(TAG,"NULL DAO")
+        }
 
         val dataSet = CandleDataSet(entries, "").apply {
             //심지 부분

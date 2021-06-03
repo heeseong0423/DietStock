@@ -84,7 +84,7 @@ public class FeedBackFragment extends Fragment {
     private float height = 0;
     private int gender = 0;
     private int activity = 0;
-    private float standardweight = 0;
+    private float standardweight = 0.0f;
     private float required_kcal = 0;
     private RecyclerView recyclerView;
 
@@ -215,7 +215,7 @@ public class FeedBackFragment extends Fragment {
         Log.d("height", " " + height);
         Log.d("activity", " " + activity);
 
-        calculate_recommend();
+        //calculate_recommend();
 
         }
 
@@ -228,7 +228,10 @@ public class FeedBackFragment extends Fragment {
             switch (requestCode){
                 case 1:{
                     avoid_food = data.getStringExtra("result");
-                    requestFood();
+                    Log.d("onActivityResult avoid_food",avoid_food);
+                    if(meal_count != 0) {
+                        requestFood();
+                    }
                     break;
                 }
             }
@@ -257,7 +260,7 @@ public class FeedBackFragment extends Fragment {
 
         arrayList = new ArrayList<>();
 
-        if (avoid_food.length() != 0) {
+        if (avoid_food.charAt(avoid_food.length()-1) == ',') {
             avoid_food = avoid_food.substring(0,avoid_food.length() - 1);
         }
 
@@ -593,19 +596,19 @@ public class FeedBackFragment extends Fragment {
     private void calculate_recommend () {
 
         if (gender == 1) {
-            standardweight = (height / 100) * (height / 100) * 21;
-            Log.d("standardweight", " " + standardweight);
+            standardweight = (float)((height / 100.0) * (height  / 100.0) * 21);
+
         } else {
-            standardweight = (height / 100) * (height / 100) * 22;
-            Log.d("standardweight", " " + standardweight);
+            standardweight = (float)((height / 100.0) * (height  / 100.0) * 22);
+
         }
 
         switch (activity) {
-            case 0:
-                required_kcal = (float) (standardweight * 27.5);
             case 1:
-                required_kcal = (float) (standardweight * 32.5);
+                required_kcal = (float) (standardweight * 27.5);
             case 2:
+                required_kcal = (float) (standardweight * 32.5);
+            case 3:
                 required_kcal = (float) (standardweight * 37.5);
         }
 

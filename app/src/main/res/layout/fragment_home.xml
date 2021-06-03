@@ -211,7 +211,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:text="현재 칼로리 섭취량 : 807.2321 Kcal"
+            android:text="섭취 칼로리 : 0.0 Kcal"
             android:textAlignment="center"
             android:textColor="#0044FF"
             android:textSize="20sp" />

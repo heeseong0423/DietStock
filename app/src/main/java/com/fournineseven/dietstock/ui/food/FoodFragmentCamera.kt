@@ -25,6 +25,7 @@ import android.util.Log
 import android.util.Size
 import android.view.*
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -73,7 +74,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.AbstractList
 
 
-class FoodFragmentCamera : Fragment() {
+class FoodFragmentCamera : Fragment(){
     private val requestCameraPermissionCode: Int = 0
     lateinit var cameraDevice: CameraDevice
     lateinit var binding: FragmentFoodCameraBinding
@@ -88,6 +89,30 @@ class FoodFragmentCamera : Fragment() {
     private var userNo: Int = -1
     private var serving: Int = 1
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var onBackCallback: OnBackPressedCallback
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        onBackCallback = object: OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                    Log.d("OnBack", "1")
+                    if(!binding.foodSearch.isIconified){
+                        Log.d("OnBack", "2")
+                        binding.foodSearch.isIconified = true
+                    } else {
+                        Log.d("OnBack", "4")
+                        flipVisibility(true)
+                        openCamera()
+                    }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, onBackCallback)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        onBackCallback.remove()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_food_camera, container, false)
@@ -121,8 +146,7 @@ class FoodFragmentCamera : Fragment() {
                 if(!binding.foodSearch.isIconified){
                     binding.foodName.visibility = View.VISIBLE
                     if(binding.resultImage.visibility == View.VISIBLE){
-                        binding.LeftConstraint.visibility = View.VISIBLE
-                        binding.RightConstraint.visibility = View.VISIBLE
+                        binding.SubConstraint.visibility = View.VISIBLE
                         binding.submitBtn.visibility = View.VISIBLE
                     }
                 }
@@ -166,8 +190,7 @@ class FoodFragmentCamera : Fragment() {
             if(!binding.foodSearch.isIconified){
                 binding.foodName.visibility = View.INVISIBLE
                 if(binding.resultImage.visibility == View.VISIBLE){
-                    binding.LeftConstraint.visibility = View.INVISIBLE
-                    binding.RightConstraint.visibility = View.INVISIBLE
+                    binding.SubConstraint.visibility = View.INVISIBLE
                     binding.submitBtn.visibility = View.INVISIBLE
                 }
             }
@@ -484,8 +507,7 @@ class FoodFragmentCamera : Fragment() {
 
     fun flipVisibility(cameraOn: Boolean){
         var foodName = binding.foodName
-        var leftConstraint = binding.LeftConstraint
-        var rightConstraint = binding.RightConstraint
+        var subConstraint = binding.SubConstraint
         var btn = binding.takeBtn
         var submitBtn = binding.submitBtn
         var camera = binding.textureView
@@ -493,8 +515,7 @@ class FoodFragmentCamera : Fragment() {
         var servingConstraint = binding.servingConstraint
         if(cameraOn){
             foodName.text = "음식을 촬영해 주세요"
-            leftConstraint.visibility = View.INVISIBLE
-            rightConstraint.visibility = View.INVISIBLE
+            subConstraint.visibility = View.INVISIBLE
             submitBtn.visibility = View.INVISIBLE
             servingConstraint.visibility = View.INVISIBLE
             image.visibility = View.INVISIBLE
@@ -506,8 +527,7 @@ class FoodFragmentCamera : Fragment() {
         }else{
             btn.visibility = View.INVISIBLE
             camera.visibility = View.INVISIBLE
-            leftConstraint.visibility = View.VISIBLE
-            rightConstraint.visibility = View.VISIBLE
+            subConstraint.visibility = View.VISIBLE
             submitBtn.visibility = View.VISIBLE
             servingConstraint.visibility = View.VISIBLE
             image.visibility = View.VISIBLE

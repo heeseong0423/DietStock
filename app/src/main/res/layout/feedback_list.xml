@@ -13,6 +13,8 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:id="@+id/food_image"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         />
 
     <LinearLayout
@@ -36,21 +38,26 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="칼로리"
+                        android:layout_gravity="center"
                         ></TextView>
 
                     <EditText
+                        android:id="@+id/kcal"
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:id="@+id/kcal"></EditText>
+                        android:gravity="center">
+                        android:layout_gravity="center"
+                    </EditText>
                 </LinearLayout>
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/foodname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:text="food_name"></EditText>
+        <EditText
+            android:id="@+id/foodname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:gravity="center"
+            android:text="food_name"></EditText>
         </LinearLayout>
 
 </LinearLayout>

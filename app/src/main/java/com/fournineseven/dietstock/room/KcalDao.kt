@@ -25,4 +25,5 @@ interface KcalDao {
     @Query("SELECT * FROM userkcaldata ORDER BY ROWID DESC LIMIT 1")
     fun getLastData(): UserKcalData
 
+
 }

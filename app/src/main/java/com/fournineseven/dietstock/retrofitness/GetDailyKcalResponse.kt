@@ -12,7 +12,5 @@ data class GetDailyKcalResponse(
 
     @SerializedName("result")
     @Expose
-    //val result: Float
     val result: ArrayList<RequestKcalInfoResult>? = null
-
 )

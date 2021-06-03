@@ -99,10 +99,12 @@ class FoodFragmentCamera : Fragment(){
                     if(!binding.foodSearch.isIconified){
                         Log.d("OnBack", "2")
                         binding.foodSearch.isIconified = true
-                    } else {
+                    } else if(binding.textureView.visibility == View.INVISIBLE) {
                         Log.d("OnBack", "4")
                         flipVisibility(true)
                         openCamera()
+                    } else{
+                        onDetach()
                     }
             }
         }
@@ -163,7 +165,6 @@ class FoodFragmentCamera : Fragment(){
         override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
 
         override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-            closeCamera()
             return false
         }
 
@@ -232,14 +233,14 @@ class FoodFragmentCamera : Fragment(){
             }
         }
         override fun onDisconnected(camera : CameraDevice){
-            Log.d(TAG, "stateCallback: onDisconnected")
-            flipVisibility(false)
-            closeCamera()
+//            Log.d(TAG, "stateCallback: onDisconnected")
+//            flipVisibility(false)
+//            closeCamera()
         }
         override fun onError(camera: CameraDevice, error: Int){
-            Log.d(TAG, "stateCallback: OnError")
-            flipVisibility(false)
-            closeCamera()
+//            Log.d(TAG, "stateCallback: OnError")
+//            flipVisibility(false)
+//            closeCamera()
         }
     }
 

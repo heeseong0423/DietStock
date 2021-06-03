@@ -61,7 +61,7 @@
         android:id="@+id/submitBtn"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="35dp"
         android:text="제출"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -83,19 +83,20 @@
         android:fontFamily="@font/poorstory">
         <EditText
             android:id="@+id/serving"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
             app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:text="1"
+            android:textSize="20dp"
             android:inputType="number"
-            android:maxLines="1"
-            android:background="@null"/>
+            android:maxLines="1"/>
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
             android:text="인분"
+            android:textSize="20dp"
             app:layout_constraintLeft_toLeftOf="@id/serving"
             app:layout_constraintTop_toTopOf="@id/serving"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

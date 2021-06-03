@@ -25,6 +25,7 @@ import android.util.Log
 import android.util.Size
 import android.view.*
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -73,7 +74,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.AbstractList
 
 
-class FoodFragmentCamera : Fragment() {
+class FoodFragmentCamera : Fragment(){
     private val requestCameraPermissionCode: Int = 0
     lateinit var cameraDevice: CameraDevice
     lateinit var binding: FragmentFoodCameraBinding
@@ -88,6 +89,30 @@ class FoodFragmentCamera : Fragment() {
     private var userNo: Int = -1
     private var serving: Int = 1
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var onBackCallback: OnBackPressedCallback
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        onBackCallback = object: OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                    Log.d("OnBack", "1")
+                    if(!binding.foodSearch.isIconified){
+                        Log.d("OnBack", "2")
+                        binding.foodSearch.isIconified = true
+                    } else {
+                        Log.d("OnBack", "4")
+                        flipVisibility(true)
+                        openCamera()
+                    }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, onBackCallback)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        onBackCallback.remove()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_food_camera, container, false)

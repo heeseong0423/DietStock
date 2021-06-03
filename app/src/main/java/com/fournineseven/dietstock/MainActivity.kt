@@ -469,25 +469,10 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
     override fun onBackPressed() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-
-
         if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
             drawerLayout.closeDrawer(Gravity.LEFT)
             return
-        }
-
-        if (navView.selectedItemId == 3) {
-            if(!FoodFragmentCamera().binding.foodSearch.isIconified){
-                FoodFragmentCamera().binding.foodSearch.isIconified = true
-            }
-            else if (FoodFragmentCamera().binding.foodName.text == "음식을 촬영해 주세요" ||
-                (FoodFragmentCamera().binding.SubConstraint.visibility == View.INVISIBLE)) {
-                super.onBackPressed()
-            } else {
-                FoodFragmentCamera().flipVisibility(true)
-                FoodFragmentCamera().openCamera()
-            }
-        } else {
+        }else{
             super.onBackPressed()
         }
     }

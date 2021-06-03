@@ -24,4 +24,8 @@ interface API {
     @POST("api/kcal/saveKcalLog")
     fun saveKcalLog(@Body param: SaveKcalLogRequest)
     : Call<SaveKcalLogResponse>
+
+    @POST("api/kcal/getDailyKcal")
+    fun getDailyKcal(@Body param: GetDailyKcalRequest)
+    : Call<GetDailyKcalResponse>
 }

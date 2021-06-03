@@ -235,7 +235,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         )
                         editor.putString(
                             LoginState.BEFORE_IMAGE_KEY,
-                            response.body()?.result?.get(0)?.beforeImage
+                            "http://497.iptime.org/" + response.body()?.result?.get(0)?.beforeImage
                         )
                         editor.putFloat(
                             LoginState.GOAL_KEY,
@@ -616,7 +616,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         beforeImage.setImageURI(uri)
                         Log.d(TAG,uri.toString())
                         var editor = sharedpreferences.edit()
-                        editor.putString(LoginState.BEFORE_IMAGE_KEY,uri.toString())
+                        editor.putString("http://497.iptime.org/" + LoginState.BEFORE_IMAGE_KEY,uri.toString())
                         editor.apply()
                     }
                 }
@@ -627,7 +627,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         afterImage.setImageURI(uri)
                         Log.d(TAG,uri.toString())
                         var editor = sharedpreferences.edit()
-                        editor.putString(LoginState.AFTER_IMAGE_KEY,uri.toString())
+                        editor.putString("http://497.iptime.org/" + LoginState.AFTER_IMAGE_KEY,uri.toString())
                         editor.apply()
                     }
                 }

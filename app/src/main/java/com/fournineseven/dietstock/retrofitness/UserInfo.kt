@@ -18,6 +18,11 @@ class UpdateHeightRequest(
     @field:SerializedName("height") private val height: Float
 )
 
+class GetDailyKcalRequest(
+    @field:SerializedName("user_no") private val user_no: Int,
+    @field:SerializedName("date") private val date: String
+)
+
 class UpdateGoalRequest(
     @field:SerializedName("user_no") private val user_no: Int,
     @field:SerializedName("goal") private val goal: Float

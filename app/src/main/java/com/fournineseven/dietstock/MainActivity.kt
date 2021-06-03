@@ -665,8 +665,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             this, AlarmReceiver.REQUEST_ID, intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
 
-        //val repeatInterval: Long =  86400 // 하루시간
-        val repeatInterval: Long =  60 // 하루시간
+        val repeatInterval: Long =  86400/2 // 하루시간
+        //val repeatInterval: Long =  60 // 하루시간
         /*val triggerTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
             .toEpochSecond() + 1619741870*/
         val triggerTime = LocalDateTime.of(LocalDate.now(),LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toEpochSecond()

@@ -42,6 +42,31 @@ class AlarmReceiver : BroadcastReceiver() {
         Log.d(TAG,"오늘 $today 그리고 쉐어드의 ${sharedToday}")
         Log.d(TAG, "Received intent : $intent")
 
+        //테스트
+       /* RetrofitBuilder.api.saveKcalLog(SaveKcalLogRequest(user_no = 22, low = -500.0f,
+            high = 1231.8f, end_kcal = 9000.0f,start_kcal = 0.0f , date = sharedToday.toString()))
+            .enqueue(object : Callback<SaveKcalLogResponse>{
+                override fun onResponse(
+                    call: Call<SaveKcalLogResponse>,
+                    response: Response<SaveKcalLogResponse>
+                ) {
+                    Log.d(TAG,"알람 성공")
+                    Log.e("error", response.toString())
+
+                    *//*editor.putFloat(LoginState.START_KEY,sharedEndKcal)
+                    editor.putString(LoginState.DATE_KEY,today)
+                    editor.putLong(LoginState.START_TIME_KEY,
+                        LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
+                            .toEpochSecond())
+                    editor.apply()*//*
+                }
+
+                override fun onFailure(call: Call<SaveKcalLogResponse>, t: Throwable) {
+                    Log.d(TAG,"알람 실패")
+                }
+            })
+*/
+
         if(sharedToday == today){
             Log.d(TAG,"오늘인데요.")
         }else{
@@ -75,6 +100,7 @@ class AlarmReceiver : BroadcastReceiver() {
                         call: Call<SaveKcalLogResponse>,
                         response: Response<SaveKcalLogResponse>
                     ) {
+                        Log.e("error", response.toString())
                         Log.d(TAG,"알람 성공")
                         editor.putFloat(LoginState.START_KEY,sharedEndKcal)
                         editor.putString(LoginState.DATE_KEY,today)

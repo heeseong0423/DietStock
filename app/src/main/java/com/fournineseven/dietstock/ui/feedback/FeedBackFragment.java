@@ -208,14 +208,13 @@ public class FeedBackFragment extends Fragment {
         gender = sharedPreferences.getInt(GENDER_KEY, 0);
         float sharedPreferences_height = sharedPreferences.getFloat(HEIGHT_KEY, 0);
         height = sharedPreferences.getFloat(HEIGHT_KEY, 0);
-        int sharedPreferences_activity = sharedPreferences.getInt(ACTIVITY_KEY, 0);
+        int sharedPreferences_activity = sharedPreferences.getInt(ACTIVITY_KEY, -1);
+        Log.d("activity12213", String.valueOf(sharedPreferences_activity));
         activity = sharedPreferences.getInt(ACTIVITY_KEY, 0);
 
         Log.d("gender", " " + gender);
         Log.d("height", " " + height);
         Log.d("activity", " " + activity);
-
-        //calculate_recommend();
 
         }
 
@@ -228,6 +227,9 @@ public class FeedBackFragment extends Fragment {
             switch (requestCode){
                 case 1:{
                     avoid_food = data.getStringExtra("result");
+                    if (avoid_food.charAt(avoid_food.length()-1) == ',') {
+                        avoid_food = avoid_food.substring(0,avoid_food.length() - 1);
+                    }
                     Log.d("onActivityResult avoid_food",avoid_food);
                     if(meal_count != 0) {
                         requestFood();
@@ -260,9 +262,6 @@ public class FeedBackFragment extends Fragment {
 
         arrayList = new ArrayList<>();
 
-        if (avoid_food.charAt(avoid_food.length()-1) == ',') {
-            avoid_food = avoid_food.substring(0,avoid_food.length() - 1);
-        }
 
         //Bundle bundle = getArguments();
         //user_avoid = bundle.getString("메시지"); //user_avoid = 유저가 체크한 기피식품
@@ -593,7 +592,7 @@ public class FeedBackFragment extends Fragment {
         }
     }
 
-    private void calculate_recommend () {
+    public void calculate_recommend () {
 
         if (gender == 1) {
             standardweight = (float)((height / 100.0) * (height  / 100.0) * 21);
@@ -602,16 +601,23 @@ public class FeedBackFragment extends Fragment {
             standardweight = (float)((height / 100.0) * (height  / 100.0) * 22);
 
         }
-
+        Log.d("required_kcal", String.valueOf(standardweight));
+        Log.d("required_kcal", String.valueOf(activity));
         switch (activity) {
             case 1:
+                Log.d("required_kcal", "1");
                 required_kcal = (float) (standardweight * 27.5);
+                break;
             case 2:
+                Log.d("required_kcal", "2");
                 required_kcal = (float) (standardweight * 32.5);
+                break;
             case 3:
+                Log.d("required_kcal", "3");
                 required_kcal = (float) (standardweight * 37.5);
+                break;
         }
-
+        Log.d("required_kcal", String.valueOf(required_kcal));
         required_kcal -= 300;
 
         //탄 단 지 = 3 : 4 : 3

@@ -11,6 +11,7 @@ object User{
     var lowKcal = 0f
     var startKcal = 0f
     var endKcal = 0f
+    var foodKcal = 0f
 }
 
 

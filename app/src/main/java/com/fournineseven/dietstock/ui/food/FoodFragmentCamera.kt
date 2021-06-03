@@ -24,6 +24,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import android.util.Size
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
@@ -35,6 +36,7 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.fournineseven.dietstock.LoginState
 import com.fournineseven.dietstock.R
+import com.fournineseven.dietstock.User
 import com.fournineseven.dietstock.databinding.FragmentFoodCameraBinding
 import com.fournineseven.dietstock.model.FoodCamera.DefaultResponseKo
 import com.fournineseven.dietstock.model.FoodCamera.GetFoodResponse
@@ -183,6 +185,33 @@ class FoodFragmentCamera : Fragment(){
         override fun onClick(v: View?) {
             Log.d("foodNo", foodNo.toString())
             saveFoodLog(foodNo = foodNo)
+            Log.d("HELLO","먹은 칼로리는 ${User.foodKcal}")
+
+            var sharedPreferences = context?.getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
+            var editor = sharedPreferences?.edit()
+            var lowKcal = sharedPreferences?.getFloat(LoginState.LOW_KEY,0.0f)
+            var highKcal = sharedPreferences?.getFloat(LoginState.HIGH_KEY,0.0f)
+            var userCurrentKcal = User.PKcal + User.kcal - User.UserIntakeKcal
+            var minusFoodKcal = userCurrentKcal - User.foodKcal
+            var currentIntakeKcal = sharedPreferences?.getFloat(LoginState.INTAKE_KEY,0.0f)
+            editor?.putFloat(LoginState.INTAKE_KEY, currentIntakeKcal!! + User.foodKcal)
+
+            User.UserIntakeKcal += User.foodKcal
+
+
+            if(highKcal!! < userCurrentKcal){
+                Log.d(TAG,"User current kcal = ${userCurrentKcal}")
+                editor?.putFloat(LoginState.HIGH_KEY,userCurrentKcal)
+            }
+
+            if(lowKcal!! > minusFoodKcal){
+                Log.d(TAG,"User low kcal = ${lowKcal}")
+                editor?.putFloat(LoginState.LOW_KEY,minusFoodKcal)
+            }
+
+
+            editor?.apply()
+
         }
     }
 
@@ -449,6 +478,8 @@ class FoodFragmentCamera : Fragment(){
         fat.text = "${fat.text}${ data.result[0].fat}g"
         cholesterol.text = "${cholesterol.text}${ data.result[0].cholesterol}g"
         natrium.text = "${natrium.text}${ data.result[0].natrium}g"
+
+        User.foodKcal = data.result[0].kcal
     }
 
     private fun tfLiteModel(uriList: ArrayList<Uri>, fileName: String?): List<Pair<String, Float>>{
@@ -491,7 +522,7 @@ class FoodFragmentCamera : Fragment(){
             val label: TensorLabel = TensorLabel(axisList, probabilityBuffer)
             val floatMap = label.mapWithFloatValue
             Log.d("test", floatMap.toString())
-            val sortedList = floatMap.toList().sortedWith(compareBy({it.second}))
+            val sortedList = floatMap.toList().sortedWith(compareBy({it.second})).reversed()
             Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[0].first + " " + sortedList[0].second.toString(), Toast.LENGTH_SHORT).show()
             Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[1].first + " " + sortedList[1].second.toString(), Toast.LENGTH_SHORT).show()
             Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[2].first + " " + sortedList[2].second.toString(), Toast.LENGTH_SHORT).show()
@@ -560,6 +591,7 @@ class FoodFragmentCamera : Fragment(){
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
 
+                //serving -  몇 인분
                 val connection = retrofit.create(FoodCameraInterface::class.java)
                 Log.d("info test", userNo.toString() + " " + foodNo.toString())
                 connection.saveFoodLog2(userNo, foodNo, serving, body).enqueue(object: Callback<DefaultResponseKo> {

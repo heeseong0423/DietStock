@@ -49,4 +49,5 @@ object LoginState {
     const val END_KEY = "end_key" //오늘의 소모한칼로리 - 섭취한 칼로리
     const val DATE_KEY = "date_key" // 오늘의 날짜
     const val START_TIME_KEY = "start_time_key"
+    const val INTAKE_KEY = "intake_key"
 }

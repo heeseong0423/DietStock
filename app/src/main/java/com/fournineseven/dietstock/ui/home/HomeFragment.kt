@@ -112,7 +112,6 @@ class HomeFragment : Fragment() {
         return root
     }
 
-
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "이것은 onPause()")
@@ -143,6 +142,7 @@ class HomeFragment : Fragment() {
             Log.d(TAG, "This is already true.")
             return
         }
+        consumeTextVIew.text = "칼로리 섭취량 : ${User.UserIntakeKcal} Kcal"
         CoroutineState = true
         CoroutineScope(Dispatchers.Main).launch {
             while (CoroutineState) {
@@ -150,7 +150,6 @@ class HomeFragment : Fragment() {
                         "현재 ${User.highKcal}, ${User.lowKcal} and ${full_sdf.format(dt)}")
                 updateCalories(startTime!!)
                 textView.text = "칼로리 소모량 : ${User.kcal + User.PKcal}Kcal"
-                consumeTextVIew.text = "칼로리 소모량 : ${User.UserIntakeKcal} Kcal"
                 drawCandlestickChart(dietChart,rootView)
                 delay(3000)
             }
@@ -297,6 +296,8 @@ class HomeFragment : Fragment() {
             .build()
         val userDao = db.kcalDao()
 
+
+        //userDao.insert(UserKcalData(0,13.2f,141.0f,0.0f,434.3f,2323.0f,-23.3f))
         /*for (csStock in DataUtil.getCSStockData()) {
             entries.add(
                 CandleEntry(
@@ -309,29 +310,51 @@ class HomeFragment : Fragment() {
             )
         }*/
 
-        //userDao.insert(UserKcalData(0,13.2f,141.0f,0.0f,434.3f,2323.0f,-23.3f))
-        Log.d(TAG,"${userDao.getLastData()}")
 
-        for(csStock in userDao.getAll()){
-            entries.add(
-                CandleEntry(
-                    csStock.no.toFloat(),
-                    csStock.highKcal,
-                    csStock.lowKcal,
-                    csStock.startTime,
-                    csStock.endTime
+        //userDao.insert(UserKcalData(0,13.2f,141.0f,0.0f,434.3f,2323.0f,-23.3f))
+        //Log.d(TAG,"${userDao.getLastData()}")
+
+        try{
+            for(csStock in userDao.getAll()){
+                entries.add(
+                    CandleEntry(
+                        csStock.no.toFloat(),
+                        csStock.highKcal,
+                        csStock.lowKcal,
+                        csStock.startTime,
+                        csStock.endTime
+                    )
                 )
-            )
+            }
+        }catch (e :NullPointerException){
+            e.stackTrace
         }
+
+
+        /*
+        * createdAt = 0,
+                open = 0f,
+                close = 1778.4f,
+                shadowHigh = 2004.8f,
+                shadowLow = -305.0F
+        * */
+        var sharedpreferences = context?.getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE)
+        var high = sharedpreferences?.getFloat(LoginState.HIGH_KEY,0.0f)
+        var low = sharedpreferences?.getFloat(LoginState.LOW_KEY,0.0f)
+        var end = sharedpreferences?.getFloat(LoginState.END_KEY,0.0f)
+        var start = sharedpreferences?.getFloat(LoginState.START_KEY, 0.0f)
+        var intake = sharedpreferences?.getFloat(LoginState.INTAKE_KEY,0.0f)
+
+
 
         try {
             entries.add(
                 CandleEntry(
                     userDao.getLastData().no+1.toFloat(),
-                    User.PKcal + User.kcal,
-                    User.UserIntakeKcal,
-                    0.0f,
-                    User.PKcal + User.kcal - User.UserIntakeKcal
+                    8001.0f,
+                    -9000.0f,
+                    800f,
+                    User.PKcal + User.kcal - intake!!
                 )
             )
 
@@ -339,6 +362,14 @@ class HomeFragment : Fragment() {
         {
             Log.d(TAG,"NULL DAO")
         }
+
+
+        Log.d(TAG,"aasdfa ${User.PKcal + User.kcal - intake!!}")
+
+        Log.d(TAG,"start chart ${start!!}")
+        Log.d(TAG,"end ${end!!}")
+        Log.d(TAG," high ${high!!}")
+        Log.d(TAG,"low ${low!!}")
 
         val dataSet = CandleDataSet(entries, "").apply {
             //심지 부분

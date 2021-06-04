@@ -228,6 +228,9 @@ public class FeedBackFragment extends Fragment {
             switch (requestCode){
                 case 1:{
                     avoid_food = data.getStringExtra("result");
+                    if (avoid_food.charAt(avoid_food.length()-1) == ',') {
+                        avoid_food = avoid_food.substring(0,avoid_food.length() - 1);
+                    }
                     Log.d("onActivityResult avoid_food",avoid_food);
                     if(meal_count != 0) {
                         requestFood();
@@ -259,10 +262,6 @@ public class FeedBackFragment extends Fragment {
 
 
         arrayList = new ArrayList<>();
-
-        if (avoid_food.charAt(avoid_food.length()-1) == ',') {
-            avoid_food = avoid_food.substring(0,avoid_food.length() - 1);
-        }
 
         //Bundle bundle = getArguments();
         //user_avoid = bundle.getString("메시지"); //user_avoid = 유저가 체크한 기피식품

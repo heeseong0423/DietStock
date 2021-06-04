@@ -409,7 +409,7 @@ class FoodFragmentCamera : Fragment(){
                                 values.clear()
                                 values.put(MediaStore.Images.Media.IS_PENDING, 0)
                                 contentResolver.update(item, values, null, null)
-                                uriList.add(0, item)
+                                uriList.add(uriList.size, item)
                             }catch (e: FileNotFoundException){
                                 Log.d("File Not Found", e.stackTraceToString())
                             }finally {
@@ -535,6 +535,7 @@ class FoodFragmentCamera : Fragment(){
             val floatMap = label.mapWithFloatValue
             Log.d("test", floatMap.toString())
             val sortedList = floatMap.toList().sortedWith(compareBy({it.second})).reversed()
+            Log.d("sorted predicted", sortedList.toString())
             Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[0].first + " " + sortedList[0].second.toString(), Toast.LENGTH_SHORT).show()
             Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[1].first + " " + sortedList[1].second.toString(), Toast.LENGTH_SHORT).show()
             Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[2].first + " " + sortedList[2].second.toString(), Toast.LENGTH_SHORT).show()

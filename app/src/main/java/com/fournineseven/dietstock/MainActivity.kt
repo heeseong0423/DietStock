@@ -84,10 +84,9 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             R.id.nav_log_out->{
                 var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
                 var editor = sharedpreferences.edit()
-                editor.putString(LoginState.EMAIL_KEY,null)
-                editor.putString(LoginState.PASSWORD_KEY,null)
+                editor.clear()
                 editor.apply()
-
+                alarmmCancel()
                 var intent = Intent(this, SignActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -182,6 +181,9 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         var userNumber = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
+
+        User.UserIntakeKcal = sharedpreferences.getFloat(LoginState.INTAKE_KEY,0.0f)
+
 
         var userNumberCheck = sharedpreferences.getString(LoginState.USER_NUMBER,null)
         if(userNumberCheck!=null) {
@@ -406,7 +408,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         var today =sharedpreferences.getString(LoginState.DATE_KEY,null)
         if(today != null){
-            RetrofitBuilder.api.getDailyKcal(GetDailyKcalRequest(user_no = 2, date = today))
+            RetrofitBuilder.api.getDailyKcal(GetDailyKcalRequest(user_no = userNumber, date = today))
                 .enqueue(object : Callback<GetDailyKcalResponse>{
                     override fun onResponse(
                         call: Call<GetDailyKcalResponse>,
@@ -471,9 +473,11 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 .toEpochSecond()
 
             var editor = sharedpreferences.edit()
+            editor.putFloat(LoginState.INTAKE_KEY,0.0f)
             editor.putFloat(LoginState.START_KEY,0.0f)
             editor.putString(LoginState.DATE_KEY,todayDate)
             editor.putLong(LoginState.START_TIME_KEY,todayDateMidNight)
+            editor.putFloat(LoginState.LOW_KEY,0.0f)
             editor.apply()
         }
 
@@ -684,8 +688,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             this, AlarmReceiver.REQUEST_ID, intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val repeatInterval: Long =  86400/2 // 하루시간
-        //val repeatInterval: Long =  60 // 하루시간
+        //val repeatInterval: Long =  86400/2 // 하루시간
+        val repeatInterval: Long =  60 // 하루시간
         /*val triggerTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
             .toEpochSecond() + 1619741870*/
         val triggerTime = LocalDateTime.of(LocalDate.now(),LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toEpochSecond()
@@ -694,5 +698,15 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             AlarmManager.RTC_WAKEUP,
             triggerTime, repeatInterval,
             pendingIntent)
+    }
+
+    fun alarmmCancel(){
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, AlarmReceiver.REQUEST_ID, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+
+        alarmManager.cancel(pendingIntent)
     }
 }

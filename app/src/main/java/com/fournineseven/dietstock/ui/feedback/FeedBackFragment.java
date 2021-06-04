@@ -99,9 +99,6 @@ public class FeedBackFragment extends Fragment {
     @Override
     public void onResume () {
         super.onResume();
-        if (avoid_food.length() != 0) {
-            avoid_food = avoid_food.substring(0, avoid_food.length() - 1);
-        }
 
         //Bundle bundle = getArguments();
         //user_avoid = bundle.getString("메시지"); //user_avoid = 유저가 체크한 기피식품
@@ -208,14 +205,13 @@ public class FeedBackFragment extends Fragment {
         gender = sharedPreferences.getInt(GENDER_KEY, 0);
         float sharedPreferences_height = sharedPreferences.getFloat(HEIGHT_KEY, 0);
         height = sharedPreferences.getFloat(HEIGHT_KEY, 0);
-        int sharedPreferences_activity = sharedPreferences.getInt(ACTIVITY_KEY, 0);
+        int sharedPreferences_activity = sharedPreferences.getInt(ACTIVITY_KEY, -1);
+        Log.d("activity12213", String.valueOf(sharedPreferences_activity));
         activity = sharedPreferences.getInt(ACTIVITY_KEY, 0);
 
         Log.d("gender", " " + gender);
         Log.d("height", " " + height);
         Log.d("activity", " " + activity);
-
-        //calculate_recommend();
 
         }
 
@@ -435,7 +431,7 @@ public class FeedBackFragment extends Fragment {
         Call<GetRequestFoodResponse> callGetRequestFood =
                 getRequestFoodService.getRequestFood(new GetRequestFoodRequest(avoid_food, nutriention, gram));
 
-        Log.d("avoid_food = ", avoid_food);
+
 
         callGetRequestFood.enqueue(new Callback<GetRequestFoodResponse>() {
             @Override
@@ -450,7 +446,7 @@ public class FeedBackFragment extends Fragment {
                     protein = 0;
                     fat = 0;
                     int flag = 0;
-                    float ratio = 0.1f;
+                    double ratio = 0.1d;
                     ArrayList<RequestFoodResult> correct_requestFood = new ArrayList<>();
 
                     for (int j = 0; j < dailyFood_all.size(); j++) { //오늘 먹은 음식들 중 최악을 뺀 음식들의 영양소 합
@@ -468,21 +464,22 @@ public class FeedBackFragment extends Fragment {
 
                     while(true) {
                         Log.d("debug", String.valueOf(requestFoodResultsResults.size()));
-                        if(requestFoodResultsResults.size() ==0 || ratio>=1) break;
+                        if(requestFoodResultsResults.size() ==0 || ratio>1) break;
                         Log.d("ratio", String.valueOf(ratio));
                         for (int i = 0; i < requestFoodResultsResults.size(); i++) { //
 
                             flag = 0;
 
-                            float carbs_by_ratio = (required_kcal-kcal) / (requestFoodResultsResults.get(i).getKcal());
+                            double carbs_by_ratio = Math.abs(required_kcal-kcal) / (requestFoodResultsResults.get(i).getKcal());
+                            Log.e("carbs_by_ratio", String.valueOf(carbs_by_ratio));
+                            double virtual_Carbs = carbs + requestFoodResultsResults.get(i).getCarbs() * carbs_by_ratio;
 
-                            float virtual_Carbs = carbs + requestFoodResultsResults.get(i).getCarbs() * carbs_by_ratio;
+                            double virtual_Protein = protein + requestFoodResultsResults.get(i).getProtein() * carbs_by_ratio;
 
-                            float virtual_Protein = protein + requestFoodResultsResults.get(i).getProtein() * carbs_by_ratio;
-
-                            float virtual_Fat = fat + requestFoodResultsResults.get(i).getFat() * carbs_by_ratio;
-
-
+                            double virtual_Fat = fat + requestFoodResultsResults.get(i).getFat() * carbs_by_ratio;
+                            Log.e("ddddddddd", String.valueOf(requestFoodResultsResults.get(i).getCarbs())+","+String.valueOf(requestFoodResultsResults.get(i).getProtein())+","
+                                    +String.valueOf(requestFoodResultsResults.get(i).getFat())+",");
+                            Log.e("eeeeeeeeeeee", String.valueOf(virtual_Carbs)+","+String.valueOf(virtual_Protein)+","+String.valueOf(virtual_Fat)+","+String.valueOf(recommend_fat));
                             if (!(virtual_Carbs >= recommend_carbs * (1 - ratio) && virtual_Carbs <= recommend_carbs * (1 + ratio))) {
                                 flag = 1;
                             }
@@ -515,6 +512,7 @@ public class FeedBackFragment extends Fragment {
                         String getTime = simpleDate.format(mDate);
 
                         min_carbs_index = Math.abs(correct_requestFood.size() - Integer.valueOf(getTime));
+                        min_carbs_index = min_carbs_index > 0 ? min_carbs_index-1 : 0;
                     }
 
                     if(correct_requestFood.size() == 0){
@@ -522,6 +520,7 @@ public class FeedBackFragment extends Fragment {
                                 .placeholder(R.drawable.food_icon).into(iv_bad_food);
                     }
                     else {
+                        Log.d("change",String.valueOf(min_carbs_index));
                         requestFood_name.setText(correct_requestFood.get(min_carbs_index).getFood_name());
                         Glide.with(rootView).load(TaskServer.base_url + "requestfood/" + correct_requestFood.get(min_carbs_index).food_image()).error(R.drawable.food_icon)
                                 .placeholder(R.drawable.food_icon).into(iv_good_food);
@@ -592,25 +591,32 @@ public class FeedBackFragment extends Fragment {
         }
     }
 
-    private void calculate_recommend () {
+    public void calculate_recommend () {
 
         if (gender == 1) {
             standardweight = (float)((height / 100.0) * (height  / 100.0) * 21);
-
+            Log.d("gender 여자냐 : ",String.valueOf(gender));
         } else {
             standardweight = (float)((height / 100.0) * (height  / 100.0) * 22);
-
+            Log.d("gender 남자냐 : ",String.valueOf(gender));
         }
-
+        Log.d("required_kcal", String.valueOf(standardweight));
+        Log.d("required_kcal", String.valueOf(activity));
         switch (activity) {
             case 1:
+                Log.d("required_kcal", "1");
                 required_kcal = (float) (standardweight * 27.5);
+                break;
             case 2:
+                Log.d("required_kcal", "2");
                 required_kcal = (float) (standardweight * 32.5);
+                break;
             case 3:
+                Log.d("required_kcal", "3");
                 required_kcal = (float) (standardweight * 37.5);
+                break;
         }
-
+        Log.d("required_kcal", String.valueOf(required_kcal));
         required_kcal -= 300;
 
         //탄 단 지 = 3 : 4 : 3

@@ -432,7 +432,7 @@ public class FeedBackFragment extends Fragment {
         Call<GetRequestFoodResponse> callGetRequestFood =
                 getRequestFoodService.getRequestFood(new GetRequestFoodRequest(avoid_food, nutriention, gram));
 
-        Log.d("avoid_food = ", avoid_food);
+
 
         callGetRequestFood.enqueue(new Callback<GetRequestFoodResponse>() {
             @Override
@@ -596,10 +596,10 @@ public class FeedBackFragment extends Fragment {
 
         if (gender == 1) {
             standardweight = (float)((height / 100.0) * (height  / 100.0) * 21);
-
+            Log.d("gender 여자냐 : ",String.valueOf(gender));
         } else {
             standardweight = (float)((height / 100.0) * (height  / 100.0) * 22);
-
+            Log.d("gender 남자냐 : ",String.valueOf(gender));
         }
         Log.d("required_kcal", String.valueOf(standardweight));
         Log.d("required_kcal", String.valueOf(activity));

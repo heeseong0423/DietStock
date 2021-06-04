@@ -56,61 +56,61 @@ public class avoidFood_check extends AppCompatActivity {
                 String result = "";
 
                 if (checkBox_poultry.isChecked()) {
-                    result += checkBox_poultry.getText().toString() + ",";
+                    result += "poultry,";
                 }
                 if (checkBox_buckwheat.isChecked()) {
-                    result += checkBox_buckwheat.getText().toString() + ",";
+                    result += "buckwheat,";
                 }
                 if (checkBox_peach.isChecked()) {
-                    result += checkBox_peach.getText().toString() + ",";
+                    result += "peach,";
                 }
                 if (checkBox_tomato.isChecked()) {
-                    result += checkBox_tomato.getText().toString() + ",";
+                    result += "tomato,";
                 }
                 if (checkBox_walnut.isChecked()) {
-                    result += checkBox_walnut.getText().toString() + ",";
+                    result += "walnut,";
                 }
                 if (checkBox_peanut.isChecked()) {
-                    result += checkBox_peanut.getText().toString() + ",";
+                    result += "peanut,";
                 }
                 if (checkBox_chicken.isChecked()) {
-                    result += checkBox_chicken.getText().toString() + ",";
+                    result += "chicken,";
                 }
                 if (checkBox_beef.isChecked()) {
-                    result += checkBox_beef.getText().toString() + ",";
+                    result += "beef,";
                 }
                 if (checkBox_oyster.isChecked()) {
-                    result += checkBox_oyster.getText().toString() + ",";
+                    result += "oyster,";
                 }
                 if (checkBox_wheat.isChecked()) {
-                    result += checkBox_wheat.getText().toString() + ",";
+                    result += "wheat,";
                 }
                 if (checkBox_crab.isChecked()) {
-                    result += checkBox_crab.getText().toString() + ",";
+                    result += "crab,";
                 }
                 if (checkBox_mackerel.isChecked()) {
-                    result += checkBox_mackerel.getText().toString() + ",";
+                    result += "mackerel,";
                 }
                 if (checkBox_pork.isChecked()) {
-                    result += checkBox_pork.getText().toString() + ",";
+                    result += "pork,";
                 }
                 if (checkBox_shrimp.isChecked()) {
-                    result += checkBox_shrimp.getText().toString() + ",";
+                    result += "shrimp,";
                 }
                 if (checkBox_shellfish.isChecked()) {
-                    result += checkBox_shellfish.getText().toString() + ",";
+                    result += "shellfish,";
                 }
                 if (checkBox_abalone.isChecked()) {
-                    result += checkBox_abalone.getText().toString() + ",";
+                    result += "abalone,";
                 }
                 if (checkBox_bean.isChecked()) {
-                    result += checkBox_bean.getText().toString() + ",";
+                    result += "bean,";
                 }
                 if (checkBox_squid.isChecked()) {
-                    result += checkBox_squid.getText().toString() + ",";
+                    result += "squid,";
                 }
                 if (checkBox_mussel.isChecked()) {
-                    result += checkBox_mussel.getText().toString() + ",";
+                    result += "mussel,";
                 }
                 avoidFood_str = result;
                 Log.e("check", "------------------------------------");

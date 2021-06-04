@@ -4,5 +4,5 @@
 
     <item android:drawable="@color/white"/>
 
-    <item android:drawable="@drawable/hoon" android:gravity="center"/>
+    <item android:drawable="@drawable/saguchil" android:gravity="center"/>
 </layer-list>

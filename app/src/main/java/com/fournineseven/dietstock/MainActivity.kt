@@ -84,10 +84,9 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             R.id.nav_log_out->{
                 var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
                 var editor = sharedpreferences.edit()
-                editor.putString(LoginState.EMAIL_KEY,null)
-                editor.putString(LoginState.PASSWORD_KEY,null)
+                editor.clear()
                 editor.apply()
-
+                alarmmCancel()
                 var intent = Intent(this, SignActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -699,5 +698,15 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             AlarmManager.RTC_WAKEUP,
             triggerTime, repeatInterval,
             pendingIntent)
+    }
+
+    fun alarmmCancel(){
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, AlarmReceiver.REQUEST_ID, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+
+        alarmManager.cancel(pendingIntent)
     }
 }

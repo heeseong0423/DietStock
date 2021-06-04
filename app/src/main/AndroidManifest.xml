@@ -50,7 +50,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.rolemodel.RoleModelDetailActivity" />
+        <activity android:name=".ui.rolemodel.RoleModelDetailActivity"
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity android:name=".ui.feedback.avoidFood_check"/>
         <activity android:name=".SignActivity" >
 

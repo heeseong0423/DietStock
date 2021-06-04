@@ -191,13 +191,19 @@ class FoodFragmentCamera : Fragment(){
             var editor = sharedPreferences?.edit()
             var lowKcal = sharedPreferences?.getFloat(LoginState.LOW_KEY,0.0f)
             var highKcal = sharedPreferences?.getFloat(LoginState.HIGH_KEY,0.0f)
-            var userCurrentKcal = User.PKcal + User.kcal - User.UserIntakeKcal
+            var intake = sharedPreferences?.getFloat(LoginState.INTAKE_KEY,0.0f)
+            var natrium = sharedPreferences?.getFloat(LoginState.NATRIUM_KEY,0.0f)
+            var danbaekjil = sharedPreferences?.getFloat(LoginState.DANBAEKJIL_KEY,0.0f)
+            var tansuhwamul = sharedPreferences?.getFloat(LoginState.TANSUHWAMUL_KEY,0.0f)
+            var zibang = sharedPreferences?.getFloat(LoginState.ZIBANG_KEY,0.0f)
+
+
+            var userCurrentKcal = User.PKcal + User.kcal - intake!!
             var minusFoodKcal = userCurrentKcal - User.foodKcal
             var currentIntakeKcal = sharedPreferences?.getFloat(LoginState.INTAKE_KEY,0.0f)
             editor?.putFloat(LoginState.INTAKE_KEY, currentIntakeKcal!! + User.foodKcal)
 
             User.UserIntakeKcal += User.foodKcal
-
 
             if(highKcal!! < userCurrentKcal){
                 Log.d(TAG,"User current kcal = ${userCurrentKcal}")
@@ -209,9 +215,11 @@ class FoodFragmentCamera : Fragment(){
                 editor?.putFloat(LoginState.LOW_KEY,minusFoodKcal)
             }
 
-
+            editor?.putFloat(LoginState.NATRIUM_KEY,natrium!! + User.natrium)
+            editor?.putFloat(LoginState.DANBAEKJIL_KEY,danbaekjil!! + User.danbaekjil)
+            editor?.putFloat(LoginState.TANSUHWAMUL_KEY,tansuhwamul!! + User.tansuhwamul)
+            editor?.putFloat(LoginState.ZIBANG_KEY,zibang!! + User.zibang)
             editor?.apply()
-
         }
     }
 
@@ -480,6 +488,10 @@ class FoodFragmentCamera : Fragment(){
         natrium.text = "${natrium.text}${ data.result[0].natrium}g"
 
         User.foodKcal = data.result[0].kcal
+        User.natrium = data.result[0].natrium
+        User.danbaekjil = data.result[0].protein
+        User.zibang = data.result[0].fat
+        User.tansuhwamul = data.result[0].carbs
     }
 
     private fun tfLiteModel(uriList: ArrayList<Uri>, fileName: String?): List<Pair<String, Float>>{

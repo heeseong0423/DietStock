@@ -12,6 +12,10 @@ object User{
     var startKcal = 0f
     var endKcal = 0f
     var foodKcal = 0f
+    var danbaekjil = 0f
+    var tansuhwamul = 0f
+    var zibang = 0f
+    var natrium = 0f
 }
 
 

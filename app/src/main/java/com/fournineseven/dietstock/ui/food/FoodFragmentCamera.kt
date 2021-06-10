@@ -484,8 +484,8 @@ class FoodFragmentCamera : Fragment(){
         kcal.text = "${kcal.text}${ data.result[0].kcal}kcal"
         protein.text = "${protein.text}${ data.result[0].protein}g"
         fat.text = "${fat.text}${ data.result[0].fat}g"
-        cholesterol.text = "${cholesterol.text}${ data.result[0].cholesterol}g"
-        natrium.text = "${natrium.text}${ data.result[0].natrium}g"
+        cholesterol.text = "${cholesterol.text}${ data.result[0].cholesterol}mg"
+        natrium.text = "${natrium.text}${ data.result[0].natrium}mg"
 
         User.foodKcal = data.result[0].kcal
         User.natrium = data.result[0].natrium
@@ -536,9 +536,6 @@ class FoodFragmentCamera : Fragment(){
             Log.d("test", floatMap.toString())
             val sortedList = floatMap.toList().sortedWith(compareBy({it.second})).reversed()
             Log.d("sorted predicted", sortedList.toString())
-            Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[0].first + " " + sortedList[0].second.toString(), Toast.LENGTH_SHORT).show()
-            Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[1].first + " " + sortedList[1].second.toString(), Toast.LENGTH_SHORT).show()
-            Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[2].first + " " + sortedList[2].second.toString(), Toast.LENGTH_SHORT).show()
             return sortedList.subList(0, 4)
         }
         return listOf(Pair<String, Float>("fail", -1f))
@@ -615,6 +612,9 @@ class FoodFragmentCamera : Fragment(){
                     override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
                         if(response?.isSuccessful){
                             Log.d("result2 - saveFoodLog", response?.body().toString())
+                            Toast.makeText(this@FoodFragmentCamera.requireContext(), "저장 성공", Toast.LENGTH_SHORT).show()
+                            flipVisibility(true)
+                            openCamera()
                         }
                         else{
                             Log.d("response error", response?.message())
@@ -642,6 +642,9 @@ class FoodFragmentCamera : Fragment(){
                     override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
                         if(response?.isSuccessful){
                             Log.d("result2 - saveFoodLog", response?.body().toString())
+                            Toast.makeText(this@FoodFragmentCamera.requireContext(), "저장 성공", Toast.LENGTH_SHORT).show()
+                            flipVisibility(true)
+                            openCamera()
                         }
                         else{
                             Log.d("response error", response?.message())

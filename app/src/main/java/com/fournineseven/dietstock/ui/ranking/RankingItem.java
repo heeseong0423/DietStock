@@ -5,12 +5,14 @@ public class RankingItem {
     String name;
 
     Float kcal;
+    Boolean me;
 
-    public RankingItem(int no, String name, Float kcal){
+    public RankingItem(int no, String name, Float kcal, Boolean me){
 
         this.no = no;
         this.name = name;
         this.kcal = kcal;
+        this.me = me;
     }
 
     public int getNo() {
@@ -35,5 +37,12 @@ public class RankingItem {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setMe(Boolean me) {
+        this.me = me;
+    }
+    public Boolean getMe(){
+        return me;
     }
 }

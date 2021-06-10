@@ -9,6 +9,7 @@
         android:id="@+id/textureView"
         android:layout_width="wrap_content"
         android:layout_height="410dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@id/foodName"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
@@ -21,7 +22,7 @@
         android:textSize="30sp"
         android:text="음식을 촬영해 주세요"
         android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="35dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -29,16 +30,16 @@
         android:id="@+id/foodSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="50dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintLeft_toRightOf="@id/foodName"
+        app:layout_constraintRight_toRightOf="parent"
         app:queryHint="검색어를 입력하십시오"
         app:iconifiedByDefault="true"/>
 
 
     <ImageView
         android:id="@+id/resultImage"
+        android:layout_marginTop="4dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/textureView"
@@ -72,14 +73,12 @@
         android:fontFamily="@font/poorstory"
         android:background="@drawable/shadow"/>
 
-    <Button
+    <android.widget.Button
         android:id="@+id/addBtn"
-        android:layout_height="40dp"
-        android:layout_width="40dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:text="+"
-        android:textSize="15dp"
+        android:layout_height="35dp"
+        android:layout_width="35dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="1dp"
         android:background="@drawable/plus_icon"
         app:layout_constraintLeft_toRightOf="@id/foodSearch"
         app:layout_constraintTop_toTopOf="parent" />
@@ -99,7 +98,6 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             android:textColor="@color/black"
             android:text="1"
             android:textSize="20sp"
@@ -113,8 +111,7 @@
             android:textSize="20dp"
             android:textColor="@color/black"
             app:layout_constraintLeft_toRightOf="@id/serving"
-            app:layout_constraintTop_toTopOf="@id/serving"
-            android:gravity="center_vertical"/>
+            app:layout_constraintTop_toTopOf="@id/serving" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -21,6 +21,7 @@ import android.os.Environment.getExternalStorageDirectory
 import android.os.Environment.getRootDirectory
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.text.InputFilter
 import android.util.Log
 import android.util.Size
 import android.view.*
@@ -163,6 +164,8 @@ class FoodFragmentCamera : Fragment(){
                 val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireContext())
                 builder.setTitle("추가할 음식을 입력해 주세요")
                 val input = EditText(requireContext())
+                val maxLength = 30
+                input.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
                 builder.setView(input)
                 builder.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which ->
                     // Here you get get input text from the Edittext

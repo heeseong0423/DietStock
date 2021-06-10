@@ -368,6 +368,9 @@ class HomeFragment : Fragment() {
                 }
             }
         } else {
+            Log.d("--------------------", "-----------------------")
+            Log.d("Result google", resultCode.toString())
+            Log.d("Result google", requestCode.toString())
             Toast.makeText(context, "연동하세요", Toast.LENGTH_SHORT).show()
         }
     }

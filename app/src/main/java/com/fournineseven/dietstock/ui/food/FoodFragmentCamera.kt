@@ -480,12 +480,12 @@ class FoodFragmentCamera : Fragment(){
         var cholesterol = binding.cholesterol
         var natrium = binding.natrium
         foodName.text = predictedFoodName
-        carbohydrate.text = "${carbohydrate.text}${ data.result[0].carbs}g"
-        kcal.text = "${kcal.text}${ data.result[0].kcal}kcal"
-        protein.text = "${protein.text}${ data.result[0].protein}g"
-        fat.text = "${fat.text}${ data.result[0].fat}g"
-        cholesterol.text = "${cholesterol.text}${ data.result[0].cholesterol}g"
-        natrium.text = "${natrium.text}${ data.result[0].natrium}g"
+        carbohydrate.text = "${ data.result[0].carbs}g"
+        kcal.text = "${ data.result[0].kcal}kcal"
+        protein.text = "${ data.result[0].protein}g"
+        fat.text = "${ data.result[0].fat}g"
+        cholesterol.text = "${ data.result[0].cholesterol}g"
+        natrium.text = "${ data.result[0].natrium}g"
 
         User.foodKcal = data.result[0].kcal
         User.natrium = data.result[0].natrium

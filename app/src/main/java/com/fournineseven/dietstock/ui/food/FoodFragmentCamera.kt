@@ -24,6 +24,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import android.util.Size
 import android.view.*
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -155,6 +156,43 @@ class FoodFragmentCamera : Fragment(){
                     }
                 }
                 return false
+            }
+        })
+        binding.addBtn.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(v: View?) {
+                val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireContext())
+                builder.setTitle("추가할 음식을 입력해 주세요")
+                val input = EditText(requireContext())
+                builder.setView(input)
+                builder.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which ->
+                    // Here you get get input text from the Edittext
+                    var name = input.text.toString()
+                    val gson: Gson = GsonBuilder().setLenient().create()
+                    val retrofit = Retrofit.Builder()
+                        .baseUrl("http://497.iptime.org")
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .build()
+
+                    val connection = retrofit.create(FoodCameraInterface::class.java)
+                    connection.addFood(name).enqueue(object: Callback<DefaultResponseKo> {
+                        override fun onFailure(call: Call<DefaultResponseKo>, t: Throwable){
+                            Log.d("result1 - addFood", t.message.toString())
+                        }
+
+                        override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
+                            if(response?.isSuccessful){
+                                Toast.makeText(this@FoodFragmentCamera.requireContext(), "저장 성공", Toast.LENGTH_SHORT).show()
+                            }
+                            else{
+                                Log.d("response error", response?.message())
+                            }
+                        }
+
+                    })
+                })
+                builder.setNegativeButton("취소", DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
+                builder.show()
+
             }
         })
         userNo = sharedPreferences.getString(LoginState.USER_NUMBER, "0")!!.toInt()
@@ -409,7 +447,7 @@ class FoodFragmentCamera : Fragment(){
                                 values.clear()
                                 values.put(MediaStore.Images.Media.IS_PENDING, 0)
                                 contentResolver.update(item, values, null, null)
-                                uriList.add(0, item)
+                                uriList.add(uriList.size, item)
                             }catch (e: FileNotFoundException){
                                 Log.d("File Not Found", e.stackTraceToString())
                             }finally {
@@ -480,6 +518,7 @@ class FoodFragmentCamera : Fragment(){
         var cholesterol = binding.cholesterol
         var natrium = binding.natrium
         foodName.text = predictedFoodName
+
         carbohydrate.text = "${ data.result[0].carbs}g"
         kcal.text = "${ data.result[0].kcal}kcal"
         protein.text = "${ data.result[0].protein}g"
@@ -535,9 +574,7 @@ class FoodFragmentCamera : Fragment(){
             val floatMap = label.mapWithFloatValue
             Log.d("test", floatMap.toString())
             val sortedList = floatMap.toList().sortedWith(compareBy({it.second})).reversed()
-            Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[0].first + " " + sortedList[0].second.toString(), Toast.LENGTH_SHORT).show()
-            Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[1].first + " " + sortedList[1].second.toString(), Toast.LENGTH_SHORT).show()
-            Toast.makeText(this@FoodFragmentCamera.requireContext(), sortedList[2].first + " " + sortedList[2].second.toString(), Toast.LENGTH_SHORT).show()
+            Log.d("sorted predicted", sortedList.toString())
             return sortedList.subList(0, 4)
         }
         return listOf(Pair<String, Float>("fail", -1f))
@@ -614,6 +651,9 @@ class FoodFragmentCamera : Fragment(){
                     override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
                         if(response?.isSuccessful){
                             Log.d("result2 - saveFoodLog", response?.body().toString())
+                            Toast.makeText(this@FoodFragmentCamera.requireContext(), "저장 성공", Toast.LENGTH_SHORT).show()
+                            flipVisibility(true)
+                            openCamera()
                         }
                         else{
                             Log.d("response error", response?.message())
@@ -641,6 +681,9 @@ class FoodFragmentCamera : Fragment(){
                     override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
                         if(response?.isSuccessful){
                             Log.d("result2 - saveFoodLog", response?.body().toString())
+                            Toast.makeText(this@FoodFragmentCamera.requireContext(), "저장 성공", Toast.LENGTH_SHORT).show()
+                            flipVisibility(true)
+                            openCamera()
                         }
                         else{
                             Log.d("response error", response?.message())
@@ -732,4 +775,10 @@ interface FoodCameraInterface{
     fun getFoodInfo(
             @Field("food_name") foodName: String
     ): Call<GetFoodResponse>
+
+    @FormUrlEncoded
+    @POST("api/food/addFood")
+    fun addFood(
+        @Field("name") name: String,
+    ): Call<DefaultResponseKo>
 }

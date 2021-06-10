@@ -1,5 +1,6 @@
 package com.fournineseven.dietstock.ui.ranking;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fournineseven.dietstock.App;
+import com.fournineseven.dietstock.LoginState;
 import com.fournineseven.dietstock.R;
 import com.fournineseven.dietstock.api.RetrofitService;
 import com.fournineseven.dietstock.model.getRanking.GetRankingResponse;
@@ -29,6 +31,8 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.fournineseven.dietstock.LoginState.SHARED_PREFS;
 
 public class RankingFragment extends Fragment {
     private RankingViewModel rankingViewModel;
@@ -55,6 +59,11 @@ public class RankingFragment extends Fragment {
     }
 
     public void init(){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, 0);
+
+        SharedPreferences sharedPreferences1 = getActivity().getSharedPreferences(SHARED_PREFS, 0);
+        int sharedPreferences_user_no = Integer.valueOf(sharedPreferences.getString(LoginState.USER_NUMBER, null));
+        int user_no = sharedPreferences_user_no;
         mHandler = new Handler(Looper.getMainLooper());
         radioGroup_ranking_category = (RadioGroup)root.findViewById(R.id.radiogroup_ranking_category);
         RetrofitService getRankingService = App.retrofit.create(RetrofitService.class);
@@ -71,7 +80,7 @@ public class RankingFragment extends Fragment {
                         RankingResult rankingItem = rankingResultArray.get(i);
 
                         adapter.addItem(new RankingItem(i+1, rankingItem.getName(),
-                                rankingItem.getKcal()));
+                                rankingItem.getKcal(), user_no==rankingItem.getUser_no()));
                     }
                     recyclerView.setAdapter(adapter);
 
@@ -117,7 +126,7 @@ public class RankingFragment extends Fragment {
                                 RankingResult rankingItem = rankingResultArray.get(i);
 
                                 adapter.addItem(new RankingItem(i+1, rankingItem.getName(),
-                                        rankingItem.getKcal()));
+                                        rankingItem.getKcal(), user_no==rankingItem.getUser_no()));
                             }
                             recyclerView.setAdapter(adapter);
 

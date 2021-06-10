@@ -77,6 +77,14 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
                 imageview_ranking_image.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
                 imageview_ranking_image.setColorFilter(Color.BLUE);
             }
+            if(item.getMe()){
+                textview_ranking_no.setTextColor(Color.CYAN);
+                textview_ranking_no.setTextSize(30);
+                textview_ranking_name.setTextSize(30);
+                textview_ranking_name.setTextColor(Color.CYAN);
+                textview_ranking_kcal.setTextSize(25);
+
+            }
         }
     }
 }

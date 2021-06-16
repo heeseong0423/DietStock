@@ -426,7 +426,7 @@ public class FeedBackFragment extends Fragment {
     }
 
     private void requestFood(){
-
+        Log.e("request start", "마하반야바라밀다심경");
         RetrofitService getRequestFoodService = App.retrofit.create(RetrofitService.class);
         Call<GetRequestFoodResponse> callGetRequestFood =
                 getRequestFoodService.getRequestFood(new GetRequestFoodRequest(avoid_food, nutriention, gram));
@@ -439,14 +439,17 @@ public class FeedBackFragment extends Fragment {
                 Log.d("debug", response.body().toString());
                 GetRequestFoodResponse GetRequestFoodResponse = (GetRequestFoodResponse) response.body();
                 ArrayList<RequestFoodResult> requestFoodResultsResults = (GetRequestFoodResponse).getResult();
+                Log.e("before success", String.valueOf(GetRequestFoodResponse.isSuccess()));
                 if (GetRequestFoodResponse.isSuccess()) {
+                    Log.e("image url------------", "--------------------------------------------------");
+                    Log.e("image url------------", dailyFood_all.get(index).getFood_image());
 
                     kcal = 0;
                     carbs = 0;
                     protein = 0;
                     fat = 0;
                     int flag = 0;
-                    double ratio = 0.1d;
+                    double ratio = 0.2d;
                     ArrayList<RequestFoodResult> correct_requestFood = new ArrayList<>();
 
                     for (int j = 0; j < dailyFood_all.size(); j++) { //오늘 먹은 음식들 중 최악을 뺀 음식들의 영양소 합
@@ -457,7 +460,6 @@ public class FeedBackFragment extends Fragment {
                             fat += dailyFood_all.get(j).getFat() * dailyFood_all.get(j).getServing();
                         }
                     }
-
 
                     Glide.with(rootView).load(TaskServer.base_url + dailyFood_all.get(index).getFood_image()).error(R.drawable.food_icon)
                             .placeholder(R.drawable.food_icon).into(iv_bad_food);
@@ -498,28 +500,29 @@ public class FeedBackFragment extends Fragment {
                         }
                         ratio += 0.1;
                         Log.d("correct_requestFood.size()", String.valueOf(correct_requestFood.size()));
-                        if(correct_requestFood.size() != 0 )break;
+                        if(correct_requestFood.size() != 0 ) break;
                     }
                     Log.d("correct_requestFood.size()2", String.valueOf(correct_requestFood.size()));
                     int min_carbs_index = 0;
-                    if(correct_requestFood.size() == 1){
-                        min_carbs_index = 0;
-                    }
-
-                    else {
-                        SimpleDateFormat simpleDate = new SimpleDateFormat("dd");
-                        Date mDate = new Date(now);
-                        String getTime = simpleDate.format(mDate);
-
-                        min_carbs_index = Math.abs(correct_requestFood.size() - Integer.valueOf(getTime));
-                        min_carbs_index = min_carbs_index > 0 ? min_carbs_index-1 : 0;
-                    }
 
                     if(correct_requestFood.size() == 0){
+
                         Glide.with(rootView).load(TaskServer.base_url + dailyFood_all.get(index).getFood_image()).error(R.drawable.food_icon)
                                 .placeholder(R.drawable.food_icon).into(iv_bad_food);
                     }
                     else {
+                        if(correct_requestFood.size() == 1){
+                            min_carbs_index = 0;
+                        }
+
+                        else {
+                            SimpleDateFormat simpleDate = new SimpleDateFormat("dd");
+                            Date mDate = new Date(now);
+                            String getTime = simpleDate.format(mDate);
+                            Log.e("correct_requestFood.size", String.valueOf(correct_requestFood.size()));
+                            Log.e("get Time", getTime);
+                            min_carbs_index = Integer.valueOf(getTime) % correct_requestFood.size();
+                        }
                         Log.d("change",String.valueOf(min_carbs_index));
                         requestFood_name.setText(correct_requestFood.get(min_carbs_index).getFood_name());
                         Glide.with(rootView).load(TaskServer.base_url + "requestfood/" + correct_requestFood.get(min_carbs_index).food_image()).error(R.drawable.food_icon)
@@ -623,6 +626,10 @@ public class FeedBackFragment extends Fragment {
         recommend_carbs = (float) ((required_kcal * 0.3) / 4);
         recommend_protein = (float) ((required_kcal * 0.4) / 4);
         recommend_fat = (float) ((required_kcal * 0.3) / 9);
+        Log.d("required_kcal", String.valueOf(required_kcal));
+        Log.d("recommand_carbs", String.valueOf(recommend_carbs));
+        Log.d("recommend_protein", String.valueOf(recommend_protein));
+        Log.d("recommend_fat", String.valueOf(recommend_fat));
 
         et_recommend_kcal.setText(String.valueOf(Math.round((required_kcal * 100) / 100.0)) + "kcal");
         et_recommend_carbs.setText(String.valueOf(Math.round((recommend_carbs * 100) / 100.0)) + "g");

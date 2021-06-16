@@ -99,10 +99,11 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:textColor="@color/black"
-            android:text="1"
             android:textSize="20sp"
             android:inputType="number"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:cursorVisible="true"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

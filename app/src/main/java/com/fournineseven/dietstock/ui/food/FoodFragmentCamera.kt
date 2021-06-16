@@ -44,6 +44,10 @@ import com.fournineseven.dietstock.model.FoodCamera.DefaultResponseKo
 import com.fournineseven.dietstock.model.FoodCamera.GetFoodResponse
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -475,6 +479,9 @@ class FoodFragmentCamera : Fragment(){
                     super.onCaptureCompleted(session, request, result)
 
                     Toast.makeText(this@FoodFragmentCamera.requireContext(), "사진이 촬영되었습니다", Toast.LENGTH_SHORT).show()
+                    GlobalScope.launch {
+                        delay(500)
+                    }
                     val resultName = tfLiteModel(uriList, getFileName(uriList.last()))
                     if(resultName[0].first == "fail"){
                         Log.d("classification", "fail")

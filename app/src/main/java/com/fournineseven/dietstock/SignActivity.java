@@ -131,9 +131,11 @@ public class SignActivity extends BaseActivity {
                                                     Intent intent = new Intent(SignActivity.this, MainActivity.class);
                                                     startActivity(intent);
                                                     finish();
+                                                }else{
+                                                    DialogService.showDialog(SignActivity.this, "오류", "데이터 가져오기 실패");
                                                 }
                                             }catch (NullPointerException e){
-
+                                                DialogService.showDialog(SignActivity.this, "오류", "로그인을 다시 해주세요");
                                                 et_password.setText("");
                                             }
                                         }
@@ -205,7 +207,7 @@ public class SignActivity extends BaseActivity {
                 String userIdLogin = et_id.getText().toString();
                 String passwordLogin = et_password.getText().toString();
                 if(userIdLogin.equals("")||passwordLogin.equals("")) {
-                    Toast.makeText(SignActivity.this, "빈칸을 모두 채워주세요", Toast.LENGTH_SHORT).show();
+                    DialogService.showDialog(SignActivity.this, "경고", "빈칸을 모두 채워주세요");
                     break;
                 }
                 RetrofitService loginService = App.retrofit.create(RetrofitService.class);
@@ -236,13 +238,13 @@ public class SignActivity extends BaseActivity {
                                 finish();
                             }
                         }catch (NullPointerException e){
-                            Toast.makeText(SignActivity.this, "로그인 정보를 확인해주세요.", Toast.LENGTH_SHORT).show();
+                            DialogService.showDialog(SignActivity.this, "알림", "로그인 정보를 확인해주세요");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        Log.d("debug", "onFailure: "+t.getMessage());
+                        DialogService.showDialog(SignActivity.this, "오류", "서버 접속 실패");
                     }
                 });
                 break;
@@ -274,7 +276,7 @@ public class SignActivity extends BaseActivity {
                 else typedActivity=3;
                 if(typedUserId.equals("")||typedPassword.equals("")||typedName.equals("")||typedHeight.equals("")||typedGoal.equals("")||typedSex==0||typedActivity==0||
                         typedWeight.equals("")||typedAge.equals("")) {
-                    Toast.makeText(SignActivity.this, "빈칸을 모두 채워주세요", Toast.LENGTH_SHORT).show();
+                    DialogService.showDialog(SignActivity.this, "알림", "빈칸을 모두 채워주세요");
                     break;
                 }
                 /*if(beforeImageFile==null)
@@ -318,7 +320,7 @@ public class SignActivity extends BaseActivity {
                             ll_signup2.setVisibility(View.GONE);
                             ll_sign_main.setVisibility(View.VISIBLE);
                         }else{
-                            Log.d("debug", response.body().toString());
+                            DialogService.showDialog(SignActivity.this, "오류", "데이터 가져오기 실패");
                         }
                         /*tv_main_1.setVisibility(View.VISIBLE);
                         ll_signup.setVisibility(View.GONE);
@@ -327,7 +329,7 @@ public class SignActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(Call<DefaultResponse> call, Throwable t) {
-                        Log.d("debug", "onFailure: "+t.getMessage());
+                        DialogService.showDialog(SignActivity.this, "오류", "서버 접속 실패");
                     }
                 });
                 break;

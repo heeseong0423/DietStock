@@ -24,13 +24,14 @@ import com.fournineseven.dietstock.api.RetrofitService
 import com.fournineseven.dietstock.model.getFoodLogs.FoodLogResult
 import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsRequest
 import com.fournineseven.dietstock.model.getFoodLogs.GetFoodLogsResponse
+import com.fournineseven.dietstock.model.getRanking.GetRankingResponse
+import com.fournineseven.dietstock.retrofitness.GetUserKcalLogResponse
+import com.fournineseven.dietstock.retrofitness.RetrofitBuilder
+import com.fournineseven.dietstock.retrofitness.UserKcalLogResult
 import com.fournineseven.dietstock.room.KcalDatabase
 import com.fournineseven.dietstock.room.UserKcalData
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
-import com.github.mikephil.charting.utils.MPPointF
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
@@ -67,7 +68,7 @@ class HomeFragment : Fragment() {
     private lateinit var myLayout :LinearLayout
     private lateinit var deleteDao :LinearLayout
     private lateinit var insertDao :LinearLayout
-
+    var userKcalLogList = ArrayList<UserKcalLogResult>()
 
     private lateinit var tansuhwamulTextView :TextView
     private lateinit var fatTextView :TextView
@@ -208,6 +209,30 @@ class HomeFragment : Fragment() {
             editor?.apply()
         }
 
+
+        val getUserKcalLogsService = App.retrofit.create(
+            RetrofitService::class.java
+        )
+
+
+
+        val callGetUserKcalLog = getUserKcalLogsService
+
+        RetrofitBuilder.api.getUserKcalLogResponse(userNumber)
+            .enqueue(object : Callback<GetUserKcalLogResponse>{
+                override fun onResponse(
+                    call: Call<GetUserKcalLogResponse>,
+                    response: Response<GetUserKcalLogResponse>
+                ) {
+                    userKcalLogList = response.body()?.result!!
+                    drawCandlestickChart(dietChart,rootView)
+                }
+
+                override fun onFailure(call: Call<GetUserKcalLogResponse>, t: Throwable) {
+                    Log.d("rrr","ffff")
+                    Log.d("rrr","이게 뭐야? " + t.message)
+                }
+            })
 
         val getFoodLogsService = App.retrofit.create(
             RetrofitService::class.java
@@ -456,7 +481,7 @@ class HomeFragment : Fragment() {
         //userDao.insert(UserKcalData(0,13.2f,141.0f,0.0f,434.3f,2323.0f,-23.3f))
         //Log.d(TAG,"${userDao.getLastData()}")
 
-        try{
+        /*try{
             for(csStock in userDao.getAll()){
                 entries.add(
                     CandleEntry(
@@ -471,7 +496,7 @@ class HomeFragment : Fragment() {
         }catch (e :Error){
             e.stackTrace
             userDao.insert(UserKcalData(0,0f,0f,0.0f,0f,0f,0f))
-        }
+        }*/
 
         var sharedpreferences = context?.getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE)
         var high = sharedpreferences?.getFloat(LoginState.HIGH_KEY,0.0f)
@@ -489,25 +514,66 @@ class HomeFragment : Fragment() {
             userDao.insert(UserKcalData(0,0f,0f,0.0f,0f,0f,0f))
         }
 
-        /*entries.add(
-            CandleEntry(
-                userDao.getLastData().no+1.toFloat(),
-                high!!,
-                low!!,
-                start!!,
-                User.PKcal + User.kcal - intake!!
-            )
-        )*/
 
+
+        for(i in userKcalLogList){
+            Log.d("twtw","${i.end_kcal} , ${i.high}")
+        }
         entries.add(
             CandleEntry(
-                userDao.getLastData().no+1.toFloat(),
-                high!!,
-                low!!,
-                userDao.getLastData().endTime,
-                User.PKcal + User.kcal - intake!!
+                    0.0f,
+                0.0f,
+                0.0f,
+                0.0f,
+                0.0f
             )
         )
+
+        var num = 0
+        try{
+            for(csStock in userKcalLogList){
+                entries.add(
+                    CandleEntry(
+                        num+1.toFloat(),
+                        csStock.high,
+                        csStock.low,
+                        csStock.start_kcal,
+                        csStock.end_kcal
+                    )
+                )
+                num++
+            }
+        }catch (e :Error){
+            e.stackTrace
+        }
+
+        var size = userKcalLogList.size
+
+        Log.d("qa","ee " + size)
+
+
+        if(size>0){
+            entries.add(
+                CandleEntry(
+                    num+1.toFloat(),
+                    high!!,
+                    low!!,
+                    userKcalLogList[size-1].end_kcal,
+                    User.PKcal + User.kcal - intake!!
+                )
+            )
+        }else if(size == 0){
+            entries.add(
+                CandleEntry(
+                    num+1.toFloat(),
+                    high!!,
+                    low!!,
+                    0.0f,
+                    User.PKcal + User.kcal - intake!!
+                )
+            )
+        }
+
 
 
         Log.d(TAG,"aasdfa ${User.PKcal + User.kcal - intake!!}")

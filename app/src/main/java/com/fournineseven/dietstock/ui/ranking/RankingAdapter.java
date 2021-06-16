@@ -2,6 +2,7 @@ package com.fournineseven.dietstock.ui.ranking;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,8 +84,8 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
                 textview_ranking_name.setTextSize(30);
                 textview_ranking_name.setTextColor(Color.CYAN);
                 textview_ranking_kcal.setTextSize(25);
-
             }
+            Log.e("dslkfjadslkjflk", String.valueOf(item.getMe())+","+String.valueOf(item.getName()));
         }
     }
 }

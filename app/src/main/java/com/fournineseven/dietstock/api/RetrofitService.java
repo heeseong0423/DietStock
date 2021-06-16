@@ -14,6 +14,7 @@ import com.fournineseven.dietstock.model.getRequestFood.GetRequestFoodResponse;
 import com.fournineseven.dietstock.model.getRolemodel.GetRolemodelResponse;
 import com.fournineseven.dietstock.model.login.LoginModel;
 import com.fournineseven.dietstock.model.login.LoginResponse;
+import com.fournineseven.dietstock.retrofitness.GetUserKcalLogResponse;
 
 
 import okhttp3.MultipartBody;
@@ -27,10 +28,14 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RetrofitService {
     @GET("api/ranking/getRanking/{day}/all")
-    Call<GetRankingResponse> getRanking(@Path("day") String day);
+    Call<GetRankingResponse> getRanking(@Path("day") String day, @Query("user_no") int user_no);
+
+
+
 
     @GET("api/rolemodel/getRolemodel")
     Call<GetRolemodelResponse> getRolemodel();

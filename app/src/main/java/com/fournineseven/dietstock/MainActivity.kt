@@ -5,8 +5,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
@@ -33,11 +36,15 @@ import com.fournineseven.dietstock.ui.ranking.RankingFragment
 import com.fournineseven.dietstock.ui.rolemodel.RoleModelFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -47,6 +54,7 @@ import java.util.*
 
 
 private const val TAG = "MyTag"
+private const val TAG1 = "MyImageTag"
 private const val REQ_CAMERA = 101
 private const val REQ_STORAGE_BEFORE = 102
 private const val REQ_STORAGE_AFTER = 103
@@ -223,8 +231,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                             contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_age)
                         myGenderTextView =
                             contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_gender)
-                        myActivityTypeTextView = contentMainNavView.getHeaderView(0)
-                            .findViewById(R.id.nav_header_activity_type)
+                       /* myActivityTypeTextView = contentMainNavView.getHeaderView(0)
+                            .findViewById(R.id.nav_header_activity_type)*/
 
                         var sharedpreferences =
                             getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
@@ -235,7 +243,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         )
                         editor.putString(
                             LoginState.BEFORE_IMAGE_KEY,
-                            "http://497.iptime.org/" + response.body()?.result?.get(0)?.beforeImage
+                            //"http://497.iptime.org/" + response.body()?.result?.get(0)?.beforeImage
+                            response.body()?.result?.get(0)?.beforeImage
                         )
                         editor.putFloat(
                             LoginState.GOAL_KEY,
@@ -282,7 +291,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         var userEmail: String? =
                             sharedpreferences.getString(LoginState.EMAIL_KEY, null)
 
-                        Log.d(TAG, "값들 : $myWeight $myHeight")
+
+                        Log.d(TAG, "이미지 url들 : $beforeImageUri $afterImageUri")
 
                         if (beforeImageUri != response.body()?.result?.get(0)?.beforeImage) {
                             editor.putString(
@@ -293,6 +303,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                                 sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY, null)
                             Log.d(TAG, "전11 이미지 : $beforeImageUri")
                         }
+
                         if (myGoal != response.body()?.result?.get(0)?.goal) {
                             editor.putFloat(
                                 LoginState.GOAL_KEY,
@@ -353,7 +364,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         if (afterImageUri != null) {
                             //afterImage.setImageURI(afterImageUri!!.toUri())
                             Glide.with(afterImage).load(
-                                TaskServer.base_url + response.body()?.result?.get(0)?.beforeImage
+                                //TaskServer.base_url + response.body()?.result?.get(0)?.afterImage
+                                sharedpreferences.getString(LoginState.AFTER_IMAGE_KEY,"0")
                             ).error(R.drawable.food_icon)
                                 .placeholder(R.drawable.food_icon).into(afterImage)
                         }
@@ -388,20 +400,22 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         }
 
 
-                        if (myGender < 1) {
+                        if (myGender <=1) {
                             myGenderTextView.text = "남자"
+                            Log.d(TAG," my gender : ${myGender}")
                         } else {
                             myGenderTextView.text = "여자"
+                            Log.d(TAG," my gender : ${myGender}")
                         }
 
 
-                        if (myActivityType < 1) {
+                        /*if (myActivityType < 1) {
                             myActivityTypeTextView.text = "활동량 적음"
                         } else if (myActivityType < 2) {
                             myActivityTypeTextView.text = "활동량 보통"
                         } else {
                             myActivityTypeTextView.text = "활동량 많음"
-                        }
+                        }*/
                     }
 
                     override fun onFailure(call: Call<GetUserInfoResponse>, t: Throwable) {
@@ -442,7 +456,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         myHeightTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_height)
         myAgeTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_age)
         myGenderTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_gender)
-        myActivityTypeTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_activity_type)
+        /*myActivityTypeTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_activity_type)*/
 
         //로그인 상태 확인
         var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
@@ -507,10 +521,10 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         if(afterImageUri != null){
             //afterImage.setImageURI(afterImageUri!!.toUri())
-            Glide.with(beforeImage).load(
+            Glide.with(afterImage).load(
                 TaskServer.base_url + afterImageUri!!.toUri()
             ).error(R.drawable.food_icon)
-                .placeholder(R.drawable.food_icon).into(beforeImage)
+                .placeholder(R.drawable.food_icon).into(afterImage)
         }
 
         myAgeTextView.text = "나이 : " + myAge.toString() + "살"
@@ -538,12 +552,16 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         if(myWeight < 0.2f){
             myWeightTextView.text = "몸무게 입력값 없음"
         }
-        if(myGender < 1){
+        if(myGender <= 1){
             myGenderTextView.text = "남자"
+            Log.d(TAG," my gender : ${myGender}")
+        }else{
+            myGenderTextView.text = "여자"
+            Log.d(TAG," my gender : ${myGender}")
         }
-        if(myActivityType < 1){
+        /*if(myActivityType < 1){
             myActivityTypeTextView.text= "활동량 적음"
-        }
+        }*/
 
         Log.d(TAG,"값들 : $myWeight $myHeight $myActivityType , $myAge")
     }
@@ -640,7 +658,25 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         return super.onOptionsItemSelected(item)
     }
-
+    fun getFileName(uri: Uri): String?{
+        Log.d("getFileName", "getFileName start")
+        val contentResolver = this.getContentResolver()
+        val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
+        try{
+            if(cursor == null)
+                return null
+            cursor.moveToFirst()
+            val fileName: String = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+            Log.d("fileName = ", fileName)
+            cursor.close()
+            return fileName
+        }catch (e: Exception){
+            Log.d("error", e.stackTraceToString())
+            cursor?.close()
+            return null
+        }
+        Log.d("getFileName", "getFileName end")
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
@@ -649,23 +685,89 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                     var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
                     //val img = findViewById<ImageView>(R.id.before_image)
                     data?.data?.let { uri ->
-                        //  img.setImageURI(uri)
-                        beforeImage.setImageURI(uri)
-                        Log.d(TAG,uri.toString())
-                        var editor = sharedpreferences.edit()
-                        editor.putString("http://497.iptime.org/" + LoginState.BEFORE_IMAGE_KEY,uri.toString())
-                        editor.apply()
+                        var cursor: Cursor? = null
+
+                        val proj = arrayOf(MediaStore.Images.Media.DATA)
+                        assert(uri != null)
+                        cursor = contentResolver.query(uri, proj, null, null, null)
+                        assert(cursor != null)
+                        val column_index =
+                            cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                        cursor.moveToFirst()
+                        var file = File(cursor.getString(column_index))
+                        val requestBody: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                        var body = MultipartBody.Part.createFormData("file", file.name, requestBody)
+                        var userNo = sharedpreferences.getString(LoginState.USER_NUMBER,"0")
+                        cursor?.close()
+                        val userNumber: RequestBody = RequestBody.create(MultipartBody.FORM, userNo)
+                        Log.d(TAG1,"value : ${userNumber}, ${body.toString()}")
+                        RetrofitBuilder.api.updateBeforeImage(userNumber,body).enqueue(object: Callback<UpdateBeforeImageResponse>{
+                            override fun onResponse(
+                                call: Call<UpdateBeforeImageResponse>,
+                                response: Response<UpdateBeforeImageResponse>
+                            ) {
+                                //  img.setImageURI(uri)
+                                beforeImage.setImageURI(uri)
+                                Log.d(TAG,uri.toString())
+                                var editor = sharedpreferences.edit()
+                                //editor.putString("http://497.iptime.org/" + LoginState.BEFORE_IMAGE_KEY,uri.toString())
+                                editor.putString("LoginState.BEFORE_IMAGE_KEY",uri.toString())
+                                editor.apply()
+                            }
+
+                            override fun onFailure(
+                                call: Call<UpdateBeforeImageResponse>,
+                                t: Throwable
+                            ) {
+
+                                Log.d(TAG1,"the e ${t.message}")
+                                Toast.makeText(this@MainActivity,"전 이미지 에러",Toast.LENGTH_SHORT).show()
+                            }
+                        })
                     }
                 }
                 REQ_STORAGE_AFTER -> {
                     var sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
                     data?.data?.let { uri ->
-                        //  img.setImageURI(uri)
-                        afterImage.setImageURI(uri)
-                        Log.d(TAG,uri.toString())
-                        var editor = sharedpreferences.edit()
-                        editor.putString("http://497.iptime.org/" + LoginState.AFTER_IMAGE_KEY,uri.toString())
-                        editor.apply()
+                        var cursor: Cursor? = null
+
+                        val proj = arrayOf(MediaStore.Images.Media.DATA)
+                        assert(uri != null)
+                        cursor = contentResolver.query(uri, proj, null, null, null)
+                        assert(cursor != null)
+                        val column_index =
+                            cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                        cursor!!.moveToFirst()
+                        var file = File(cursor!!.getString(column_index))
+                        val requestBody: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                        var body = MultipartBody.Part.createFormData("file", file.name, requestBody)
+                        var userNo = sharedpreferences.getString(LoginState.USER_NUMBER,"0")
+                        cursor?.close()
+                        val userNumber: RequestBody = RequestBody.create(MultipartBody.FORM, userNo)
+
+                        RetrofitBuilder.api.updateAfterImage(userNumber,body).enqueue(object: Callback<UpdateAfterImageResponse>{
+                            override fun onResponse(
+                                call: Call<UpdateAfterImageResponse>,
+                                response: Response<UpdateAfterImageResponse>
+                            ) {
+                                //  img.setImageURI(uri)
+                                afterImage.setImageURI(uri)
+                                Log.d(TAG,uri.toString())
+                                var editor = sharedpreferences.edit()
+                                //editor.putString("http://497.iptime.org/" + LoginState.AFTER_IMAGE_KEY,uri.toString())
+                                editor.putString(LoginState.AFTER_IMAGE_KEY,uri.toString())
+                                editor.apply()
+                            }
+
+                            override fun onFailure(
+                                call: Call<UpdateAfterImageResponse>,
+                                t: Throwable
+                            ) {
+
+                                Log.d(TAG1,"my url ${uri.toString()}")
+                                Toast.makeText(this@MainActivity,"후 이미지 에러",Toast.LENGTH_SHORT).show()
+                            }
+                        })
                     }
 
 
@@ -704,8 +806,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             this, AlarmReceiver.REQUEST_ID, intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
 
-        //val repeatInterval: Long =  86400/2 // 하루시간
-        val repeatInterval: Long =  60 // 하루시간
+        val repeatInterval: Long =  86400 // 하루시간
+        //val repeatInterval: Long =  60 // 하루시간
         /*val triggerTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
             .toEpochSecond() + 1619741870*/
         val triggerTime = LocalDateTime.of(LocalDate.now(),LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault()).toEpochSecond()

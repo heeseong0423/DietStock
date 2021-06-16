@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.fournineseven.dietstock.App;
 import com.fournineseven.dietstock.R;
+import com.fournineseven.dietstock.api.DialogService;
 import com.fournineseven.dietstock.api.RetrofitService;
 import com.fournineseven.dietstock.config.TaskServer;
 import com.fournineseven.dietstock.model.getRanking.GetRankingResponse;
@@ -140,12 +141,15 @@ public class RoleModelFragment extends Fragment {
                             startActivity(intent);
                         }
                     });
+                }else{
+                    DialogService.showDialog(getActivity(), "오류", "서버에서 데이터 가져오기 실패");
                 }
             }
 
             @Override
             public void onFailure(Call<GetRolemodelResponse> call, Throwable t) {
                 Log.d("debug", "onFailure: "+t.getMessage());
+                DialogService.showDialog(getActivity(), "오류", "서버 접속 실패");
             }
         });
 

@@ -29,6 +29,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.fournineseven.dietstock.api.DialogService;
 import com.fournineseven.dietstock.api.RetrofitService;
 import com.fournineseven.dietstock.config.TaskServer;
 import com.fournineseven.dietstock.model.DefaultResponse;
@@ -132,7 +133,7 @@ public class SignActivity extends BaseActivity {
                                                     finish();
                                                 }
                                             }catch (NullPointerException e){
-                                                Toast.makeText(SignActivity.this, "로그인 정보를 확인해주세요.", Toast.LENGTH_SHORT).show();
+
                                                 et_password.setText("");
                                             }
                                         }

@@ -220,6 +220,7 @@
                 </ImageView>
 
                 <TextView
+                    android:id="@+id/arrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -256,8 +257,23 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/one_meal_ment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="피드백은 두끼 이상부터 제공됩니다."
+                    android:textSize="18sp"></TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="112dp"
                 android:layout_weight="1"
+                android:layout_marginBottom="60dp"
                 android:orientation="vertical">
 
                 <Button

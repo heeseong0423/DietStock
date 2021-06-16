@@ -115,9 +115,13 @@ public class avoidFood_check extends AppCompatActivity {
                 avoidFood_str = result;
                 Log.e("check", "------------------------------------");
                 Log.d("avoid_food", avoidFood_str);
+
+                if(result.length() != 0){
                 Intent intent = new Intent();
                 intent.putExtra("result", avoidFood_str);
                 setResult(RESULT_OK, intent);
+                }
+
                 finish();
             }
         });

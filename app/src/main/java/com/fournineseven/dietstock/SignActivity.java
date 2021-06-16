@@ -1,5 +1,6 @@
 package com.fournineseven.dietstock;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,11 +9,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,7 +37,9 @@ import com.fournineseven.dietstock.model.login.LoginModel;
 import com.fournineseven.dietstock.model.login.LoginResponse;
 import com.fournineseven.dietstock.model.login.LoginResult;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 
 import okhttp3.MediaType;
@@ -45,8 +51,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SignActivity extends AppCompatActivity {
+public class SignActivity extends BaseActivity {
 
+    private static int PERMISSION_REQUEST_CODE = 2;
 
     SharedPreferences sharedpreferences;
 
@@ -72,10 +79,79 @@ public class SignActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign);
         init();
 
+        String[] permissions = {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACTIVITY_RECOGNITION,
+                Manifest.permission.CAMERA
+        };
+
+        requirePermissions(permissions, PERMISSION_REQUEST_CODE);
+
         sharedpreferences = getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE);
         LoginState.INSTANCE.setEmail(sharedpreferences.getString(LoginState.EMAIL_KEY, null));
         LoginState.INSTANCE.setPassword(sharedpreferences.getString(LoginState.PASSWORD_KEY, null));
         RetrofitService loginService = App.retrofit.create(RetrofitService.class);
+
+        et_password.setOnEditorActionListener(
+                new TextView.OnEditorActionListener(){
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                                actionId == EditorInfo.IME_ACTION_DONE ||
+                                event != null &&
+                                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                            if (event == null || !event.isShiftPressed()) {
+                                String userIdLogin = et_id.getText().toString();
+                                String passwordLogin = et_password.getText().toString();
+                                if(userIdLogin.equals("")||passwordLogin.equals("")) {
+                                    Toast.makeText(SignActivity.this, "빈칸을 모두 채워주세요", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    RetrofitService loginService = App.retrofit.create(RetrofitService.class);
+
+                                    Call<LoginResponse> callLogin = loginService.login(new LoginModel(userIdLogin, passwordLogin));
+                                    callLogin.enqueue(new Callback<LoginResponse>() {
+                                        @Override
+                                        public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                                            try {
+                                                Log.d("debug", response.body().toString());
+                                                LoginResponse getLoginResponse = (LoginResponse)response.body();
+                                                if(getLoginResponse.isSuccess()) {
+                                                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                                                    editor.putString(LoginState.EMAIL_KEY, et_id.getText().toString());
+                                                    editor.putString(LoginState.PASSWORD_KEY, et_password.getText().toString());
+
+                                                    int user_no= getLoginResponse.getResult().getUser_no();
+                                                    editor.putString(LoginState.USER_NUMBER, String.valueOf(user_no));
+                                                    editor.apply();
+
+                                                    Log.d("MyTag","the " + user_no);
+                                                    Intent intent = new Intent(SignActivity.this, MainActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            }catch (NullPointerException e){
+                                                Toast.makeText(SignActivity.this, "로그인 정보를 확인해주세요.", Toast.LENGTH_SHORT).show();
+                                                et_password.setText("");
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<LoginResponse> call, Throwable t) {
+                                            Log.d("debug", "onFailure: "+t.getMessage());
+                                        }
+                                    });
+                                }
+                                return true; // consume.
+                            }
+                        }
+                        return false;
+                    }
+                }
+        );
+
+
     }
 
     void init(){
@@ -137,26 +213,30 @@ public class SignActivity extends AppCompatActivity {
                 callLogin.enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        Log.d("debug", response.body().toString());
-                        LoginResponse getLoginResponse = (LoginResponse)response.body();
-                        if(getLoginResponse.isSuccess()) {
-                            //Context context = SignActivity.this;
-                            //SharedPreferences sharedPref = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                            //SharedPreferences.Editor editor = sharedPref.edit();
-                            SharedPreferences.Editor editor = sharedpreferences.edit();
-                            editor.putString(LoginState.EMAIL_KEY, et_id.getText().toString());
-                            editor.putString(LoginState.PASSWORD_KEY, et_password.getText().toString());
+                        try {
+                            Log.d("debug", response.body().toString());
+                            LoginResponse getLoginResponse = (LoginResponse)response.body();
+                            if(getLoginResponse.isSuccess()) {
+                                //Context context = SignActivity.this;
+                                //SharedPreferences sharedPref = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                                //SharedPreferences.Editor editor = sharedPref.edit();
+                                SharedPreferences.Editor editor = sharedpreferences.edit();
+                                editor.putString(LoginState.EMAIL_KEY, et_id.getText().toString());
+                                editor.putString(LoginState.PASSWORD_KEY, et_password.getText().toString());
 
-                            int user_no= getLoginResponse.getResult().getUser_no();
-                            editor.putString(LoginState.USER_NUMBER, String.valueOf(user_no));
-                            //editor.commit();
-                            editor.apply();
+                                int user_no= getLoginResponse.getResult().getUser_no();
+                                editor.putString(LoginState.USER_NUMBER, String.valueOf(user_no));
+                                //editor.commit();
+                                editor.apply();
 
-                            Log.d("MyTag","the " + user_no);
-                            Intent intent = new Intent(SignActivity.this, MainActivity.class);
-                            startActivity(intent);
+                                Log.d("MyTag","the " + user_no);
+                                Intent intent = new Intent(SignActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }catch (NullPointerException e){
+                            Toast.makeText(SignActivity.this, "로그인 정보를 확인해주세요.", Toast.LENGTH_SHORT).show();
                         }
-
                     }
 
                     @Override
@@ -166,10 +246,17 @@ public class SignActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_next_signup:
-                ll_signup.setVisibility(View.GONE);
-                ll_signup2.setVisibility(View.VISIBLE);
+                Log.d("debug",  "" + et_password1_register.getText().toString());
+                Log.d("debug",  "" + et_password2_register.getText().toString());
+                if(et_password1_register.getText().toString().equals(et_password2_register.getText().toString())){
+                    ll_signup.setVisibility(View.GONE);
+                    ll_signup2.setVisibility(View.VISIBLE);
+                }else{
+                    Toast.makeText(SignActivity.this, "비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.btn_submit_signup:
+                Log.d("debug", "회원가입 누름1");
                 String typedUserId = et_id_register.getText().toString();
                 String typedPassword = et_password1_register.getText().toString();
                 String typedName = et_name_register.getText().toString();
@@ -189,8 +276,8 @@ public class SignActivity extends AppCompatActivity {
                     Toast.makeText(SignActivity.this, "빈칸을 모두 채워주세요", Toast.LENGTH_SHORT).show();
                     break;
                 }
-                if(beforeImageFile==null)
-                    break;
+                /*if(beforeImageFile==null)
+                    break;*/
                 RetrofitService saveUserService = App.retrofit.create(RetrofitService.class);
                 RequestBody user_id = RequestBody.create( okhttp3.MultipartBody.FORM,typedUserId);
                 RequestBody password = RequestBody.create(okhttp3.MultipartBody.FORM,typedPassword);
@@ -201,8 +288,25 @@ public class SignActivity extends AppCompatActivity {
                 RequestBody age = RequestBody.create(okhttp3.MultipartBody.FORM,typedAge);
                 RequestBody sex = RequestBody.create(okhttp3.MultipartBody.FORM,String.valueOf(typedSex));
                 RequestBody activity = RequestBody.create(okhttp3.MultipartBody.FORM,String.valueOf(typedActivity));
-                RequestBody beforeimage = RequestBody.create(MediaType.parse("multipart/form-data"),beforeImageFile);
-                MultipartBody.Part body = MultipartBody.Part.createFormData("file", beforeImageFile.getName(), beforeimage);
+                /*RequestBody beforeimage = RequestBody.create(MediaType.parse("multipart/form-data"),beforeImageFile);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("file", beforeImageFile.getName(), beforeimage);*/
+
+                RequestBody beforeimage;
+                MultipartBody.Part body;
+                if(beforeImageFile==null){
+                    /*beforeimage = RequestBody.create(MediaType.parse("multipart/form-data"),beforeImageFile);
+                    body = MultipartBody.Part.createFormData("file", beforeImageFile.getName(), beforeimage);*/
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.hindoongi);
+                    File myfile = bitmapToFile(getBaseContext(),bitmap,"default.jpg");
+
+                    beforeimage = RequestBody.create(MediaType.parse("multipart/form-data"),myfile);
+                    body = MultipartBody.Part.createFormData("file", myfile.getName(), beforeimage);
+                    /*Toast.makeText(SignActivity.this, "비포이미지 넣어주세요.", Toast.LENGTH_SHORT).show();
+                    break;*/
+                }else{
+                    beforeimage = RequestBody.create(MediaType.parse("multipart/form-data"),beforeImageFile);
+                    body = MultipartBody.Part.createFormData("file", beforeImageFile.getName(), beforeimage);
+                }
                 Call<DefaultResponse> callRegister = saveUserService.saveUser(user_id, password, name, height, goal,weight,age,sex,activity, body);
                 callRegister.enqueue(new Callback<DefaultResponse>() {
                     @Override
@@ -226,6 +330,30 @@ public class SignActivity extends AppCompatActivity {
                     }
                 });
                 break;
+        }
+    }
+
+    public static File bitmapToFile(Context context,Bitmap bitmap, String fileNameToSave) { // File name like "image.png"
+        //create a file to write bitmap data
+        File file = null;
+        try {
+            file = new File(Environment.getExternalStorageDirectory() + File.separator + fileNameToSave);
+            file.createNewFile();
+
+//Convert bitmap to byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+            byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+            return file;
+        }catch (Exception e){
+            e.printStackTrace();
+            return file; // it will return null
         }
     }
 
@@ -273,5 +401,16 @@ public class SignActivity extends AppCompatActivity {
             ll_signup2.setVisibility(View.GONE);
             ll_signup.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void permissionGranted(int requestCode) {
+
+    }
+
+    @Override
+    public void permissionDenied(int requestCode) {
+        Toast.makeText(SignActivity.this, "권한 허락하세요~", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

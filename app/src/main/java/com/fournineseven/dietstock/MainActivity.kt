@@ -23,12 +23,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-
-import com.fournineseven.dietstock.ui.feedback.FeedBackFragment
-
+import com.bumptech.glide.Glide
 import com.fournineseven.dietstock.config.TaskServer
 import com.fournineseven.dietstock.retrofitness.*
-
+import com.fournineseven.dietstock.ui.feedback.FeedBackFragment
 import com.fournineseven.dietstock.ui.food.FoodFragmentCamera
 import com.fournineseven.dietstock.ui.home.HomeFragment
 import com.fournineseven.dietstock.ui.ranking.RankingFragment
@@ -40,7 +38,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.NullPointerException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -155,6 +152,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         val bottomNavView = findViewById<BottomNavigationView>(R.id.nav_bottom_view)
 
         setUser()
+
 
         viewPager = contentMainViewPager
         viewPager.adapter = PagerAdapter(supportFragmentManager, lifecycle)
@@ -345,11 +343,19 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
                         //초기화
                         if (beforeImageUri != null) {
-                            beforeImage.setImageURI(beforeImageUri!!.toUri())
+                            //beforeImage.setImageURI(beforeImageUri!!.toUri())
+                            Glide.with(beforeImage).load(
+                                TaskServer.base_url + response.body()?.result?.get(0)?.beforeImage
+                            ).error(R.drawable.food_icon)
+                                .placeholder(R.drawable.food_icon).into(beforeImage)
                         }
 
                         if (afterImageUri != null) {
-                            afterImage.setImageURI(afterImageUri!!.toUri())
+                            //afterImage.setImageURI(afterImageUri!!.toUri())
+                            Glide.with(afterImage).load(
+                                TaskServer.base_url + response.body()?.result?.get(0)?.beforeImage
+                            ).error(R.drawable.food_icon)
+                                .placeholder(R.drawable.food_icon).into(afterImage)
                         }
                         myAgeTextView.text = "나이 : " + myAge.toString() + "살"
                         myGoalTextView.text = "목표 : " + myGoal.toString() + "KG"
@@ -492,11 +498,19 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         //초기화
         if (beforeImageUri != null) {
-            beforeImage.setImageURI(beforeImageUri!!.toUri())
+            //beforeImage.setImageURI(beforeImageUri!!.toUri())
+            Glide.with(beforeImage).load(
+                TaskServer.base_url + beforeImageUri!!.toUri()
+            ).error(R.drawable.food_icon)
+                .placeholder(R.drawable.food_icon).into(beforeImage)
         }
 
         if(afterImageUri != null){
-            afterImage.setImageURI(afterImageUri!!.toUri())
+            //afterImage.setImageURI(afterImageUri!!.toUri())
+            Glide.with(beforeImage).load(
+                TaskServer.base_url + afterImageUri!!.toUri()
+            ).error(R.drawable.food_icon)
+                .placeholder(R.drawable.food_icon).into(beforeImage)
         }
 
         myAgeTextView.text = "나이 : " + myAge.toString() + "살"
@@ -653,6 +667,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         editor.putString("http://497.iptime.org/" + LoginState.AFTER_IMAGE_KEY,uri.toString())
                         editor.apply()
                     }
+
+
                 }
             }
         }

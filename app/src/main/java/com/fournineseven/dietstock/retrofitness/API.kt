@@ -28,4 +28,6 @@ interface API {
     @POST("api/kcal/getDailyKcal")
     fun getDailyKcal(@Body param: GetDailyKcalRequest)
     : Call<GetDailyKcalResponse>
+
+
 }

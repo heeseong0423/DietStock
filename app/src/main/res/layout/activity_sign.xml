@@ -101,7 +101,7 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:textSize="20sp"
-
+                android:inputType="text"
                 android:hint="id"
                 android:maxLines="1"
                 />
@@ -112,10 +112,10 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:hint="password"
+                android:inputType="textPassword"
                 android:textSize="20sp"
                 android:password="true"
                 android:maxLines="1"
-
                 />
             <Button
                 android:id="@+id/btn_submit_signin"
@@ -158,7 +158,7 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:textSize="20sp"
-
+                android:inputType="text"
                 android:hint="id"
                 android:textColorHint="#d3d3d3"
                 android:maxLines="1"
@@ -170,7 +170,7 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:textSize="20sp"
-
+                android:inputType="text"
                 android:textColorHint="#d3d3d3"
                 android:hint="name"
                 android:maxLines="1"
@@ -182,7 +182,7 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:hint="password"
-
+                android:inputType="textPassword"
                 android:textColorHint="#d3d3d3"
                 android:textSize="20sp"
                 android:password="true"
@@ -195,10 +195,9 @@
                 android:layout_margin="10dp"
                 android:padding="7dp"
                 android:hint="password check"
-
+                android:inputType="textPassword"
                 android:textColorHint="#d3d3d3"
                 android:textSize="20sp"
-                android:password="true"
                 android:maxLines="1"
                 />
 

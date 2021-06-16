@@ -68,7 +68,7 @@ public class RankingFragment extends Fragment {
         mHandler = new Handler(Looper.getMainLooper());
         radioGroup_ranking_category = (RadioGroup)root.findViewById(R.id.radiogroup_ranking_category);
         RetrofitService getRankingService = App.retrofit.create(RetrofitService.class);
-        Call<GetRankingResponse> call = getRankingService.getRanking("week");
+        Call<GetRankingResponse> call = getRankingService.getRanking("week", user_no);
         call.enqueue(new Callback<GetRankingResponse>() {
             @Override
             public void onResponse(Call<GetRankingResponse> call, Response<GetRankingResponse> response) {
@@ -77,15 +77,16 @@ public class RankingFragment extends Fragment {
                 ArrayList<RankingResult> rankingResultArray = getRankingResponse.getResult();
                 if(getRankingResponse.isSuccess()){
                     adapter.setEmpty();
+                    int cnt=1;
                     for(int i=0; i<rankingResultArray.size(); i++){
                         RankingResult rankingItem = rankingResultArray.get(i);
-
-                        adapter.addItem(new RankingItem(i+1, rankingItem.getName(),
-                                rankingItem.getKcal(), user_no==rankingItem.getUser_no()));
+                        if(rankingItem.getKcal()!=null) {
+                            adapter.addItem(new RankingItem(cnt, rankingItem.getName(),
+                                    rankingItem.getKcal(), user_no == rankingItem.getUser_no()));
+                            cnt++;
+                        }
                     }
                     recyclerView.setAdapter(adapter);
-
-                    recyclerView.smoothScrollToPosition(13);
                     adapter.notifyDataSetChanged();
 
                 }else{
@@ -116,7 +117,7 @@ public class RankingFragment extends Fragment {
                         division = "month";
                         break;
                 }
-                Call<GetRankingResponse> call = getRankingService.getRanking(division);
+                Call<GetRankingResponse> call = getRankingService.getRanking(division, user_no);
                 call.enqueue(new Callback<GetRankingResponse>() {
                     @Override
                     public void onResponse(Call<GetRankingResponse> call, Response<GetRankingResponse> response) {
@@ -125,15 +126,16 @@ public class RankingFragment extends Fragment {
                         ArrayList<RankingResult> rankingResultArray = getRankingResponse.getResult();
                         if(getRankingResponse.isSuccess()){
                             adapter.setEmpty();
+                            int cnt=1;
                             for(int i=0; i<rankingResultArray.size(); i++){
                                 RankingResult rankingItem = rankingResultArray.get(i);
-
-                                adapter.addItem(new RankingItem(i+1, rankingItem.getName(),
-                                        rankingItem.getKcal(), user_no==rankingItem.getUser_no()));
+                                if(rankingItem.getKcal()!=null) {
+                                    adapter.addItem(new RankingItem(cnt, rankingItem.getName(),
+                                            rankingItem.getKcal(), user_no == rankingItem.getUser_no()));
+                                    cnt++;
+                                }
                             }
                             recyclerView.setAdapter(adapter);
-
-                            recyclerView.smoothScrollToPosition(13);
                             adapter.notifyDataSetChanged();
 
                         }else{

@@ -63,48 +63,45 @@ class AlarmReceiver : BroadcastReceiver() {
         readKcal(context)
 
 
-        //테스트
-         RetrofitBuilder.api.getDailyKcal(GetDailyKcalRequest(user_no = 2, date = sharedToday.toString()))
-             .enqueue(object : Callback<GetDailyKcalResponse>{
-                 override fun onResponse(
-                     call: Call<GetDailyKcalResponse>,
-                     response: Response<GetDailyKcalResponse>
-                 ) {
-                     Log.d(TAG,"오늘의 칼로리 ${response.body()?.result?.get(0)?.kcalSum}")
-                     User.UserIntakeKcal = response.body()?.result?.get(0)!!.kcalSum
-
-                 }
-
-                 override fun onFailure(call: Call<GetDailyKcalResponse>, t: Throwable) {
-                     Log.d(TAG,"실패했습니다.")
-                 }
-
-             })
-
-        Log.d(TAG,"그냥 칼로리 : ${User.kcal} 운동 칼로리 : ${User.PKcal} ${User.UserIntakeKcal}")
-
 
         //테스트
-       /* RetrofitBuilder.api.saveKcalLog(SaveKcalLogRequest(user_no = 22, low = -500.0f,
-            high = 1231.8f, end_kcal = 9000.0f,start_kcal = 0.0f , date = sharedToday.toString()))
+        /*var editor = sharedPreferences.edit()
+        var sharedHighKcal = sharedPreferences.getFloat(LoginState.HIGH_KEY,0f)
+        var sharedLowKcal = sharedPreferences.getFloat(LoginState.LOW_KEY,0f)
+        var sharedStartKcal = sharedPreferences.getFloat(LoginState.START_KEY,0.0f)
+        editor.putFloat(LoginState.END_KEY,User.PKcal+User.kcal - User.UserIntakeKcal)
+        var sharedEndKcal = sharedPreferences.getFloat(LoginState.END_KEY,0.0f)
+        var userNumber = sharedPreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
+
+        val db = Room.databaseBuilder(
+            context,
+            KcalDatabase::class.java, "database-name1"
+        ).allowMainThreadQueries()
+            .build()
+        val userDao = db.kcalDao()
+        userDao.insert(UserKcalData(0,User.kcal,User.PKcal,sharedStartKcal,sharedEndKcal,sharedHighKcal,sharedLowKcal))
+
+
+        RetrofitBuilder.api.saveKcalLog(SaveKcalLogRequest(user_no = userNumber, low = sharedLowKcal,
+            high = sharedHighKcal, end_kcal = sharedEndKcal,start_kcal = sharedStartKcal , date = sharedToday.toString()))
             .enqueue(object : Callback<SaveKcalLogResponse>{
                 override fun onResponse(
                     call: Call<SaveKcalLogResponse>,
                     response: Response<SaveKcalLogResponse>
                 ) {
-                    Log.d(TAG,"알람 성공")
                     Log.e("error", response.toString())
-
-                    *//*editor.putFloat(LoginState.START_KEY,sharedEndKcal)
+                    Log.d(TAG,"알람 성공 HELLO WORLD HTTPS")
+                    editor.putFloat(LoginState.START_KEY,sharedEndKcal)
                     editor.putString(LoginState.DATE_KEY,today)
                     editor.putLong(LoginState.START_TIME_KEY,
                         LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).atZone(ZoneId.systemDefault())
                             .toEpochSecond())
-                    editor.apply()*//*
+                    editor.putFloat(LoginState.INTAKE_KEY,0.0f)
+                    editor.apply()
                 }
 
                 override fun onFailure(call: Call<SaveKcalLogResponse>, t: Throwable) {
-                    Log.d(TAG,"알람 실패")
+                    Log.d(TAG,"알람 실패 HELLO WORLD HTTPS")
                 }
             })
 */

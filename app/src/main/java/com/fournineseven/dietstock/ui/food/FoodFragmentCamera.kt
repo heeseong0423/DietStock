@@ -71,6 +71,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.io.*
 import java.lang.Exception
+import java.lang.NullPointerException
+import java.lang.NumberFormatException
 import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -125,6 +127,8 @@ class FoodFragmentCamera : Fragment(){
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        Log.d("JJJ","카메라 onCreateView")
         val root = inflater.inflate(R.layout.fragment_food_camera, container, false)
         binding = FragmentFoodCameraBinding.inflate(inflater, container, false)
         windowManager = requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -132,6 +136,7 @@ class FoodFragmentCamera : Fragment(){
         binding.textureView.surfaceTextureListener = textureListener
         binding.submitBtn.setOnClickListener(SubmitBtnListener())
         sharedPreferences = requireContext().getSharedPreferences(LoginState.SHARED_PREFS, Context.MODE_PRIVATE)
+
         binding.foodSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
                 return false
@@ -206,6 +211,13 @@ class FoodFragmentCamera : Fragment(){
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d("JJJ","onStart.>.sdf")
+    }
+
+
+
     private var textureListener: TextureView.SurfaceTextureListener = object : TextureView.SurfaceTextureListener{
         override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
 
@@ -243,12 +255,12 @@ class FoodFragmentCamera : Fragment(){
             var zibang = sharedPreferences?.getFloat(LoginState.ZIBANG_KEY,0.0f)
 
 
-            var userCurrentKcal = User.PKcal + User.kcal - intake!!
+            var userCurrentKcal = User.PKcal + User.kcal - (intake!! * User.foodNo)
             var minusFoodKcal = userCurrentKcal - User.foodKcal
             var currentIntakeKcal = sharedPreferences?.getFloat(LoginState.INTAKE_KEY,0.0f)
-            editor?.putFloat(LoginState.INTAKE_KEY, currentIntakeKcal!! + User.foodKcal)
+            editor?.putFloat(LoginState.INTAKE_KEY, currentIntakeKcal!! + (User.foodKcal * User.foodNo))
 
-            User.UserIntakeKcal += User.foodKcal
+            User.UserIntakeKcal += (User.foodKcal * User.foodNo)
 
             if(highKcal!! < userCurrentKcal){
                 Log.d(TAG,"User current kcal = ${userCurrentKcal}")
@@ -260,11 +272,13 @@ class FoodFragmentCamera : Fragment(){
                 editor?.putFloat(LoginState.LOW_KEY,minusFoodKcal)
             }
 
-            editor?.putFloat(LoginState.NATRIUM_KEY,natrium!! + User.natrium)
-            editor?.putFloat(LoginState.DANBAEKJIL_KEY,danbaekjil!! + User.danbaekjil)
-            editor?.putFloat(LoginState.TANSUHWAMUL_KEY,tansuhwamul!! + User.tansuhwamul)
-            editor?.putFloat(LoginState.ZIBANG_KEY,zibang!! + User.zibang)
+            editor?.putFloat(LoginState.NATRIUM_KEY,natrium!! + (User.natrium * User.foodNo))
+            editor?.putFloat(LoginState.DANBAEKJIL_KEY,danbaekjil!! + (User.danbaekjil * User.foodNo))
+            editor?.putFloat(LoginState.TANSUHWAMUL_KEY,tansuhwamul!! + (User.tansuhwamul * User.foodNo))
+            editor?.putFloat(LoginState.ZIBANG_KEY,zibang!! + (User.zibang * User.foodNo))
             editor?.apply()
+
+            Log.d("KKKKKK","dd ${User.foodNo}")
         }
     }
 
@@ -628,7 +642,13 @@ class FoodFragmentCamera : Fragment(){
     }
 
     fun saveFoodLog(foodNo: Int){
-        serving = binding.serving.text.toString().toInt()
+        try{
+            serving = binding.serving.text.toString().toInt()
+        }catch (e: NumberFormatException){
+            Toast.makeText(this@FoodFragmentCamera.requireContext(), "몇 인분 드셨습니까?", Toast.LENGTH_SHORT).show()
+            return
+        }
+        User.foodNo = serving
         try{
             var body: MultipartBody.Part
             try{

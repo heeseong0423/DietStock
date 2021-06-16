@@ -16,6 +16,7 @@ object User{
     var tansuhwamul = 0f
     var zibang = 0f
     var natrium = 0f
+    var foodNo = 0
 }
 
 

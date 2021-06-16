@@ -259,7 +259,7 @@ class HomeFragment : Fragment() {
             return
         }
 
-        var consume = String.format("%.1f",consumeKcal)
+        var consume = String.format("%.0f",consumeKcal)
         var natrium = String.format("%.1f",todayNatrium)
         var tansu = String.format("%.1f",todayTansuhwamul)
         var fat = String.format("%.1f",todayZibang)

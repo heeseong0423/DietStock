@@ -244,14 +244,16 @@
 
                     </ImageView>
 
-                    <EditText
+
+
+                    <TextView
                         android:id="@+id/requestFood_name"
                         android:layout_width="128dp"
                         android:layout_height="67dp"
                         android:layout_gravity="center_horizontal|center_vertical"
-                        android:gravity="center">
-
-                    </EditText>
+                        android:text="hello"
+                        android:textSize="15sp"
+                        android:gravity="center"/>
                 </LinearLayout>
             </LinearLayout>
 

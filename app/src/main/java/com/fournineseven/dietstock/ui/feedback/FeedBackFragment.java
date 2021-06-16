@@ -58,7 +58,7 @@ public class FeedBackFragment extends Fragment {
     private ImageView iv_bad_food;
     private ImageView iv_good_food;
     private ImageView food_image;
-    private EditText requestFood_name;
+    private TextView requestFood_name;
     private TextView arrow;
     private TextView one_meal_ment;
 
@@ -554,13 +554,16 @@ public class FeedBackFragment extends Fragment {
 
 
                     if(correct_requestFood.size() == 0){
-
+                        Log.d("change","k11111111232323231" + String.valueOf(min_carbs_index));
                         Glide.with(rootView).load(TaskServer.base_url + dailyFood_all.get(index).getFood_image()).error(R.drawable.food_icon)
                                 .placeholder(R.drawable.food_icon).into(iv_bad_food);
+                        requestFood_name.setText("섭취량이 너무 많아 피드백이 불가합니다");
                     }
                     else {
+                        Log.d("change","k11111111111111" + String.valueOf(min_carbs_index));
                         if(correct_requestFood.size() == 1){
                             min_carbs_index = 0;
+                            Log.d("change","kkkkkkkkkkkkkkkkkk" + String.valueOf(min_carbs_index));
                         }
 
                         else {
@@ -571,7 +574,7 @@ public class FeedBackFragment extends Fragment {
                             Log.e("get Time", getTime);
                             min_carbs_index = Integer.valueOf(getTime) % correct_requestFood.size();
                         }
-                        Log.d("change",String.valueOf(min_carbs_index));
+                        Log.d("change","hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh" + String.valueOf(min_carbs_index));
                         requestFood_name.setText(correct_requestFood.get(min_carbs_index).getFood_name());
                         Glide.with(rootView).load(TaskServer.base_url + "requestfood/" + correct_requestFood.get(min_carbs_index).food_image()).error(R.drawable.food_icon)
                                 .placeholder(R.drawable.food_icon).into(iv_good_food);

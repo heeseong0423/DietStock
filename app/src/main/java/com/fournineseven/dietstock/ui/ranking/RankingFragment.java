@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fournineseven.dietstock.App;
 import com.fournineseven.dietstock.LoginState;
 import com.fournineseven.dietstock.R;
+import com.fournineseven.dietstock.api.DialogService;
 import com.fournineseven.dietstock.api.RetrofitService;
 import com.fournineseven.dietstock.model.getRanking.GetRankingResponse;
 import com.fournineseven.dietstock.model.getRanking.RankingResult;
@@ -87,12 +88,14 @@ public class RankingFragment extends Fragment {
                     recyclerView.smoothScrollToPosition(13);
                     adapter.notifyDataSetChanged();
 
+                }else{
+                    DialogService.showDialog(getActivity(),"오류", "서버에서 데이터 가져오기 실패");
                 }
             }
 
             @Override
             public void onFailure(Call<GetRankingResponse> call, Throwable t) {
-                Log.d("debug", "onFailure: "+t.getMessage());
+                DialogService.showDialog(getActivity(),"오류", "서버 접속 실패");
             }
         });
 
@@ -133,12 +136,14 @@ public class RankingFragment extends Fragment {
                             recyclerView.smoothScrollToPosition(13);
                             adapter.notifyDataSetChanged();
 
+                        }else{
+                            DialogService.showDialog(getActivity(), "오류","서버에서 데이터 가져오기 실패");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<GetRankingResponse> call, Throwable t) {
-                        Log.d("debug", "onFailure: "+t.getMessage());
+                        DialogService.showDialog(getActivity(),"오류", "서버 접속 실패");
                     }
                 });
             }

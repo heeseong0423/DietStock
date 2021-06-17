@@ -154,7 +154,6 @@ public class RoleModelDetailActivity extends AppCompatActivity{
         callGetKcalByMonth.enqueue(new Callback<GetKcalByWeekResponse>() {
             @Override
             public void onResponse(Call<GetKcalByWeekResponse> call, Response<GetKcalByWeekResponse> response) {
-                Log.d("debug", response.body().toString());
                 GetKcalByWeekResponse getKcalByWeekResponse = (GetKcalByWeekResponse)response.body();
                 if(getKcalByWeekResponse.isSuccess()) {
                     kcalByWeekResult = getKcalByWeekResponse.getResults();
@@ -164,7 +163,6 @@ public class RoleModelDetailActivity extends AppCompatActivity{
                     /*for (int i = 1; i <= 12; i++) {
                         yValsCandleStick.add(new CandleEntry(i, 0, 0, 0, 0));
                     }*/
-                    Log.d("debug+++++++++++++++++++++", kcalByWeekResult.toString());
                     for(int i=0; i<kcalByWeekResult.size(); i++) {
                         yValsCandleStick.add(new CandleEntry(i+1,
                                 (float) kcalByWeekResult.get(i).getHigh(),
@@ -212,7 +210,6 @@ public class RoleModelDetailActivity extends AppCompatActivity{
         callGetFoodLogs.enqueue(new Callback<GetFoodLogsResponse>() {
             @Override
             public void onResponse(Call<GetFoodLogsResponse> call, Response<GetFoodLogsResponse> response) {
-                Log.d("debug", response.body().toString());
                 GetFoodLogsResponse getFoodLogsResponse = (GetFoodLogsResponse)response.body();
                 if(getFoodLogsResponse.isSuccess()) {
                     foodLogResult = getFoodLogsResponse.getResult();

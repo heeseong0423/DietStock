@@ -207,16 +207,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         loading_layout.visibility = View.GONE
                         val contentMainNavView = findViewById<NavigationView>(R.id.nav_view)
 
-                        Log.d(TAG, "이름 : ${response.body()?.result?.get(0)?.user_name}")
-                        Log.d(TAG, "활동량 : ${response.body()?.result?.get(0)?.activity}")
-                        Log.d(TAG, "나이 : ${response.body()?.result?.get(0)?.age}")
-                        Log.d(TAG, "전 이미지 : ${response.body()?.result?.get(0)?.beforeImage}")
-                        Log.d(TAG, "다음 이미지: ${response.body()?.result?.get(0)?.before_weight}")
-                        Log.d(TAG, " BIM : ${response.body()?.result?.get(0)?.bmi}")
-                        Log.d(TAG, "목표 : ${response.body()?.result?.get(0)?.goal}")
-
-
-
                         beforeImage =
                             contentMainNavView.getHeaderView(0).findViewById(R.id.before_image)
                         afterImage =
@@ -291,9 +281,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         var userEmail: String? =
                             sharedpreferences.getString(LoginState.EMAIL_KEY, null)
 
-
-                        Log.d(TAG, "이미지 url들 : $beforeImageUri $afterImageUri")
-
                         if (beforeImageUri != response.body()?.result?.get(0)?.beforeImage) {
                             editor.putString(
                                 LoginState.BEFORE_IMAGE_KEY,
@@ -301,7 +288,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                             )
                             beforeImageUri =
                                 sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY, null)
-                            Log.d(TAG, "전11 이미지 : $beforeImageUri")
                         }
 
                         if (myGoal != response.body()?.result?.get(0)?.goal) {
@@ -310,7 +296,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                                 response.body()?.result?.get(0)?.goal!!.toFloat()
                             )
                             myGoal = sharedpreferences.getFloat(LoginState.GOAL_KEY, 0.0f)
-                            Log.d(TAG, "목표 : ${myGoal}")
                         }
                         if (myWeight != response.body()?.result?.get(0)?.weight) {
                             editor.putFloat(
@@ -318,7 +303,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                                 response.body()?.result?.get(0)?.weight!!.toFloat()
                             )
                             myWeight = sharedpreferences.getFloat(LoginState.WEIGHT_KEY, 0.0f)
-                            Log.d(TAG, "몸무게 : $myWeight")
                         }
                         if (myHeight != response.body()?.result?.get(0)?.height) {
                             editor.putFloat(
@@ -326,7 +310,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                                 response.body()?.result?.get(0)?.height!!.toFloat()
                             )
                             myHeight = sharedpreferences.getFloat(LoginState.HEIGHT_KEY, 0.0f)
-                            Log.d(TAG, "키 : $myHeight")
                         }
                         if (myAge != response.body()?.result?.get(0)?.age) {
                             editor.putInt(
@@ -334,7 +317,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                                 response.body()?.result?.get(0)?.age!!.toInt()
                             )
                             myAge = sharedpreferences.getInt(LoginState.AGE_KEY, 0)
-                            Log.d(TAG, "나이 : $myAge")
                         }
                         if (myGender != response.body()?.result?.get(0)?.sex) {
                             editor.putInt(
@@ -402,10 +384,8 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
                         if (myGender <=1) {
                             myGenderTextView.text = "남자"
-                            Log.d(TAG," my gender : ${myGender}")
                         } else {
                             myGenderTextView.text = "여자"
-                            Log.d(TAG," my gender : ${myGender}")
                         }
 
 
@@ -419,7 +399,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                     }
 
                     override fun onFailure(call: Call<GetUserInfoResponse>, t: Throwable) {
-                        Log.d(TAG, "You 실패")
                         Toast.makeText(baseContext, "네트워크 연결을 확인해주세요.", Toast.LENGTH_LONG).show()
                         finish()
                     }
@@ -434,12 +413,11 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         call: Call<GetDailyKcalResponse>,
                         response: Response<GetDailyKcalResponse>
                     ) {
-                        Log.d(AlarmReceiver.TAG,"ㅇㅗㄴㅡㄹㅇㅡㅣ ㅅㅓㅂㅊㅜㅣㅋㅏㄹㄹㅗㄹㅣ${response.body()?.result?.get(0)?.kcalSum}")
                         User.UserIntakeKcal = response.body()?.result?.get(0)!!.kcalSum
                     }
 
                     override fun onFailure(call: Call<GetDailyKcalResponse>, t: Throwable) {
-                        Log.d(AlarmReceiver.TAG,"ㅅㅣㄹㅍㅐㅎㅐㅆㅅㅡㅂㄴㅣㄷㅏ")
+
                     }
 
                 })
@@ -485,7 +463,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
 
         //처음상태면
         if(date == null){
-            Log.d(TAG,"날짜가 null입니다.")
             val dt = Date()
             val full_sdf = SimpleDateFormat("yyyy-MM-dd")
             var todayDate:String = full_sdf.format(dt).toString()
@@ -508,7 +485,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         //var userNo: Int? = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
         var userNumber = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
 
-        Log.d(TAG,"이메일: ${email} , 비밀번호 : ${password} 유저번호 : ${userNumber}  bbbbbbbbbbbbbbbbbbbb")
 
         //초기화
         if (beforeImageUri != null) {
@@ -554,20 +530,17 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         }
         if(myGender <= 1){
             myGenderTextView.text = "남자"
-            Log.d(TAG," my gender : ${myGender}")
         }else{
             myGenderTextView.text = "여자"
-            Log.d(TAG," my gender : ${myGender}")
         }
         /*if(myActivityType < 1){
             myActivityTypeTextView.text= "활동량 적음"
         }*/
 
-        Log.d(TAG,"값들 : $myWeight $myHeight $myActivityType , $myAge")
     }
 
     override fun permissionGranted(requestCode: Int) {
-        Log.d(TAG, "PERMISSION GRANTED")
+
     }
 
     override fun permissionDenied(requestCode: Int) {
@@ -608,24 +581,24 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         when (checked.itemId) {
             R.id.navigation_home -> {
                 viewPager.currentItem = 0
-                return true
+                return false
             }
             R.id.navigation_ranking -> {
                 viewPager.currentItem = 1
-                return true
+                return false
             }
 
             R.id.navigation_feedback -> {
                 viewPager.currentItem = 2
-                return true
+                return false
             }
             R.id.navigation_food -> {
                 viewPager.currentItem = 3
-                return true
+                return false
             }
             R.id.navigation_rolemodel -> {
                 viewPager.currentItem = 4
-                return true
+                return false
             }
         }
         return false
@@ -634,7 +607,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
     private inner class PageChangeCallback : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            Log.e("position", position.toString())
             navView.selectedItemId = when (position) {
                 0 -> R.id.navigation_home
                 1 -> R.id.navigation_ranking
@@ -660,7 +632,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
         return super.onOptionsItemSelected(item)
     }
     fun getFileName(uri: Uri): String?{
-        Log.d("getFileName", "getFileName start")
         val contentResolver = this.getContentResolver()
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
         try{
@@ -668,15 +639,12 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                 return null
             cursor.moveToFirst()
             val fileName: String = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-            Log.d("fileName = ", fileName)
             cursor.close()
             return fileName
         }catch (e: Exception){
-            Log.d("error", e.stackTraceToString())
             cursor?.close()
             return null
         }
-        Log.d("getFileName", "getFileName end")
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -701,7 +669,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         var userNo = sharedpreferences.getString(LoginState.USER_NUMBER,"0")
                         cursor?.close()
                         val userNumber: RequestBody = RequestBody.create(MultipartBody.FORM, userNo)
-                        Log.d(TAG1,"value : ${userNumber}, ${body.toString()}")
                         RetrofitBuilder.api.updateBeforeImage(userNumber,body).enqueue(object: Callback<UpdateBeforeImageResponse>{
                             override fun onResponse(
                                 call: Call<UpdateBeforeImageResponse>,
@@ -709,7 +676,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                             ) {
                                 //  img.setImageURI(uri)
                                 beforeImage.setImageURI(uri)
-                                Log.d(TAG,uri.toString())
                                 var editor = sharedpreferences.edit()
                                 //editor.putString("http://497.iptime.org/" + LoginState.BEFORE_IMAGE_KEY,uri.toString())
                                 editor.putString("LoginState.BEFORE_IMAGE_KEY",uri.toString())
@@ -721,7 +687,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                                 t: Throwable
                             ) {
 
-                                Log.d(TAG1,"the e ${t.message}")
                                 Toast.makeText(this@MainActivity,"전 이미지 에러",Toast.LENGTH_SHORT).show()
                             }
                         })
@@ -753,7 +718,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                             ) {
                                 //  img.setImageURI(uri)
                                 afterImage.setImageURI(uri)
-                                Log.d(TAG,uri.toString())
                                 var editor = sharedpreferences.edit()
                                 //editor.putString("http://497.iptime.org/" + LoginState.AFTER_IMAGE_KEY,uri.toString())
                                 editor.putString(LoginState.AFTER_IMAGE_KEY,uri.toString())
@@ -765,7 +729,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                                 t: Throwable
                             ) {
 
-                                Log.d(TAG1,"my url ${uri.toString()}")
                                 Toast.makeText(this@MainActivity,"후 이미지 에러",Toast.LENGTH_SHORT).show()
                             }
                         })
@@ -778,11 +741,10 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
     }
 
     override fun onCancelButtonClicked() {
-        Log.d(TAG,"취소버튼 클릭")
+
     }
 
     override fun onOkButtonClicked() {
-        Log.d(TAG,"확인버튼 클릭")
 
         val contentMainNavView = findViewById<NavigationView>(R.id.nav_view)
         myGoalTextView = contentMainNavView.getHeaderView(0).findViewById(R.id.nav_header_goal)

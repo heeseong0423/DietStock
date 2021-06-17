@@ -113,7 +113,6 @@ class HomeFragment : Fragment() {
         insertDao = root.findViewById(R.id.insert_dao)
 
         myLayout.setOnClickListener{
-            Log.d(TAG,"HELLO")
             var userFoodDialog = UserFoodDialog()
             userFoodDialog.show(parentFragmentManager,"userFoodDialog")
         }
@@ -176,7 +175,6 @@ class HomeFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        Log.d(TAG, "이것은 onPause()")
         CoroutineState = false
     }
 
@@ -229,8 +227,7 @@ class HomeFragment : Fragment() {
                 }
 
                 override fun onFailure(call: Call<GetUserKcalLogResponse>, t: Throwable) {
-                    Log.d("rrr","ffff")
-                    Log.d("rrr","이게 뭐야? " + t.message)
+
                 }
             })
 
@@ -247,7 +244,6 @@ class HomeFragment : Fragment() {
                 call: Call<GetFoodLogsResponse>,
                 response: Response<GetFoodLogsResponse>
             ) {
-                Log.d("확인", response.body().toString())
                 val getFoodLogsResponse = response.body()
                 if (getFoodLogsResponse!!.isSuccess) {
                     foodLogResult = getFoodLogsResponse!!.result
@@ -273,14 +269,13 @@ class HomeFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<GetFoodLogsResponse>, t: Throwable) {
-                Log.d("debug", "onFailure$t")
+
             }
         })
 
 
-        Log.d(TAG, "이것은 onResume()")
+
         if(CoroutineState){
-            Log.d(TAG, "This is already true.")
             return
         }
 
@@ -301,8 +296,6 @@ class HomeFragment : Fragment() {
         CoroutineState = true
         CoroutineScope(Dispatchers.Main).launch {
             while (CoroutineState) {
-                Log.d(TAG, "현재 칼로리 : ${User.kcal} , 피지컬: ${User.PKcal}" +
-                        "현재 ${User.highKcal}, ${User.lowKcal} and ${full_sdf.format(dt)}")
                 updateCalories(startTime!!)
                 var sum = String.format("%.1f",User.PKcal + User.kcal)
                 var base = String.format("%.1f",User.kcal)
@@ -370,11 +363,9 @@ class HomeFragment : Fragment() {
         val account = GoogleSignIn.getAccountForExtension(root.context, fitnessOptions)
 
         if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
-            Log.d(TAG, "구글 계정 연동 안되어있다.")
             dietChart.visibility = View.GONE
             button.visibility = View.VISIBLE
         } else {
-            Log.d(TAG, "구글계정 연동되어있음.")
             dietChart.visibility = View.VISIBLE
             button.visibility = View.GONE
             drawCandlestickChart(dietChart,root)
@@ -383,19 +374,14 @@ class HomeFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d(TAG, "호출되려")
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 GOOGLE_FIT_PERMISSIONS_REQUEST_CODE -> {
                     subscribe()
                     checkGooglefitPermission(rootView)
-                    Log.d(TAG, "This is Activity result")
                 }
             }
         } else {
-            Log.d("--------------------", "-----------------------")
-            Log.d("Result google", resultCode.toString())
-            Log.d("Result google", requestCode.toString())
             Toast.makeText(context, "연동하세요", Toast.LENGTH_SHORT).show()
         }
     }
@@ -408,7 +394,6 @@ class HomeFragment : Fragment() {
         )
             .subscribe(DataType.TYPE_STEP_COUNT_CUMULATIVE)
             .addOnSuccessListener {
-                Log.d(TAG, "누적걷기수 구독 성공")
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "누적걷기수 구독 오류 발생", e)
@@ -510,15 +495,9 @@ class HomeFragment : Fragment() {
 
 
         if(userDao.getLastData() == null){
-            Log.d(TAG,"ssTHIS IS NULL")
             userDao.insert(UserKcalData(0,0f,0f,0.0f,0f,0f,0f))
         }
 
-
-
-        for(i in userKcalLogList){
-            Log.d("twtw","${i.end_kcal} , ${i.high}")
-        }
         entries.add(
             CandleEntry(
                     0.0f,
@@ -549,8 +528,6 @@ class HomeFragment : Fragment() {
 
         var size = userKcalLogList.size
 
-        Log.d("qa","ee " + size)
-
 
         if(size>0){
             entries.add(
@@ -574,14 +551,6 @@ class HomeFragment : Fragment() {
             )
         }
 
-
-
-        Log.d(TAG,"aasdfa ${User.PKcal + User.kcal - intake!!}")
-
-        Log.d(TAG,"start chart ${start!!}")
-        Log.d(TAG,"end ${intake}")
-        Log.d(TAG," high ${high!!}")
-        Log.d(TAG,"low ${low!!}")
 
         val dataSet = CandleDataSet(entries, "").apply {
             //심지 부분

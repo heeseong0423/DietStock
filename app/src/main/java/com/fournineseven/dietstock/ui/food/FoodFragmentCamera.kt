@@ -299,7 +299,6 @@ class FoodFragmentCamera : Fragment(){
     }
 
     fun openCamera(){
-        Log.e(TAG, "openCamera(): openCamera()메서드 호출")
 
         val manager: CameraManager = requireActivity().getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
@@ -325,7 +324,6 @@ class FoodFragmentCamera : Fragment(){
 
     private val stateCallback = object : CameraDevice.StateCallback(){
         override fun onOpened(camera: CameraDevice){
-            Log.d(TAG, "stateCallback: onOpened")
             cameraDevice = camera
             val result = createCameraPreviewSession()
             if(result == false){
@@ -363,7 +361,6 @@ class FoodFragmentCamera : Fragment(){
 
             cameraDevice!!.createCaptureSession(listOf(surface), object: CameraCaptureSession.StateCallback(){
                 override fun onConfigureFailed(session: CameraCaptureSession) {
-                    Log.d(TAG, "Configuration changed")
                 }
 
                 override fun onConfigured(session: CameraCaptureSession) {
@@ -383,8 +380,6 @@ class FoodFragmentCamera : Fragment(){
 
         }catch (e: CameraAccessException){
             closeCamera()
-            Log.d("Error", e.message.toString())
-            Log.d("Error", e.stackTraceToString())
         }
         return true
     }
@@ -441,16 +436,14 @@ class FoodFragmentCamera : Fragment(){
                             output.write(bytes)
                             output.flush()
                         }catch (e: FileNotFoundException){
-                            Log.d("File Error", e.stackTraceToString())
                         } finally {
                             output?.close()
                             val bitmap: Bitmap = BitmapFactory.decodeFile(file.path)
-                            Log.d("bitmap imgae size", bitmap.width.toString() + "x" + bitmap.height.toString())
+
                             val rotateMatrix = Matrix()
                             rotateMatrix.postRotate(90F)
                             rotateMatrix.postScale((1920f/bitmap.width), (1080f/bitmap.height))
                             val rotatedBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, rotateMatrix, false)
-                            Log.d("rotated bitmap", rotatedBitmap.width.toString() + "x" + rotatedBitmap.height.toString())
                             try {
                                 val values = ContentValues().apply {
                                     put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
@@ -474,7 +467,6 @@ class FoodFragmentCamera : Fragment(){
                                 contentResolver.update(item, values, null, null)
                                 uriList.add(uriList.size, item)
                             }catch (e: FileNotFoundException){
-                                Log.d("File Not Found", e.stackTraceToString())
                             }finally {
                                 output?.close()
                             }
@@ -501,13 +493,11 @@ class FoodFragmentCamera : Fragment(){
                     }
                     val resultName = tfLiteModel(uriList, getFileName(uriList.last()))
                     if(resultName[0].first == "fail"){
-                        Log.d("classification", "fail")
                     }else{
                         var selectList: MutableList<String> = arrayListOf()
                         for(i in resultName){
                             selectList.add(i.first)
                         }
-                        Log.d("line-300 result is ", resultName.toString())
                         var finalResultName: String = ""
                         val arraySelect = selectList.toTypedArray()
                         var selectDialog = AlertDialog.Builder(requireContext()).setSingleChoiceItems(arraySelect, -1){
@@ -580,17 +570,13 @@ class FoodFragmentCamera : Fragment(){
         var probabilityBuffer: TensorBuffer = TensorBuffer.createFixedSize(intArrayOf(1, 100), DataType.FLOAT32)
         tfImage.load(bitmap)
         tfImage = imageProcessor.process(tfImage)
-        Log.d("test", tfImage.height.toString()+ " " + tfImage.width.toString())
         var output = FloatArray(100)
-        Log.d("input shape", interpreter.toString())
-        Log.d("output shape", interpreter?.outputTensorCount.toString())
         interpreter?.run(tfImage.buffer, probabilityBuffer.buffer)
-        Log.d("buffer", probabilityBuffer.buffer.toString())
         val labelCategoryPath = "test_label1.txt"
         var axisList: List<String>? = null
         try{
             axisList = FileUtil.loadLabels(this.requireContext(), labelCategoryPath)
-            Log.d("axlist List", axisList[0] + " " + axisList[99])
+
         }catch (e: IOException){
             Log.d("tfFile Support Error", e.printStackTrace().toString())
         }
@@ -598,9 +584,7 @@ class FoodFragmentCamera : Fragment(){
         if(axisList != null){
             val label: TensorLabel = TensorLabel(axisList, probabilityBuffer)
             val floatMap = label.mapWithFloatValue
-            Log.d("test", floatMap.toString())
             val sortedList = floatMap.toList().sortedWith(compareBy({it.second})).reversed()
-            Log.d("sorted predicted", sortedList.toString())
             return sortedList.subList(0, 4)
         }
         return listOf(Pair<String, Float>("fail", -1f))
@@ -665,9 +649,6 @@ class FoodFragmentCamera : Fragment(){
                 val file = File(this.requireContext().cacheDir, fileName)
                 val outputStream = FileOutputStream(file)
                 inputStream.copyTo(outputStream)
-                Log.d("saveFoodLogStart", "start here line 38")
-                Log.d("UriList", uriList.toString())
-                Log.d("file = ", file.length().toString())
                 val requestBody: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
                 body = MultipartBody.Part.createFormData("file", file.name, requestBody)
                 val gson: Gson = GsonBuilder().setLenient().create()
@@ -678,7 +659,6 @@ class FoodFragmentCamera : Fragment(){
 
                 //serving -  몇 인분
                 val connection = retrofit.create(FoodCameraInterface::class.java)
-                Log.d("info test", userNo.toString() + " " + foodNo.toString())
                 connection.saveFoodLog2(userNo, foodNo, serving, body).enqueue(object: Callback<DefaultResponseKo> {
                     override fun onFailure(call: Call<DefaultResponseKo>, t: Throwable){
                         Log.d("result1 - saveFoodLog", t.message.toString())
@@ -686,7 +666,6 @@ class FoodFragmentCamera : Fragment(){
 
                     override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
                         if(response?.isSuccessful){
-                            Log.d("result2 - saveFoodLog", response?.body().toString())
                             val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireContext())
                             builder.setTitle("저장 성공")
                             builder.setMessage("식단을 저장하였습니다.")
@@ -712,7 +691,6 @@ class FoodFragmentCamera : Fragment(){
                     .build()
 
                 val connection = retrofit.create(FoodCameraInterface::class.java)
-                Log.d("info test", userNo.toString() + " " + foodNo.toString())
                 connection.saveFoodLog1(userNo, foodNo, serving).enqueue(object: Callback<DefaultResponseKo> {
                     override fun onFailure(call: Call<DefaultResponseKo>, t: Throwable){
                         Log.d("result1 - saveFoodLog", t.message.toString())
@@ -720,7 +698,6 @@ class FoodFragmentCamera : Fragment(){
 
                     override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
                         if(response?.isSuccessful){
-                            Log.d("result2 - saveFoodLog", response?.body().toString())
                             val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireContext())
                             builder.setTitle("저장 성공")
                             builder.setMessage("식단을 저장하였습니다.")
@@ -745,7 +722,6 @@ class FoodFragmentCamera : Fragment(){
     }
 
     fun getFoodInfo(foodName: String){
-        Log.d("FoodName", foodName)
         val retrofit = Retrofit.Builder()
 
                 .baseUrl("http://497.iptime.org")
@@ -761,7 +737,6 @@ class FoodFragmentCamera : Fragment(){
             override fun onResponse(call: Call<GetFoodResponse>, response: Response<GetFoodResponse>) {
                 if(response?.isSuccessful){
                     if(response?.body()!!.result?.isEmpty()){
-                        Log.d("없음 데이터", "999999999999" )
                         val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireContext())
                         builder.setTitle("No Result")
                         builder.setMessage("검색 결과가 없습니다.")
@@ -769,8 +744,6 @@ class FoodFragmentCamera : Fragment(){
                             openCamera()
                         }).show()
                     }else{
-                        Log.d("result_test", response?.toString())
-                        Log.d("result2 - getFoodInfo", response?.body().toString())
                         changeSettings(response.body()!!, foodName)
                         flipVisibility(false)
                         closeCamera()
@@ -785,7 +758,6 @@ class FoodFragmentCamera : Fragment(){
     }
 
     fun getFileName(uri: Uri): String?{
-        Log.d("getFileName", "getFileName start")
         val contentResolver = this.requireContext().getContentResolver()
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
         try{
@@ -793,7 +765,6 @@ class FoodFragmentCamera : Fragment(){
                 return null
             cursor.moveToFirst()
             val fileName: String = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-            Log.d("fileName = ", fileName)
             cursor.close()
             return fileName
         }catch (e: Exception){

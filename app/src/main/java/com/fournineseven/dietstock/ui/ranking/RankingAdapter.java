@@ -85,7 +85,6 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
                 textview_ranking_name.setTextColor(Color.CYAN);
                 textview_ranking_kcal.setTextSize(25);
             }
-            Log.e("dslkfjadslkjflk", String.valueOf(item.getMe())+","+String.valueOf(item.getName()));
         }
     }
 }

@@ -75,7 +75,6 @@ public class RoleModelFragment extends Fragment {
         call.enqueue(new Callback<GetRolemodelResponse>() {
             @Override
             public void onResponse(Call<GetRolemodelResponse> call, Response<GetRolemodelResponse> response) {
-                Log.d("debug", response.body().toString());
                 GetRolemodelResponse getRankingResponse = (GetRolemodelResponse)response.body();
                 ArrayList<RolemodelResult> rankingResultArray = getRankingResponse.getResult();
                 if(getRankingResponse.isSuccess()){

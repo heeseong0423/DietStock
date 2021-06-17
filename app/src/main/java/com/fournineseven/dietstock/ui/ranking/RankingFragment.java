@@ -72,7 +72,6 @@ public class RankingFragment extends Fragment {
         call.enqueue(new Callback<GetRankingResponse>() {
             @Override
             public void onResponse(Call<GetRankingResponse> call, Response<GetRankingResponse> response) {
-                Log.d("debug", response.body().toString());
                 GetRankingResponse getRankingResponse = (GetRankingResponse)response.body();
                 ArrayList<RankingResult> rankingResultArray = getRankingResponse.getResult();
                 if(getRankingResponse.isSuccess()){
@@ -121,7 +120,6 @@ public class RankingFragment extends Fragment {
                 call.enqueue(new Callback<GetRankingResponse>() {
                     @Override
                     public void onResponse(Call<GetRankingResponse> call, Response<GetRankingResponse> response) {
-                        Log.d("debug", response.body().toString());
                         GetRankingResponse getRankingResponse = (GetRankingResponse)response.body();
                         ArrayList<RankingResult> rankingResultArray = getRankingResponse.getResult();
                         if(getRankingResponse.isSuccess()){

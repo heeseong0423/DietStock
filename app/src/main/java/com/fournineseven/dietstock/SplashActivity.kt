@@ -82,7 +82,6 @@ class SplashActivity : AppCompatActivity() {
                 .toEpochSecond()
 
         checkPermission()
-        Log.d(TAG, "포어그라운드 현재 상태 : $isActivityForeground")
         if (!isActivityForeground) {
             val intent = Intent(this, Foreground::class.java)
             ContextCompat.startForegroundService(this, intent)
@@ -104,8 +103,6 @@ class SplashActivity : AppCompatActivity() {
 
         //안드로이드 Q이상일 경우.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-
-            Log.d(TAG, "안드로이드 버전이 이상이다.")
 
             //권한이 허가되어있지 않을 경우
             if (checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
@@ -129,7 +126,6 @@ class SplashActivity : AppCompatActivity() {
             }
             //권한이 이미 승인 되어있을 경우 구글허가 확인
             else {
-                Log.d(TAG, "권한이 이미 승인되어있습니다.")
                 googleSignInCheckPermission()//구글핏 API 권한체크
             }
         }
@@ -164,7 +160,6 @@ class SplashActivity : AppCompatActivity() {
                     //readCalorie()
                 }
                 PERMISSION_REQUEST_ACTIVITY -> {
-                    Log.d(TAG, "활동 권한 승인")
                 }
                 else -> {
                     // Result wasn't from Google Fit
@@ -173,7 +168,6 @@ class SplashActivity : AppCompatActivity() {
             }
             else -> {
                 // Permission not granted
-                Log.d(TAG, "Permission not granted")
                 Toast.makeText(this, "권한 허가 안함?", Toast.LENGTH_LONG).show()
 
                 //finish()
@@ -190,17 +184,14 @@ class SplashActivity : AppCompatActivity() {
         when (requestCode) {
             PERMISSION_REQUEST_ACTIVITY -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "구글 활동 허락했음.")
 
                     //googleSignInCheckPermission()
 
                 } else {
-                    Log.d(TAG, "거절했네")
                     finish()
                 }
             }
         }
-        Log.d(TAG, "REQUEST 권한 설정 결과")
     }
 
     //구독
@@ -315,8 +306,6 @@ class SplashActivity : AppCompatActivity() {
                             result.dataPoints.firstOrNull()?.getValue(Field.FIELD_STEPS)?.asInt()
                                     ?: 0
                     // Use response data here
-                    Log.i(TAG, "OnSuccess()")
-                    Log.d(TAG, "걷기 수 : $totalSteps")
                     User.step = totalSteps
                 }
                 .addOnFailureListener { e ->
@@ -350,7 +339,6 @@ class SplashActivity : AppCompatActivity() {
                 Log.i(TAG, "Detected DataPoint field: ${field.name}")
                 Log.i(TAG, "Detected DataPoint value: $value")
                 if ("${field.name}" == "steps") {
-                    Log.d(TAG,"Filed name is stpes")
                     User.sensorStep += value.toString().toInt()
                 } else {
                     User.sensorKcal += value.toString().toFloat()

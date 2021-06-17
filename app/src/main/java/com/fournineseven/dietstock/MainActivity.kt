@@ -634,6 +634,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
     private inner class PageChangeCallback : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
+            Log.e("position", position.toString())
             navView.selectedItemId = when (position) {
                 0 -> R.id.navigation_home
                 1 -> R.id.navigation_ranking

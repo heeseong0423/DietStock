@@ -211,6 +211,7 @@ class FoodFragmentCamera : Fragment(){
 
             }
         })
+        
         userNo = sharedPreferences.getString(LoginState.USER_NUMBER, "0")!!.toInt()
         return binding.root
     }
@@ -219,7 +220,6 @@ class FoodFragmentCamera : Fragment(){
         super.onStart()
         Log.d("JJJ","onStart.>.sdf")
     }
-
 
 
     private var textureListener: TextureView.SurfaceTextureListener = object : TextureView.SurfaceTextureListener{

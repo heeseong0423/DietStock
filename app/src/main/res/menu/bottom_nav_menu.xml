@@ -20,7 +20,7 @@
 
         android:icon="@drawable/ic_baseline_feedback_24"
 
-        android:title="@string/title_notifications" />
+        android:title="@string/title_feedback" />
 
     <item
         android:id="@+id/navigation_food"

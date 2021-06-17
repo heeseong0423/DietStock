@@ -111,7 +111,7 @@
             android:textSize="20dp"
             android:textColor="@color/black"
             app:layout_constraintLeft_toRightOf="@id/serving"
-            app:layout_constraintTop_toTopOf="@id/serving" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

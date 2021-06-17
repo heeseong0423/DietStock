@@ -193,7 +193,11 @@ class FoodFragmentCamera : Fragment(){
 
                         override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
                             if(response?.isSuccessful){
-                                Toast.makeText(this@FoodFragmentCamera.requireContext(), "저장 성공", Toast.LENGTH_SHORT).show()
+                                val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireContext())
+                                builder.setTitle("저장 성공")
+                                builder.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which ->
+
+                                }).show()
                             }
                             else{
                                 Log.d("response error", response?.message())
@@ -492,7 +496,6 @@ class FoodFragmentCamera : Fragment(){
                 override fun onCaptureCompleted(session: CameraCaptureSession, request: CaptureRequest, result: TotalCaptureResult) {
                     super.onCaptureCompleted(session, request, result)
 
-                    Toast.makeText(this@FoodFragmentCamera.requireContext(), "사진이 촬영되었습니다", Toast.LENGTH_SHORT).show()
                     GlobalScope.launch {
                         delay(500)
                     }
@@ -511,7 +514,6 @@ class FoodFragmentCamera : Fragment(){
                             dialog, which-> finalResultName = arraySelect[which]
                         }.setPositiveButton("확인"){
                             dialog, which -> getFoodInfo((finalResultName))
-                            Toast.makeText(this@FoodFragmentCamera.requireContext(), finalResultName, Toast.LENGTH_SHORT).show()
                         }.setTitle("선택해 주세요").show()
                     }
                 }
@@ -645,7 +647,11 @@ class FoodFragmentCamera : Fragment(){
         try{
             serving = binding.serving.text.toString().toInt()
         }catch (e: NumberFormatException){
-            Toast.makeText(this@FoodFragmentCamera.requireContext(), "몇 인분 드셨습니까?", Toast.LENGTH_SHORT).show()
+            val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireContext())
+            builder.setMessage("식사량을 입력 해 주십시오")
+            builder.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which ->
+
+            }).show()
             return
         }
         User.foodNo = serving
@@ -681,9 +687,13 @@ class FoodFragmentCamera : Fragment(){
                     override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
                         if(response?.isSuccessful){
                             Log.d("result2 - saveFoodLog", response?.body().toString())
-                            Toast.makeText(this@FoodFragmentCamera.requireContext(), "저장 성공", Toast.LENGTH_SHORT).show()
-                            flipVisibility(true)
-                            openCamera()
+                            val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireContext())
+                            builder.setTitle("저장 성공")
+                            builder.setMessage("식단을 저장하였습니다.")
+                            builder.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which ->
+                                flipVisibility(true)
+                                openCamera()
+                            }).show()
                         }
                         else{
                             Log.d("response error", response?.message())
@@ -711,9 +721,13 @@ class FoodFragmentCamera : Fragment(){
                     override fun onResponse(call: Call<DefaultResponseKo>, response: Response<DefaultResponseKo>) {
                         if(response?.isSuccessful){
                             Log.d("result2 - saveFoodLog", response?.body().toString())
-                            Toast.makeText(this@FoodFragmentCamera.requireContext(), "저장 성공", Toast.LENGTH_SHORT).show()
-                            flipVisibility(true)
-                            openCamera()
+                            val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireContext())
+                            builder.setTitle("저장 성공")
+                            builder.setMessage("식단을 저장하였습니다.")
+                            builder.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which ->
+                                flipVisibility(true)
+                                openCamera()
+                            }).show()
                         }
                         else{
                             Log.d("response error", response?.message())
@@ -746,12 +760,23 @@ class FoodFragmentCamera : Fragment(){
 
             override fun onResponse(call: Call<GetFoodResponse>, response: Response<GetFoodResponse>) {
                 if(response?.isSuccessful){
-                    Log.d("result_test", response?.toString())
-                    Log.d("result2 - getFoodInfo", response?.body().toString())
-                    changeSettings(response.body()!!, foodName)
-                    flipVisibility(false)
-                    closeCamera()
-                    foodNo = response.body()!!.result[0].foodNo
+                    if(response?.body()!!.result?.isEmpty()){
+                        Log.d("없음 데이터", "999999999999" )
+                        val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(requireContext())
+                        builder.setTitle("No Result")
+                        builder.setMessage("검색 결과가 없습니다.")
+                        builder.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which ->
+                            openCamera()
+                        }).show()
+                    }else{
+                        Log.d("result_test", response?.toString())
+                        Log.d("result2 - getFoodInfo", response?.body().toString())
+                        changeSettings(response.body()!!, foodName)
+                        flipVisibility(false)
+                        closeCamera()
+                        foodNo = response.body()!!.result[0].foodNo
+                    }
+
                 }else{
                     Log.d("error line-114", response?.body().toString())
                 }

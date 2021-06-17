@@ -206,11 +206,12 @@ public class SignActivity extends BaseActivity {
             case R.id.btn_submit_signin:
                 String userIdLogin = et_id.getText().toString();
                 String passwordLogin = et_password.getText().toString();
-                try{Thread.sleep(1000);}catch (InterruptedException e){e.printStackTrace();}
 
                 if(userIdLogin.equals("")||passwordLogin.equals("")) {
                     DialogService.showDialog(SignActivity.this, "경고", "빈칸을 모두 채워주세요");
                     break;
+                }else{
+                    try{Thread.sleep(1000);}catch (InterruptedException e){e.printStackTrace();}
                 }
                 RetrofitService loginService = App.retrofit.create(RetrofitService.class);
 

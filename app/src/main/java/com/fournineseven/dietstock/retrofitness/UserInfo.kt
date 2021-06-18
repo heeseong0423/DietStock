@@ -102,6 +102,10 @@ class RequestUserInfoResult {
     @Expose
     val beforeImage: String? = null
 
+    @SerializedName("afterimage")
+    @Expose
+    val afterImage: String? = null
+
 
     @SerializedName("activity")
     @Expose

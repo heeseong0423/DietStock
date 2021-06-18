@@ -200,8 +200,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                         call: Call<GetUserInfoResponse>,
                         response: Response<GetUserInfoResponse>
                     ) {
-
-
                         var loading_layout: ConstraintLayout = findViewById(R.id.loading_layout)
                         contentMainViewPager.visibility = View.VISIBLE
                         loading_layout.visibility = View.GONE
@@ -236,6 +234,12 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                             //"http://497.iptime.org/" + response.body()?.result?.get(0)?.beforeImage
                             response.body()?.result?.get(0)?.beforeImage
                         )
+                        editor.putString(
+                            LoginState.AFTER_IMAGE_KEY,
+                            //"http://497.iptime.org/" + response.body()?.result?.get(0)?.beforeImage
+                            response.body()?.result?.get(0)?.afterImage
+                        )
+
                         editor.putFloat(
                             LoginState.GOAL_KEY,
                             response.body()?.result?.get(0)?.goal!!.toFloat()
@@ -256,6 +260,7 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                             LoginState.GENDER_KEY,
                             response.body()?.result?.get(0)?.sex!!.toInt()
                         )
+
                         editor.putInt(
                             LoginState.ACTIVITY_KEY,
                             response.body()?.result?.get(0)?.activity!!.toInt()
@@ -288,6 +293,15 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
                             )
                             beforeImageUri =
                                 sharedpreferences.getString(LoginState.BEFORE_IMAGE_KEY, null)
+                        }
+
+                        if (afterImageUri != response.body()?.result?.get(0)?.afterImage) {
+                            editor.putString(
+                                LoginState.AFTER_IMAGE_KEY,
+                                response.body()?.result?.get(0)?.afterImage
+                            )
+                            afterImageUri =
+                                sharedpreferences.getString(LoginState.AFTER_IMAGE_KEY, null)
                         }
 
                         if (myGoal != response.body()?.result?.get(0)?.goal) {
@@ -477,10 +491,6 @@ class MainActivity : BaseActivity(), View.OnClickListener, UserSettingDialogInte
             editor.putFloat(LoginState.LOW_KEY,0.0f)
             editor.apply()
         }
-
-
-
-
 
         //var userNo: Int? = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
         var userNumber = sharedpreferences.getString(LoginState.USER_NUMBER,"0")!!.toInt()
